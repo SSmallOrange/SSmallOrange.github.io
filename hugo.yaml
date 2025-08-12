@@ -1,4 +1,5 @@
-baseurl: https://SSmallOrange.github.io/
+baseURL: "https://SSmallOrange.github.io/"
+
 languageCode: zh-cn
 theme: hugo-theme-stack
 title: Example Site
