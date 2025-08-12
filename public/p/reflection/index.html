@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="实现反射需要用到的现代c++语法知识">
+<title>第一章：反射语法基础</title>
+
+<link rel='canonical' href='http://localhost:1313/p/reflection/'>
+
+<link rel="stylesheet" href="/scss/style.min.cfa5b1b0e78d61c00a14173992a1f3fa3b5c1b9fa34d023de959af564e7b19dd.css"><meta property='og:title' content="第一章：反射语法基础">
+<meta property='og:description' content="实现反射需要用到的现代c++语法知识">
+<meta property='og:url' content='http://localhost:1313/p/reflection/'>
+<meta property='og:site_name' content='Small_Orange/'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='c&#43;&#43;' /><meta property='article:published_time' content='2025-08-11T20:00:31&#43;08:00'/><meta property='article:modified_time' content='2025-08-11T20:00:31&#43;08:00'/><meta property='og:image' content='http://localhost:1313/p/reflection/M6Se7Y0qHBanWml.thumb.1000_0.jpg' />
+<meta name="twitter:title" content="第一章：反射语法基础">
+<meta name="twitter:description" content="实现反射需要用到的现代c++语法知识"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='http://localhost:1313/p/reflection/M6Se7Y0qHBanWml.thumb.1000_0.jpg' />
+    <link rel="shortcut icon" href="/cat.ico" />
+<style>
+    :root {
+         
+        --sys-font-family: "HarmonyOS_Sans_SC_Medium", Georgia, -apple-system, 'Nimbus Roman No9 L', 'PingFang SC', 'Hiragino Sans GB', 'Noto Serif SC', 'Microsoft Yahei', 'WenQuanYi Micro Hei', 'ST Heiti', sans-serif;
+        --code-font-family: "JetBrainsMono Regular", Menlo, Monaco, Consolas, "Courier New";
+        --article-font-family: "HarmonyOS_Sans_SC_Medium", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://cdn.staticfile.org/lxgw-wenkai-screen-webfont/1.6.0/style.css";
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_5319720d44cc86.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Small_Orange/</a></h1>
+            <h2 class="site-description">微风需要竹林，溪流需要蜻蜓</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/SSmallOrange'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1754840269730" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1463" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M682.215454 981.446137c-25.532318 0-42.553863-17.021545-42.553864-42.553864v-165.960067c4.255386-34.043091-8.510773-59.575409-29.787704-80.852341-12.766159-12.766159-17.021545-29.787704-8.510773-42.553864 4.255386-17.021545 21.276932-25.532318 34.043091-29.787704 123.406204-12.766159 238.301635-55.320023 238.301635-255.323181 0-46.80925-17.021545-93.6185-51.064636-131.916976-12.766159-12.766159-12.766159-29.787704-8.510772-42.553864 12.766159-34.043091 12.766159-68.086182 4.255386-102.129272-21.276932 4.255386-55.320023 17.021545-110.640045 55.320022-8.510773 8.510773-21.276932 8.510773-34.043091 4.255387-89.363113-25.532318-187.236999-25.532318-276.600112 0-12.766159 4.255386-25.532318 4.255386-38.298477-4.255387C307.741455 104.836549 269.442978 92.07039 248.166047 87.815004c-8.510773 34.043091-8.510773 68.086182 4.255386 102.129272 4.255386 17.021545 4.255386 34.043091-8.510773 42.553864-34.043091 38.298477-51.064636 85.107727-51.064636 131.916976 0 200.003158 114.895431 242.557022 238.301635 255.323181 17.021545 0 29.787704 12.766159 34.043091 29.787704 4.255386 17.021545 0 34.043091-8.510773 42.553864-21.276932 21.276932-29.787704 46.80925-29.787704 76.596954v165.960068c0 25.532318-17.021545 42.553863-42.553863 42.553863s-42.553863-17.021545-42.553864-42.553863v-72.341568c-127.66159 21.276932-182.981613-51.064636-221.28009-97.873886-17.021545-21.276932-29.787704-38.298477-46.80925-42.553864-21.276932-4.255386-38.298477-29.787704-29.787704-51.064636 4.255386-21.276932 29.787704-38.298477 51.064636-29.787704 42.553863 12.766159 68.086182 42.553863 93.6185 72.341568 34.043091 46.80925 63.830795 80.852341 153.193908 63.830795v-4.255386c0-25.532318 4.255386-55.320023 12.766159-76.596955-119.150818-25.532318-246.812408-102.129272-246.812408-327.664748 0-63.830795 21.276932-123.406204 59.575409-170.215454-17.021545-59.575409-12.766159-114.895431 12.766159-170.215454 4.255386-12.766159 12.766159-21.276932 25.532318-25.532318 17.021545-4.255386 72.341568-12.766159 187.236999 59.575409 93.6185-21.276932 191.492386-21.276932 280.855499 0 110.640045-72.341568 170.215454-63.830795 187.236999-59.575409 12.766159 4.255386 21.276932 12.766159 25.532319 25.532318 21.276932 55.320023 25.532318 110.640045 12.766159 165.960067 38.298477 46.80925 59.575409 106.384659 59.575408 170.215454 0 242.557022-144.683136 306.387817-246.812408 331.920135 8.510773 25.532318 12.766159 55.320023 12.766159 80.852341V938.892273c0 25.532318-17.021545 42.553863-42.553863 42.553864z" p-id="1464" fill="#bfbfbf"></path></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#第一章反射语法基础">第一章：反射语法基础</a>
+      <ol>
+        <li><a href="#为什么选择-c20"><strong>为什么选择 C++20</strong></a></li>
+        <li><a href="#语法介绍">语法介绍</a>
+          <ol>
+            <li><a href="#对模板lambda表达式的支持">对模板Lambda表达式的支持</a></li>
+            <li><a href="#concept-与-requires">concept 与 requires</a></li>
+            <li><a href="#结构化绑定structured-bindings和tuple">结构化绑定（Structured Bindings）和tuple</a></li>
+            <li><a href="#可变参数模板与参数包展开variadic-templates--pack-expansion">可变参数模板与参数包展开（Variadic Templates &amp; Pack Expansion）</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#本章总结"><strong>本章总结</strong></a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/reflection/">
+                <img src="/p/reflection/M6Se7Y0qHBanWml.thumb.1000_0_hu_79677ff2e045ee26.jpg"
+                        srcset="/p/reflection/M6Se7Y0qHBanWml.thumb.1000_0_hu_79677ff2e045ee26.jpg 800w, /p/reflection/M6Se7Y0qHBanWml.thumb.1000_0_hu_77029ec6c68ca927.jpg 1600w"
+                        width="800" 
+                        height="566" 
+                        loading="lazy"
+                        alt="Featured image of post 第一章：反射语法基础" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E5%8F%8D%E5%B0%84/" >
+                反射
+            </a>
+        
+            <a href="/categories/%E6%A8%A1%E6%9D%BF/" >
+                模板
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/reflection/">第一章：反射语法基础</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            实现反射需要用到的现代c&#43;&#43;语法知识
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Aug 11, 2025</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 5 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="第一章反射语法基础">第一章：反射语法基础
+</h2><p>对于模板了解不多的同学可以先学习下模板基础，这里推荐博客：<a class="link" href="https://blog.csdn.net/fl2011sx/article/details/128077440?spm=1001.2014.3001.5502"  target="_blank" rel="noopener"
+    >模板元编程教程</a> ，讲的很详细。</p>
+<hr>
+<p>以下是我们在实现反射时会用到的部分语法介绍</p>
+<h3 id="为什么选择-c20"><strong>为什么选择 C++20</strong>
+</h3><p>　　首先，实现一个反射功能就需要知道一个对象的：成员名称、成员的值，并且要有修改成员值的能力，而c++因为“零运行时开销”的设计初衷，导致反射迟迟没有被纳入标准（c++26已支持），因为反射往往意味着运行时元数据，这会带来额外内存和性能开销，与零开销原则冲突。</p>
+<p>　　不过我们可以通过一些其他的方式，实现我们自己的简单的反射功能，不过这肯定会不可避免的带来：</p>
+<ul>
+<li>
+<p>代码体积膨胀（反射类型越多，体积越大）</p>
+</li>
+<li>
+<p>运行时内存增加（运行时保留类型元数据）</p>
+</li>
+</ul>
+<p>　　不过在软件工程中，复杂度是守恒的，只会转移不会消失，所以一定程度的编码便利带来一定的开销也是可以接受的。</p>
+<p>　　通过查找资料发现，目前c++20的反射实现主要思路都是：</p>
+<ul>
+<li>通过结构化绑定和编译器内置的宏（<code>MSVC：__FUNCSIG__</code>、<code>clang、gcc：__PRETTY_FUNCTION__</code>）来获得对象的成员名称</li>
+<li>通过结构化绑定获得对象的成员引用（可以获得和修改对象数据）</li>
+</ul>
+<p>这里的<code>__FUNCSIG__</code>顾名思义是获得函数签名的宏，对于如下调用：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">auto</span> <span class="n">val</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">inline</span> <span class="kt">void</span> <span class="n">get_func_name_template</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">__FUNCSIG__</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">Person</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">m_age</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">m_name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="n">Person</span> <span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">get_func_name_template</span><span class="o">&lt;&amp;</span><span class="n">p</span><span class="p">.</span><span class="n">m_name</span><span class="o">&gt;</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// MSVC C++20编译输出：void __cdecl get_func_name_template&lt;&amp;p.m_name&gt;(void)
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到，输出中包含了我们需要的成员名称，对于这种固定模板，我们可以很容易的获得他的成员名称，但是如上代码在C++17是无法编译通过的，C++17需要如下格式：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="n">get_func_name_template</span><span class="o">&lt;&amp;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">();</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>原因在于：C++17对于非类型模板参数的值类型限制很严格，不允许将对象的子对象地址作为模板入参，这就直接导致了C++20以下的版本通常只能通过如下方式手动注册对象的元信息：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="n">REFLECTION</span><span class="p">(</span><span class="n">Person</span><span class="p">,</span> <span class="n">m_age</span><span class="p">,</span> <span class="n">m_name</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这就直接导致了想要一行代码实现序列化和反序列化，只能以C++20作为基础来实现。</p>
+<p>而其他的限制通常都可以通过<code>SFINAE</code>来规避，只不过实现起来会更加复杂。</p>
+<p>同时C++20还有很多方便我们实现的特性，如：支持模板的<code>Lambda表达式</code>，<code>concept</code>和<code>requires</code>等，能够大大提高我们的代码可读性，提高开发效率。</p>
+<h3 id="语法介绍">语法介绍
+</h3><h4 id="对模板lambda表达式的支持">对模板Lambda表达式的支持
+</h4><p>在 C++20 中，你可以让 Lambda 接收模板参数，这在编译期展开成员信息时非常方便。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="k">auto</span> <span class="n">print_indices</span> <span class="o">=</span> <span class="p">[]</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">size_t</span><span class="p">...</span> <span class="n">Is</span><span class="o">&gt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">index_sequence</span><span class="o">&lt;</span><span class="n">Is</span><span class="p">...</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// C++20支持模板
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">((</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">Is</span> <span class="o">&lt;&lt;</span> <span class="s">&#34; &#34;</span><span class="p">),</span> <span class="p">...);</span> <span class="c1">// C++17 折叠表达式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="n">print_indices</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_index_sequence</span><span class="o">&lt;</span><span class="mi">5</span><span class="o">&gt;</span><span class="p">{});</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 输出：0 1 2 3 4
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>这里的折叠表达式能够将模板参数包进行展开，这种写法在后面会经常用到，是反射利器。</p>
+<hr>
+<h4 id="concept-与-requires">concept 与 requires
+</h4><p>C++17 的 <code>SFINAE（Substitution Failure Is Not An Error）</code>虽然可以限制模板的使用条件，但写法晦涩难懂，错误信息又长又吓人。C++20 的 <code>concept</code> / <code>requires</code> 让约束<strong>直接写在模板签名上</strong>，可读性高很多。</p>
+<p><strong>例子（判断类型是否可加）：</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="k">concept</span> <span class="n">Addable</span> <span class="o">=</span> <span class="k">requires</span><span class="p">(</span><span class="n">T</span> <span class="n">a</span><span class="p">,</span> <span class="n">T</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="p">}</span> <span class="o">-&gt;</span> <span class="n">std</span><span class="o">::</span><span class="n">convertible_to</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="n">Addable</span> <span class="n">T</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="n">T</span> <span class="n">add</span><span class="p">(</span><span class="n">T</span> <span class="n">a</span><span class="p">,</span> <span class="n">T</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">add</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>    <span class="c1">// OK
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// std::cout &lt;&lt; add(&#34;a&#34;, &#34;b&#34;);     // 编译错误，error C2672: “add”: 未找到匹配的重载函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>对比 C++17</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">enable_if_t</span><span class="o">&lt;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">is_convertible_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">declval</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">()</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">declval</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">()),</span> <span class="n">T</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="o">&gt;&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="n">T</span> <span class="n">add</span><span class="p">(</span><span class="n">T</span> <span class="n">a</span><span class="p">,</span> <span class="n">T</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span> <span class="p">}</span>  <span class="c1">// SFINAE
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>是不是瞬间清爽了？这就是 <code>concept</code> / <code>requires</code> 的魅力。</p>
+<p><code>concept</code>相当于一个编译期的<code>bool</code>值，可以直接使用在模板中做类型约束</p>
+<p><code>requires</code>有以下几种写法：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="c1">// 1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="k">requires</span> <span class="n">std</span><span class="o">::</span><span class="n">integral</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="c1">// 直接写在模板尾部
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">T</span> <span class="n">multiply_by_two</span><span class="p">(</span><span class="n">T</span> <span class="n">x</span><span class="p">)</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="n">T</span> <span class="n">multiply_by_two</span><span class="p">(</span><span class="n">T</span> <span class="n">x</span><span class="p">)</span> <span class="k">requires</span> <span class="n">std</span><span class="o">::</span><span class="n">integral</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="p">{}</span>  <span class="c1">// 写在函数声明后
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 3 requires (参数列表) { 要检测的表达式; ... };  
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="k">concept</span> <span class="n">Incrementable</span> <span class="o">=</span> <span class="k">requires</span><span class="p">(</span><span class="n">T</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">// 对模板参数做多重约束
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">{</span> <span class="o">++</span><span class="n">x</span> <span class="p">}</span> <span class="o">-&gt;</span> <span class="n">std</span><span class="o">::</span><span class="n">same_as</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&amp;&gt;</span><span class="p">;</span>  <span class="c1">// 支持使用++运算符并且返回类型必须是 T&amp;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">{</span> <span class="o">--</span><span class="n">x</span> <span class="p">};</span>					<span class="c1">// 支持--运算符
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在c++20中，约束也被算作重载决议的一种，所以对于如下代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="n">OutputStream</span> <span class="n">Stream</span><span class="p">,</span> <span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">inline</span> <span class="kt">void</span> <span class="n">to_json_value</span><span class="p">(</span><span class="n">Stream</span><span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">,</span> <span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">object</span><span class="p">)</span> <span class="k">requires</span> <span class="n">is_custom_type_v</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="n">OutputStream</span> <span class="n">Stream</span><span class="p">,</span> <span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">inline</span> <span class="kt">void</span> <span class="n">to_json_value</span><span class="p">(</span><span class="n">Stream</span><span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">,</span> <span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">object</span><span class="p">)</span> <span class="k">requires</span> <span class="n">is_sequence_container_v</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="n">OutputStream</span> <span class="n">Stream</span><span class="p">,</span> <span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">inline</span> <span class="kt">void</span> <span class="n">to_json_value</span><span class="p">(</span><span class="n">Stream</span><span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">,</span> <span class="n">T</span><span class="o">&amp;&amp;</span> <span class="n">object</span><span class="p">)</span> <span class="k">requires</span> <span class="n">is_associative_container_v</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>通过使用<code>requires</code>能够非常清爽的实现对不同类型的不同处理，可读性很高，如果按照<code>SFINAE</code>写法如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C++" data-lang="C++"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">S</span><span class="p">,</span> <span class="k">class</span> <span class="nc">T</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">enable_if_t</span><span class="o">&lt;</span><span class="n">is_custom_type_v</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="o">=</span> <span class="mi">0</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">to_json_value</span><span class="p">(</span><span class="n">S</span><span class="o">&amp;&amp;</span><span class="p">,</span> <span class="n">T</span><span class="o">&amp;&amp;</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>其中对于类型S和T想要进一步约束还会更复杂。</p>
+<hr>
+<h4 id="结构化绑定structured-bindings和tuple">结构化绑定（Structured Bindings）和tuple
+</h4><p>结构化绑定是 C++17 引入的语法，让你可以用类似解构赋值的方式，直接把一个<code>struct</code>或 <code>tuple</code> 拆成多个变量。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">tuple</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">double</span><span class="p">,</span> <span class="kt">char</span><span class="o">&gt;</span> <span class="n">t</span><span class="p">{</span><span class="mi">42</span><span class="p">,</span> <span class="mf">3.14</span><span class="p">,</span> <span class="sc">&#39;x&#39;</span><span class="p">};</span>   <span class="c1">// tuple
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">auto</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">Person</span> <span class="p">{</span><span class="kt">int</span> <span class="n">m_age</span><span class="p">;</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">m_name</span><span class="p">;</span> <span class="p">};</span>  <span class="c1">// struct
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">auto</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>	 <span class="c1">// 按值绑定
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">auto</span><span class="o">&amp;</span> <span class="p">[</span><span class="n">ra</span><span class="p">,</span> <span class="n">rn</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>  <span class="c1">//  按引用绑定
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>在编译期反射中，结构化绑定是获取<strong>成员引用 tuple</strong>的核心手段之一。</p></blockquote>
+<p><code>std::tuple</code> 是 C++ 标准库里的一种<strong>固定长度、多类型的集合容器</strong>，从定义看就非常适合作为结构体元信息的存储单位。</p>
+<p><code>tuple</code>构造方式如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">tuple</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">double</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">t1</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mf">3.14</span><span class="p">,</span> <span class="s">&#34;hello&#34;</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>也可以通过<code>std::make_tuple</code>进行构造：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="k">auto</span> <span class="n">t</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_tuple</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mf">3.14</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">&#34;hello&#34;</span><span class="p">));</span>  <span class="c1">// 类型自动推导：std::tuple&lt;int, double, std::string&gt;
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>通过<code>make_tuple</code>构造<code>tuple</code>会通过值拷贝的方式进行构造</p>
+<p>还可以通过<code>std::tie</code>进行构造：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="k">auto</span> <span class="n">t</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">tie</span><span class="p">(</span><span class="n">person</span><span class="p">.</span><span class="n">m_age</span><span class="p">,</span> <span class="n">person</span><span class="p">.</span><span class="n">m_name</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这里构造出的<code>tuple</code>会持有原对象的引用，可以通过<code>std::get</code>拿到引用并对值做修改</p>
+<hr>
+<h4 id="可变参数模板与参数包展开variadic-templates--pack-expansion">可变参数模板与参数包展开（Variadic Templates &amp; Pack Expansion）
+</h4><p>这是 C++11 引入的重要语法，用来处理任意数量的模板参数</p>
+<h5 id="可变参数模板">可变参数模板
+</h5><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">print_all</span><span class="p">(</span><span class="n">Args</span><span class="p">...</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="p">...</span> <span class="o">&lt;&lt;</span> <span class="n">args</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span> <span class="c1">// C++17 折叠表达式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">print_all</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="s">&#34;hello&#34;</span><span class="p">);</span> <span class="c1">// 输出：12.5hello
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h5 id="参数包展开">参数包展开
+</h5><p>参数包展开就是用 <code>...</code> 把一段模式按参数包逐项替换，然后拼成一串。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Ts</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">MyTuple</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">tuple</span><span class="o">&lt;</span><span class="n">Ts</span><span class="p">...</span><span class="o">&gt;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="n">T</span> <span class="o">=</span> <span class="n">MyTuple</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">double</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">;</span> <span class="c1">// 等价于 tuple&lt;int, double, string&gt;
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>例子（反射中常见模式展开）：</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">size_t</span><span class="p">...</span> <span class="n">Is</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="k">constexpr</span> <span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">...(</span><span class="n">Is</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">get_array</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">index_sequence</span><span class="o">&lt;</span><span class="n">Is</span><span class="p">...</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">...(</span><span class="n">Is</span><span class="p">)</span><span class="o">&gt;</span><span class="p">{</span> <span class="p">{</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Is</span><span class="p">)...</span> <span class="p">}</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">get_array</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_index_sequence</span><span class="o">&lt;</span><span class="mi">5</span><span class="o">&gt;</span><span class="p">{});</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 构造array: [1, 2, 3, 4, 5]
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>这里的 <code>...</code> 就是<strong>参数包展开</strong>，它会依次替换 <code>Is</code>，展开为：<code>{1, 2, 3, 4, 5}</code>。</p>
+<hr>
+<h2 id="本章总结"><strong>本章总结</strong>
+</h2><ul>
+<li><strong>C++20 的三大升级</strong>（<code>模板 Lambda</code>、<code>concept/requires</code>、<code>NTTP 放宽</code>）是非侵入式反射的关键。</li>
+<li><strong>结构化绑定</strong>让我们在编译期轻松获取成员引用。</li>
+<li><strong>concept 与 requires</strong>让模板约束变得优雅可读。</li>
+<li><strong>可变参数模板与参数包展开</strong>让我们能在编译期遍历所有成员类型，并生成序列化/反序列化代码。</li>
+</ul>
+<blockquote>
+<p>下一章，我们会在这些语法基础上，开始构建<strong>编译期静态反射的核心机制</strong>，看看如何一步步获取结构体的成员数量、成员引用 tuple、成员名称。</p></blockquote>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/p/reflection-2-getstructuremetadata/">
+        
+        
+            <div class="article-image">
+                <img src="/p/reflection-2-getstructuremetadata/20221003212826_4e779.thumb.1000_0.08c1d096967d4c364db2d3d21ca1043d.08c1d096967d4c364db2d3d21ca1043d_hu_6674eb292a774dbe.jpeg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post Reflection 2 GetStructureMetadata"
+                        data-key="Reflection 2 GetStructureMetadata" 
+                        data-hash="md5-CMHQlpZ9TDZNstPSHKEEPQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Reflection 2 GetStructureMetadata</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2025 Example Person
+    </section>
+    
+    <section class="powerby">
+         <br />
+        
+    </section>
+    <section class="count_info">
+        <div>
+            本博客已稳定运行
+            <span id="ds" class="running-days"></span>
+            天
+            <span id="hs" class="running-days"></span>
+            小时
+            <span id="ms" class="running-days"></span>
+            分钟
+        </div>
+        <div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            共发表 2 篇文章 · 总计 5.47 k 字
+        </div>
+        <div>
+            <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+        </div>
+</section>
+
+
+<script>
+    let s1 = '2023-6-18'; 
+    s1 = new Date(s1.replace(/-/g, "/"));
+    let s2 = new Date();
+    let timeDifference = s2.getTime() - s1.getTime();
+
+    let days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    let hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    let minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+    document.getElementById('ds').innerHTML = days;
+    document.getElementById('hs').innerHTML = hours;
+    document.getElementById('ms').innerHTML = minutes;
+
+</script>
+
+    <script>
+        (function(u, c) {
+        var d = document, t = 'script', o = d.createElement(t),
+            s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function(e) { c(e); }); }
+        s.parentNode.insertBefore(o, s);
+        })('//cdn.bootcss.com/pangu/4.0.7/pangu.min.js', function() {
+        pangu.spacingPage();
+        });
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.40b059551641e1f3cd1feeda20e502eb5b9b9c03dcc16b53064064fc45d5f118.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

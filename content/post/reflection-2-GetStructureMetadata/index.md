@@ -1,0 +1,301 @@
+---
+
+title: "Reflection 2 GetStructureMetadata"
+slug: "Reflection 2 GetStructureMetadata"
+description: 
+date: "2025-08-12T22:20:20+08:00"
+lastmod: "2025-08-12T22:20:20+08:00"
+image: 20221003212826_4e779.thumb.1000_0.jpeg
+math: 
+license: 
+hidden: false
+draft: false 
+categories: ["反射", "模板"]
+tags: ["c++"]
+
+---
+
+## 第二章：元数据获取
+
+这一部分，我们就来使用上一章介绍的芝士获取结构体的元信息。
+
+参考链接：
+
+编译期反射成员名称：https://lumia431.github.io/2025/05/09/%E7%AC%AC%E4%BA%94%E7%AB%A0%EF%BC%9A%E7%BC%96%E8%AF%91%E6%9C%9F%E5%8F%8D%E5%B0%84%E5%88%9D%E6%8E%A2%EF%BC%81%EF%BC%81/
+
+编译期获取结构体成员数量：https://zhuanlan.zhihu.com/p/674157958
+
+侵入式编译期反射：https://netcan.github.io/2020/08/01/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AE%9E%E7%8E%B0C-%E7%BC%96%E8%AF%91%E6%9C%9F%E9%9D%99%E6%80%81%E5%8F%8D%E5%B0%84/
+
+---
+
+### 结构体成员名称获取
+
+​	上一章我们提到，可以通过编译器内置的宏（`MSVC：__FUNCSIG__`、`clang、gcc：__PRETTY_FUNCTION__`）来获取成员变量名称，具体表现为：
+
+```c++
+// void __cdecl get_func_name_template<&p.m_name>(void)
+```
+
+定义一个示例用的结构体：`struct Person { int m_age; std::string m_name; };`	
+
+那么，通过一定的字符串截取，我们就可以拿到一个结构体成员的名称：
+
+```c++
+template <auto val>
+inline constexpr std::string_view get_member_type_name() {
+#if defined(_MSC_VER)
+    std::string_view funcName = __FUNCSIG__;
+    size_t begin = funcName.rfind(".") + 1;
+    size_t end = funcName.rfind(">(");
+    return funcName.substr(begin, end - begin);
+#endif
+}
+static Person p;
+get_func_name_template<&p.m_name>();
+// out: m_name
+```
+
+但是，对于一个用于存储网络请求的结构体来说，结构体成员的数量可能非常多，如果对于每一个都这样手动的去获取，和`REFLECTION(Person, m_name, m_age)`就没区别了，这时候上一章讲到的结构化绑定就派上用场了，能够想到：
+
+```c++
+int main () {
+    static Person p;
+    auto& [age, name] = p;
+    get_member_type_name<&age>();
+}
+```
+
+但是编译后会发现报错：`error C2672: “get_member_type_name”: 未找到匹配的重载函数`，这是因为`age` 是**局部结构化绑定引用**，`&age` 不是地址常量表达式。所以对于`&p`是可以的，但是`&age`不行。核心在于，我们需要告诉编译器，age是一个编译期常量，对于这个问题，解决方案如下：
+
+```c++
+inline constexpr auto get_tuple() {  	   			
+    auto& [a, b] = p;			    
+    return std::tie(a, b);						
+}
+std::cout << get_member_type_name<&std::get<1>(get_tuple())>() << std::endl;
+// out: m_name
+```
+
+`get_tuple()`函数的返回值被修饰为`constexpr`表示这个函数可以在编译期被调用，而对于`tuple`，编译器在编译期会将其折叠为：`p.m_name`的引用，这时候再取地址就没有问题了。
+
+不过现在我们的`Person`的全局成员`p`也需要使用者自己定义，同时`get_tuple`函数只能支持两个成员的函数，作为一个可用性强的库来说，这些都是不应该存在的。
+
+---
+
+#### 定义全局唯一对象
+
+为了解决第一个问题，我们就需要针对不同的用户类型做统一处理，可以想到的是：
+
+```c++
+template <typename T>
+struct Wrapper {
+	inline static std::remove_cvref_t<T> value;
+};
+```
+
+针对任意对象，定义一个全局存在的唯一实例，并用`Wrapper`匿名起来，这里就是一个静态反射的额外开销，只要做一次反射，该类型就会有且仅有一个唯一实例被创建在内存当中。
+
+此时我们就可以实现对任意对象的元组获取：
+
+```c++
+template <typename T>
+inline constexpr auto get_tuple() {  	   			
+    auto& [a, b] =  Wrapper<T>::value;			    
+    return std::tie(a, b);						
+}
+std::cout << get_member_type_name<&std::get<1>(get_tuple<Person>())>() << std::endl;
+// out: m_name
+```
+
+---
+
+#### 支持不同结构体成员数量的结构化绑定
+
+第二个问题没有办法绕过，目前只能通过手动打表的方式实现对不同数量成员结构体的结构化匹配，不过这里的表可以通过脚本实现，也不麻烦：
+
+```c++
+template <AggregateType T, size_t N>
+struct get_member_references_tuple {
+	// get tuple by type
+	inline static constexpr auto get_tuple() {
+		if constexpr (N <= 0) {
+			static_assert(N <= 0, "Too few structural member parameters (size <= 0)");
+		} else {
+			static_assert(N > 5, "Too many structural member parameters (size >= 3)");
+		}
+	}
+}
+
+#define GET_MEMBER_TUPLE_HELPER(n, ...) 						\  // 对结构体的偏特化
+template <AggregateType T>   									\
+struct get_member_references_tuple<T, n> { 						\
+	inline static constexpr auto get_tuple() {  	   			\
+		auto& [__VA_ARGS__] = Wrapper<T>::value;			    \
+		return std::tie(__VA_ARGS__);							\
+	}   													\
+}
+
+GET_MEMBER_TUPLE_HELPER(1, a)
+GET_MEMBER_TUPLE_HELPER(2, a, b)
+GET_MEMBER_TUPLE_HELPER(3, a, b, c)
+...
+```
+
+这里使用`struct`包装是因为普通函数不允许偏特化，而我们需要根据不同的成员变量数量进行不同实现的匹配，但我们如何获取一个结构体的成员数量呢？
+
+### 结构体成员数量获取
+
+注意到，c++11开始引入了`均匀初始化`，即对于`Person`结构体，支持如下初始化方式：
+
+```c++
+Person p{{}, {}};
+```
+
+编译器会对其每个成员单独调用默认构造，对于基础类型，会执行值初始化，赋值为0，如果只是这样也不足以被我们使用，主要他还支持：
+
+```c++
+Person p{{}};
+```
+
+即顺序初始化，对于没有显示调用`{}`的成员仍然会调用默认构造函数，而当`{}`数量过多时
+
+```c++
+Person p{{}, {}, {}};
+```
+
+就会报错，而这就让我们有机可乘了，我们可以递归的对一个结构体尝试初始化，利用`SFINAE`特性（c++20就可以使用constexpr和require做编译期选择了），即使构造失败也不会导致编译失败，可以作为递归尝试的结束符，而这里栈的深度就是一个结构体的成员个数。
+
+```c++
+template <typename T>
+consteval size_t countMember(auto&&... Args) {
+	if constexpr (std::is_constructible_v<T, Args...>) {
+        return sizeof...(Args) - 1;
+	}
+	else {
+		return countMember<T>(Args..., {});
+	}
+}
+```
+
+但是这样写会编译错误，对于`countMember`的函数参数，传入一个`{}`并不能让编译器确定传入类型，但我们又确实需要一个任意类型的`{}`来进行构造，这时候就可以构造一个空的类型，并重载其类型转换函数：
+
+```c++
+struct AnyType {
+  template <typename T>
+  operator T();
+};
+```
+
+这样就能实现一个确认的类型，并在参与构造时能够自适应类型，再对刚才的递归函数做修改：
+
+```c++
+template <typename T>
+consteval size_t countMember(auto&&... Args) {
+	if constexpr (std::is_constructible_v<T, Args...>) {
+        return sizeof...(Args) - 1;
+	}
+	else {
+		return countMember<T>(Args..., AnyType{});
+	}
+}
+
+template <typename T>
+constexpr size_t member_count_v = countMember<T>();
+
+std::cout << member_count_v<Person> << std::endl;
+// out: 2
+```
+
+到此我们就能对之前的结构化绑定，针对不同的结构体成员数量做偏特化了：
+
+```c++
+template <AggregateType T>
+using member_array = std::array<std::string_view, members_count_v<remove_cvref_t<T>>>;
+
+// get members tuple
+template  <AggregateType T>
+inline constexpr auto struct_members_to_tuple() {
+	// 在这里针对不同的结构体成员数量做偏特化
+	return get_member_references_tuple<T, members_count_v<T>>::get_tuple(); 
+}
+
+// get members array
+template <AggregateType T>
+inline consteval member_array<T> struct_members_to_array() {
+	using U = remove_cvref_t<T>;
+	constexpr auto tuple = struct_members_to_tuple<U>();
+	return [&] <size_t... Is>(std::index_sequence<Is...>) {
+		// 初始化列表对std::array进行初始化
+        return member_array<T>{get_member_name<&std::get<Is>(tuple)>()...};
+    }(std::make_index_sequence<members_count_v<U>>());
+}
+```
+
+---
+
+### 结构体成员引用获取
+
+
+
+现在，我们就能够获得结构体成员名称的`array`了，再进一步拓展上面代码，在我们原本的宏定义基础上添加对运行时变量引用的获取（因为引用也要用到结构化绑定，也要用到打表的结构体）：
+
+```c++
+#define GET_MEMBER_TUPLE_HELPER(n, ...) 						\
+template <AggregateType T>   									\
+struct get_member_references_tuple<T, n> { 						\
+	inline static constexpr auto get_tuple() {  	   			\
+		auto& [__VA_ARGS__] = Wrapper<T>::value;			    \
+		return std::tie(__VA_ARGS__);							\
+	}   														\
+	inline static decltype(auto) get_reference_value(T&& t) {   \  
+		auto&& [__VA_ARGS__] = std::forward<T>(t);				\
+		return std::tie(__VA_ARGS__);							\
+	}															\
+};	
+```
+
+与获取静态对象的过程相同，只不过将方法的`constexpr`关键字去掉，改为运行时调用的函数，其实获取名称时也可以去掉`constexpr`，但这是可以在编译期完成的事情，就不要放在运行时做了。
+
+
+获取指定索引的运行时成员引用：
+
+```c++
+// get members reference
+template <size_t Index, typename T>
+inline decltype(auto) struct_member_reference(T&& t) {
+	using U = remove_cvref_t<T>;
+    constexpr size_t count = members_count_v<U>;
+	static_assert(Index < count, "Index out of range");
+	return std::get<Index>(get_member_references_tuple<T, count>::get_reference_value(std::forward<T>(t)));
+}
+```
+
+这里需要注意，要使用`decltype(auto)` 而不是 `auto`是因为前者能完整的保留表达式返回的原始类型，例如：
+
+```c++
+int x = 42;
+int& ref = x;
+auto a = ref;  // Value Type
+decltype(auto) b = ref;  // Reference Type
+```
+
+而这里我们需要返回的是结构体成员的引用，所以需要使用前者作返回值类型推导。
+
+
+
+到这里我们就能基础的获得一个结构体的元信息了，这些信息足够我们实现一个基础的序列化功能了。
+
+---
+
+## 本章总结
+
+本章的代码见：https://github.com/SSmallOrange/TinyReflection/blob/master/tinyrefl/utils/reflection_get_tuple.hpp
+
+本章相关测试代码：
+
+https://github.com/SSmallOrange/TinyReflection/blob/master/test/test_get_member_string_and_type_string.cpp
+
+https://github.com/SSmallOrange/TinyReflection/blob/master/test/test_get_member_value.cpp
+
+下一章我们将基于上述功能实现基础的Json序列化能力。
