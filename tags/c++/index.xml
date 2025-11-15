@@ -26,17 +26,15 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">auto&lt;/span> &lt;span class="n">st&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tinyrefl&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">reflection_from_json&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">obj&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">json&lt;/span>&lt;span class="p">);&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>Json 正确就把 obj 填好；Json 有问题就返回一份结构化的错误信息，包含错误种类、偏移、行列号和可读的错误描述。&lt;/p>
-&lt;h3 id="实现方案">实现方案
-&lt;/h3>&lt;p>这里我采用不构建 DOM，直接基于&lt;code>RapidJSON&lt;/code>的流式 SAX 接口，把事件派发到对应的结构体成员。
+&lt;/div>&lt;p>这里我采用不构建 DOM，直接基于&lt;code>RapidJSON&lt;/code>的流式 SAX 接口，把事件派发到对应的结构体成员。
 主要思路：&lt;/p>
 &lt;ul>
 &lt;li>由于&lt;code>RapidJson&lt;/code>的SAX接口只提供回调，所以对于递归反序列化，还需要我们自己维护一个解析栈来处理嵌套情况&lt;/li>
 &lt;li>同时，&lt;code>RapidJson&lt;/code>对于数组类型和普通类型的回调方式不同，所以这里需要分别进行处理&lt;/li>
 &lt;/ul>
 &lt;p>剩下的就是使用&lt;code>RapidJson&lt;/code>的接口了，&lt;code>RapidJson&lt;/code>相关文档：https://rapidjson.org/zh-cn/&lt;/p>
-&lt;h4 id="结构体成员kv化">结构体成员KV化
-&lt;/h4>&lt;p>到反序列化这里，前面的铺垫已经很充分了：&lt;/p>
+&lt;h3 id="结构体成员kv化">结构体成员KV化
+&lt;/h3>&lt;p>到反序列化这里，前面的铺垫已经很充分了：&lt;/p>
 &lt;ul>
 &lt;li>&lt;code>members_count_v&amp;lt;T&amp;gt;&lt;/code> 能在编译期算出成员个数&lt;/li>
 &lt;li>&lt;code>struct_members_to_array&amp;lt;T&amp;gt;()&lt;/code> 能拿到成员名数组&lt;/li>
@@ -62,8 +60,8 @@
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>这里 &lt;code>member_name&lt;/code> 很好办，前面我们已经能够构建出 &lt;code>std::array&amp;lt;string_view, N&amp;gt;&lt;/code>。真正难的是「成员引用」这一侧。&lt;/p>
-&lt;h5 id="为什么不能直接存成员引用">为什么不能直接存「成员引用」
-&lt;/h5>&lt;p>直觉上的想法可能是：能不能搞一个类似这样的东西？&lt;/p>
+&lt;h4 id="为什么不能直接存成员引用">为什么不能直接存「成员引用」
+&lt;/h4>&lt;p>直觉上的想法可能是：能不能搞一个类似这样的东西？&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -142,8 +140,8 @@
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>&lt;code>std::variant&lt;/code> 配合 &lt;code>std::visit&lt;/code>使用可以高效的解决当前成员的类型问题，就不用自己维护脆弱的&lt;code>void* + type_id&lt;/code>了。&lt;/p>
-&lt;h5 id="实现方案-1">实现方案
-&lt;/h5>&lt;p>这里看下整体的实现方案：&lt;/p>
+&lt;h3 id="实现方案">实现方案
+&lt;/h3>&lt;p>这里看下整体的实现方案：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
@@ -262,8 +260,8 @@
 &lt;li>&lt;code>SequenceReaderHandleImp&amp;lt;T&amp;gt;&lt;/code>
 面向顺序容器，负责解析一个 Json 数组 [ &amp;hellip; ] 并往容器里 emplace_back&lt;/li>
 &lt;/ul>
-&lt;h5 id="dispatchhandler事件分发">DispatchHandler：事件分发
-&lt;/h5>&lt;p>&lt;code>DispatchHandler&lt;/code>的职责很简单：&lt;/p>
+&lt;h4 id="dispatchhandler事件分发">DispatchHandler：事件分发
+&lt;/h4>&lt;p>&lt;code>DispatchHandler&lt;/code>的职责很简单：&lt;/p>
 &lt;ul>
 &lt;li>构建初始的 handler 栈&lt;/li>
 &lt;li>把 RapidJSON 的所有回调，转发给栈顶的 IHandler&lt;/li>
@@ -366,8 +364,8 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">...&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h5 id="readerhandlerimpt-is结构体对象解析">ReaderHandlerImp&amp;lt;T, Is&amp;hellip;&amp;gt;：结构体对象解析
-&lt;/h5>&lt;p>对于自定义聚合类型，Json 里对应的是一个对象 { &amp;hellip; }。反序列化时需要完成两件事：&lt;/p>
+&lt;/div>&lt;h4 id="readerhandlerimpt-is结构体对象解析">ReaderHandlerImp&amp;lt;T, Is&amp;hellip;&amp;gt;：结构体对象解析
+&lt;/h4>&lt;p>对于自定义聚合类型，Json 里对应的是一个对象 { &amp;hellip; }。反序列化时需要完成两件事：&lt;/p>
 &lt;ul>
 &lt;li>找到当前 Key 对应的是哪个成员&lt;/li>
 &lt;li>把后续的值事件写入这个成员里，或者把子对象 / 子数组继续交给新的 handler 解析&lt;/li>
@@ -506,8 +504,8 @@
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>先通过前面提到的 &lt;code>iterator&lt;/code>拿到对应的成员类型信息，通过&lt;code>std::visit&lt;/code>匹配当前&lt;code>std::variant&lt;/code>存储的类型，并通过偏移量拿到当前成员的引用。随后将其入栈，嵌套处理。&lt;/p>
-&lt;h5 id="sequencereaderhandleimp顺序容器解析">SequenceReaderHandleImp&lt;T>：顺序容器解析
-&lt;/h5>&lt;p>顺序容器对应 Json 里的数组：&lt;/p>
+&lt;h4 id="sequencereaderhandleimp顺序容器解析">SequenceReaderHandleImp&lt;T>：顺序容器解析
+&lt;/h4>&lt;p>顺序容器对应 Json 里的数组：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -629,7 +627,14 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>现代反射实现（三）：Json序列化</title><link>https://SSmallOrange.github.io/p/reflection3/</link><pubDate>Sat, 15 Nov 2025 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/reflection3/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/reflection3/reflection_json.thumb.1000_0.png" alt="Featured image of post 现代反射实现（三）：Json序列化" />&lt;h2 id="第三章基于反射的-json-序列化">第三章：基于反射的 Json 序列化
+&lt;/div>&lt;h2 id="本章总结">本章总结
+&lt;/h2>&lt;p>本章的代码见：
+&lt;a class="link" href="https://github.com/SSmallOrange/TinyReflection/blob/master/tinyrefl/reflectiopn_from_json.hpp" target="_blank" rel="noopener"
+>https://github.com/SSmallOrange/TinyReflection/blob/master/tinyrefl/reflectiopn_from_json.hpp&lt;/a>&lt;/p>
+&lt;p>本章相关测试代码：
+&lt;a class="link" href="https://github.com/SSmallOrange/TinyReflection/blob/master/test/test_reflection_from_json.cpp" target="_blank" rel="noopener"
+>https://github.com/SSmallOrange/TinyReflection/blob/master/test/test_reflection_from_json.cpp&lt;/a>&lt;/p>
+&lt;p>目前c++26已经更新了反射能力，后面考虑与时俱进。&lt;/p></description></item><item><title>现代反射实现（三）：Json序列化</title><link>https://SSmallOrange.github.io/p/reflection3/</link><pubDate>Sat, 15 Nov 2025 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/reflection3/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/reflection3/reflection_json.thumb.1000_0.png" alt="Featured image of post 现代反射实现（三）：Json序列化" />&lt;h2 id="第三章基于反射的-json-序列化">第三章：基于反射的 Json 序列化
 &lt;/h2>&lt;blockquote>
 &lt;p>代码实现方案参考：https://github.com/qicosmos/iguana&lt;/p>&lt;/blockquote>
 &lt;hr>
@@ -1069,9 +1074,11 @@
 &lt;/div>&lt;p>至此，整个序列化功能实现闭环。&lt;/p>
 &lt;hr>
 &lt;h2 id="本章总结">本章总结
-&lt;/h2>&lt;p>本章的代码见：https://github.com/SSmallOrange/TinyReflection/blob/master/tinyrefl/reflectiopn_to_json.hpp&lt;/p>
-&lt;p>本章相关测试代码：&lt;/p>
-&lt;p>&lt;a class="link" href="https://github.com/SSmallOrange/TinyReflection/blob/master/test/test_reflection_to_json.cpp" target="_blank" rel="noopener"
+&lt;/h2>&lt;p>本章的代码见：
+&lt;a class="link" href="https://github.com/SSmallOrange/TinyReflection/blob/master/tinyrefl/reflectiopn_to_json.hpp" target="_blank" rel="noopener"
+>https://github.com/SSmallOrange/TinyReflection/blob/master/tinyrefl/reflectiopn_to_json.hpp&lt;/a>&lt;/p>
+&lt;p>本章相关测试代码：
+&lt;a class="link" href="https://github.com/SSmallOrange/TinyReflection/blob/master/test/test_reflection_to_json.cpp" target="_blank" rel="noopener"
 >https://github.com/SSmallOrange/TinyReflection/blob/master/test/test_reflection_to_json.cpp&lt;/a>&lt;/p>
 &lt;p>有了序列化能力自然也需要一个反序列化能力，下一章实现。&lt;/p></description></item><item><title>现代反射实现（二）：元数据获取</title><link>https://SSmallOrange.github.io/p/reflection2/</link><pubDate>Tue, 12 Aug 2025 22:20:20 +0800</pubDate><guid>https://SSmallOrange.github.io/p/reflection2/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/reflection2/20221003212826_4e779.thumb.1000_0.jpeg" alt="Featured image of post 现代反射实现（二）：元数据获取" />&lt;h2 id="现代反射实现二元数据获取">现代反射实现（二）：元数据获取
 &lt;/h2>&lt;p>这一部分，我们就来使用上一章介绍的芝士获取结构体的元信息。&lt;/p>
