@@ -1511,7 +1511,7 @@
 >https://github.com/SSmallOrange/TinyReflection/blob/master/test/test_get_member_string_and_type_string.cpp&lt;/a>&lt;/p>
 &lt;p>&lt;a class="link" href="https://github.com/SSmallOrange/TinyReflection/blob/master/test/test_get_member_value.cpp" target="_blank" rel="noopener"
 >https://github.com/SSmallOrange/TinyReflection/blob/master/test/test_get_member_value.cpp&lt;/a>&lt;/p>
-&lt;p>下一章我们将基于上述功能实现基础的Json序列化能力。&lt;/p></description></item><item><title>现代反射实现（一）：语法基础</title><link>https://SSmallOrange.github.io/p/reflection/</link><pubDate>Mon, 11 Aug 2025 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/reflection/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/reflection/M6Se7Y0qHBanWml.thumb.1000_0.jpg" alt="Featured image of post 现代反射实现（一）：语法基础" />&lt;h2 id="现代反射实现一语法基础">现代反射实现（一）：语法基础
+&lt;p>下一章我们将基于上述功能实现基础的Json序列化能力。&lt;/p></description></item><item><title>现代反射实现（一）：语法基础</title><link>https://SSmallOrange.github.io/p/reflection/</link><pubDate>Mon, 11 Aug 2025 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/reflection/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/reflection/background.png" alt="Featured image of post 现代反射实现（一）：语法基础" />&lt;h2 id="现代反射实现一语法基础">现代反射实现（一）：语法基础
 &lt;/h2>&lt;p>对于模板了解不多的同学可以先学习下模板基础，这里推荐博客：&lt;a class="link" href="https://blog.csdn.net/fl2011sx/article/details/128077440?spm=1001.2014.3001.5502" target="_blank" rel="noopener"
 >模板元编程教程&lt;/a> ，讲的很详细。&lt;/p>
 &lt;hr>
