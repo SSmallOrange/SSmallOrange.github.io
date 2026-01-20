@@ -1,4 +1,362 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Small_Orange</title><link>https://SSmallOrange.github.io/</link><description>Recent content on Small_Orange</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 25 Nov 2025 00:00:31 +0800</lastBuildDate><atom:link href="https://SSmallOrange.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Hazel学习笔记：Renderer2D（持续更新）</title><link>https://SSmallOrange.github.io/p/hazel/</link><pubDate>Mon, 24 Nov 2025 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/hazel/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/hazel/background.png" alt="Featured image of post Hazel学习笔记：Renderer2D（持续更新）" />&lt;h1 id="hazel学习笔记renderer2d部分">Hazel学习笔记：Renderer2D部分
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Small_Orange</title><link>https://SSmallOrange.github.io/</link><description>Recent content on Small_Orange</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 20 Jan 2026 00:00:31 +0800</lastBuildDate><atom:link href="https://SSmallOrange.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Hazel学习笔记：游戏功能完善（持续更新）</title><link>https://SSmallOrange.github.io/p/hazel-learning-2/</link><pubDate>Tue, 20 Jan 2026 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/hazel-learning-2/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/hazel-learning-2/background.png" alt="Featured image of post Hazel学习笔记：游戏功能完善（持续更新）" />&lt;h1 id="hazel学习笔记游戏功能完善">Hazel学习笔记：游戏功能完善
+&lt;/h1>&lt;p>由于Hazel剩下的内容非常多，我以前也没有接触过游戏、渲染部分，所以学起来比较吃力。这部分我将作为OpenGL、游戏相关知识的积累，沉淀一些个人理解，并持续更新。&lt;/p>
+&lt;hr>
+&lt;h2 id="ecs">ECS
+&lt;/h2>&lt;p>ECS是游戏中常用的架构，他之所以流行，是因为：他把对象的存储和使用分开，在不影响易用性的前提下，保证了性能。&lt;/p>
+&lt;h3 id="如果没有ecs我们应该如何处理游戏对象">如果没有ECS，我们应该如何处理游戏对象？
+&lt;/h3>&lt;p>假如我们现在有一个路灯和一个玩家，他们作为游戏世界的一员，首先需要有自己的位置信息，现在要让这个路灯和这个玩家都具备发光的能力，那么我们很容易能想到：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">Transform&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="n">SetPos&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">vec3&lt;/span> &lt;span class="n">pos&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">vec3&lt;/span> &lt;span class="nf">GetPos&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">vec3&lt;/span> &lt;span class="n">pos&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">Light&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="n">StartLight&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">StopLight&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">StreetLight&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">Light&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Transform&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="n">StartLight&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* ... */&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">Player&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">Light&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Transform&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="n">StartLight&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* ... */&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>后来游戏逐渐更新，玩家的灯光逻辑变得越来越复杂&amp;hellip;&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">Light&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="n">StartLight&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">StopLight&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">SetLightingDirection&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">dir&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">SetLightingIntensity&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">float&lt;/span> &lt;span class="n">intensity&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">SetLightingColor&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">StreetLight&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">Light&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Transform&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="n">StartLight&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* ... */&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">Player&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">Light&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Transform&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="n">StartLight&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* ... */&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>很容易就会让原本的路灯得到一些他根本用不上的属性，更不用说玩家可能还会有：声音、生命值、攻击能力&amp;hellip;，玩家就会变得越来越臃肿，很不利于维护。&lt;/p>
+&lt;h3 id="如果我们把继承变成组合呢">如果我们把“继承”变成“组合”呢？
+&lt;/h3>&lt;p>组合的思路是把能力拆成组件：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">StreetLight&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="n">StartLight&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* ... */&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Transform&lt;/span> &lt;span class="n">transform&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Light&lt;/span> &lt;span class="n">light&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">Player&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="n">StartLight&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="cm">/* ... */&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Transform&lt;/span> &lt;span class="n">transform&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Light&lt;/span> &lt;span class="n">light&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>好处显而易见：我们不用维护越来越复杂的继承树了，现在我们的属性能够随意拆解组装。&lt;code>Player&lt;/code> 和 &lt;code>StreetLight&lt;/code> 可以共享组件。&lt;/p>
+&lt;p>但是对于我的游戏循环来说，这种方式仍然不直观，你可能需要在你的游戏循环中写一大堆&lt;code>if-else&lt;/code>来维护你玩家的各种各样的能力：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">Update&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Player&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">o&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">float&lt;/span> &lt;span class="n">dt&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">o&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">velocity&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">o&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">transform&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">o&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">velocity&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">vx&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dt&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">o&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">transform&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">o&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">velocity&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">vy&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dt&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">o&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">sprite&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// render ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// if (has AI)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// if (has Physics) ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>也许你会说，我不怕麻烦，我愿意写成百上千行的条件判断来处理我玩家越来越复杂的能力。&lt;/p>
+&lt;p>是的，我们当然可以这样，但是游戏其实对性能的要求很高，我们选择C++来做游戏底层开发就是因为他可以直接和操作系统硬件交互，中间层很少，那么对于这种越来越多的条件判断，尤其是对象越来越多的时候，我们每一帧都要对每一个对象的每一个功能做条件判断，这就对CPU的缓存越来越不友好了。&lt;/p>
+&lt;p>之前看到过有说，想让你的程序跑的更快，可以从以下三个方面入手优化：&lt;/p>
+&lt;ul>
+&lt;li>磁盘IO（或者网络带宽）&lt;/li>
+&lt;li>算法优化&lt;/li>
+&lt;li>CPU缓存
+显然我们现在正在游戏开发的初期，算法和磁盘我们都还不涉及，那么我们在设计之初就应该考虑考虑CPU缓存的问题。&lt;/li>
+&lt;/ul>
+&lt;p>现在我们存在的问题是：&lt;/p>
+&lt;ul>
+&lt;li>Update 里全是条件分支。&lt;/li>
+&lt;li>每个对象每帧都要跑一遍 if。&lt;/li>
+&lt;li>很难并行。很难做批处理。&lt;/li>
+&lt;/ul>
+&lt;p>现代 CPU 快不快，关键看数据是不是连续。&lt;/p>
+&lt;p>普通 &lt;code>OOP&lt;/code> 组合一般是“对象数组”，你可能会想到将所有的相同对象都放在一起，对象内部又指向一堆组件或资源。访问路径是跳来跳去的指针追踪。&lt;/p>
+&lt;p>当我访问其中某一个对象时，CPU会假设我未来会访问这个对象旁边的其他一些对象，就会顺手将他们全部加载进 CPU Cache 中，但是当我访问对象内部信息时，仍然会出现大量缓存未命中的情况。&lt;/p>
+&lt;h3 id="ecs的核心所有的数据当作组件存储以逻辑为单位进行运行">ECS的核心：所有的数据当作组件存储，以逻辑为单位进行运行
+&lt;/h3>&lt;p>ECS(Entity/Component/System):&lt;/p>
+&lt;ul>
+&lt;li>E：一个游戏实体（可能是一个玩家、一个路灯），一般只是一个ID，不携带数据&lt;/li>
+&lt;li>C：纯数据，与实体无关&lt;/li>
+&lt;li>S：整合E和C，做逻辑处理&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Entity
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">using&lt;/span> &lt;span class="n">Entity&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kt">uint32_t&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Component
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="nc">Transform&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="kt">float&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">Velocity&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="kt">float&lt;/span> &lt;span class="n">vx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">vy&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// System
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">struct&lt;/span> &lt;span class="nc">MovementSystem&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">Update&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">float&lt;/span> &lt;span class="n">dt&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Transform&lt;/span>&lt;span class="o">&amp;gt;&amp;amp;&lt;/span> &lt;span class="n">transforms&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Velocity&lt;/span>&lt;span class="o">&amp;gt;&amp;amp;&lt;/span> &lt;span class="n">velocities&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">const&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Entity&lt;/span>&lt;span class="o">&amp;gt;&amp;amp;&lt;/span> &lt;span class="n">entities&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">Entity&lt;/span> &lt;span class="nl">e&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="n">entities&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 这里假设能通过 e 定位到对应的 Transform/Velocity
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>通常ECS实现会将各个组件都放在一段连续的内存中，这样就能够：&lt;/p>
+&lt;ul>
+&lt;li>在更新帧时只遍历“有 Velocity 的实体”。没有无意义 if&lt;/li>
+&lt;li>数据之间内存连续。CPU缓存命中率高&lt;/li>
+&lt;li>同一系统的更新循环非常适合并行和 SIMD&lt;/li>
+&lt;li>渲染系统可以自然做批处理。比如按材质、功能分组&lt;/li>
+&lt;/ul>
+&lt;p>简单实现可能像这样：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="k">using&lt;/span> &lt;span class="n">Entity&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kt">uint32_t&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">Transform&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="kt">float&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">Velocity&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="kt">float&lt;/span> &lt;span class="n">vx&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">vy&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">World&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Entity&lt;/span> &lt;span class="n">nextId&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Entity&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">entities&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 组件存储：按类型分开
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">unordered_map&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Entity&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Transform&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">transforms&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">unordered_map&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Entity&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Velocity&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">velocities&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Entity&lt;/span> &lt;span class="nf">CreateEntity&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Entity&lt;/span> &lt;span class="n">e&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">nextId&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">entities&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">push_back&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">e&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">bool&lt;/span> &lt;span class="nf">HasTransform&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Entity&lt;/span> &lt;span class="n">e&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="n">transforms&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">find&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">transforms&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">end&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">bool&lt;/span> &lt;span class="nf">HasVelocity&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Entity&lt;/span> &lt;span class="n">e&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="n">velocities&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">find&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">velocities&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">end&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">MovementSystem&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">Update&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">World&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">w&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">float&lt;/span> &lt;span class="n">dt&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 只遍历有 Velocity 的实体
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">auto&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">v&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">w&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">velocities&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">auto&lt;/span> &lt;span class="n">it&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">w&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">transforms&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">find&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">it&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">w&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">transforms&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">end&lt;/span>&lt;span class="p">())&lt;/span> &lt;span class="k">continue&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Transform&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">t&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">it&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">second&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">t&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">v&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">vx&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dt&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">t&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">v&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">vy&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dt&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这个仍然有很多优化的地方，比如 &lt;code>unordered_map&lt;/code> 可能不连续（桶与桶之间）。但 ECS 的思路大致如上。&lt;/p></description></item><item><title>Hazel学习笔记：Renderer2D（持续更新）</title><link>https://SSmallOrange.github.io/p/hazel-learning-1/</link><pubDate>Mon, 24 Nov 2025 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/hazel-learning-1/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/hazel-learning-1/background.png" alt="Featured image of post Hazel学习笔记：Renderer2D（持续更新）" />&lt;h1 id="hazel学习笔记renderer2d部分">Hazel学习笔记：Renderer2D部分
 &lt;/h1>&lt;p>​ 最近一段时间一直想拓展一下个人的技术栈，想学习一些图形学的知识，毕竟目前在做客户端相关的开发，学一些图形相关的知识应该也没有什么坏处，从我过去一段时间的工作经历来看：只要是学过的芝士，总有一天会用得上的。&lt;/p>
 &lt;p>​ 正好翻B站看到了有人搬运了&lt;a class="link" href="https://www.youtube.com/@TheCherno" target="_blank" rel="noopener"
 >TheCherno&lt;/a>大佬的&lt;code>Hazel游戏引擎&lt;/code>教程，就决定从这里入手学习，了解&lt;code>OpenGL&lt;/code>和一些图形学的基础知识，并将一些芝士整理在此， 对于引擎基础部分的搭建就先略过（比如：日志部分（&lt;code>log&lt;/code>）、项目搭建（&lt;code>Premake&lt;/code>）、事件、窗口等，后面可以单开一节整理&lt;code>Premake&lt;/code>和性能分析部分），重点整理他对&lt;code>OpenGL&lt;/code>的封装部分，以及后面的Renderer2D的抽象。&lt;/p>
@@ -156,10 +514,10 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">SwapBuffers&lt;/span>&lt;span class="p">();&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://SSmallOrange.github.io/p/hazel/image-20251124223916762.png"
+&lt;/div>&lt;p>&lt;img src="https://SSmallOrange.github.io/p/hazel-learning-1/image-20251124223916762.png"
 width="730"
 height="534"
-srcset="https://SSmallOrange.github.io/p/hazel/image-20251124223916762_hu_a22b985e0e439f74.png 480w, https://SSmallOrange.github.io/p/hazel/image-20251124223916762_hu_4a067749de65ff22.png 1024w"
+srcset="https://SSmallOrange.github.io/p/hazel-learning-1/image-20251124223916762_hu_a22b985e0e439f74.png 480w, https://SSmallOrange.github.io/p/hazel-learning-1/image-20251124223916762_hu_4a067749de65ff22.png 1024w"
 loading="lazy"
 alt="第一个三角形"
 class="gallery-image"
@@ -168,10 +526,10 @@ data-flex-basis="328px"
 >&lt;/p>
 &lt;p>这套流程非常繁琐且复用性非常差，Hazel就从这里入手，开始封装整个绘制流程。&lt;/p>
 &lt;p>整体框架设计如下：&lt;/p>
-&lt;p>&lt;img src="https://SSmallOrange.github.io/p/hazel/mermaid-1.png"
+&lt;p>&lt;img src="https://SSmallOrange.github.io/p/hazel-learning-1/mermaid-1.png"
 width="932"
 height="172"
-srcset="https://SSmallOrange.github.io/p/hazel/mermaid-1_hu_41cdff8f7fedb510.png 480w, https://SSmallOrange.github.io/p/hazel/mermaid-1_hu_a79cb23e6e7b30a8.png 1024w"
+srcset="https://SSmallOrange.github.io/p/hazel-learning-1/mermaid-1_hu_41cdff8f7fedb510.png 480w, https://SSmallOrange.github.io/p/hazel-learning-1/mermaid-1_hu_a79cb23e6e7b30a8.png 1024w"
 loading="lazy"
 alt="整体框架"
 class="gallery-image"
@@ -188,10 +546,10 @@ data-flex-basis="1300px"
 &lt;/ul>
 &lt;p>当然还有后面会用到纹理（&lt;code>Texture2D&lt;/code>）&lt;/p>
 &lt;h4 id="vboibo">VBO、IBO
-&lt;/h4>&lt;p>&lt;img src="https://SSmallOrange.github.io/p/hazel/mermaid-2.png"
+&lt;/h4>&lt;p>&lt;img src="https://SSmallOrange.github.io/p/hazel-learning-1/mermaid-2.png"
 width="506"
 height="228"
-srcset="https://SSmallOrange.github.io/p/hazel/mermaid-2_hu_9daaaa76bada1e53.png 480w, https://SSmallOrange.github.io/p/hazel/mermaid-2_hu_f8401d10a410a9db.png 1024w"
+srcset="https://SSmallOrange.github.io/p/hazel-learning-1/mermaid-2_hu_9daaaa76bada1e53.png 480w, https://SSmallOrange.github.io/p/hazel-learning-1/mermaid-2_hu_f8401d10a410a9db.png 1024w"
 loading="lazy"
 alt="VAO、VBO"
 class="gallery-image"
@@ -372,10 +730,10 @@ data-flex-basis="532px"
 &lt;/div>&lt;p>这些数据会在VBO初始化的时候，绑定到当前VAO上。&lt;/p>
 &lt;h4 id="vao">VAO
 &lt;/h4>&lt;p>VAO 是“顶点输入状态”的一个打包快照，刚才我们对VBO的Layout设置最后就会绑定到某个VAO上，Hazel将VAO抽象为了&lt;code>VertexArray&lt;/code>：&lt;/p>
-&lt;p>&lt;img src="https://SSmallOrange.github.io/p/hazel/mermaid-3.png"
+&lt;p>&lt;img src="https://SSmallOrange.github.io/p/hazel-learning-1/mermaid-3.png"
 width="493"
 height="124"
-srcset="https://SSmallOrange.github.io/p/hazel/mermaid-3_hu_5856cf0f83a285c3.png 480w, https://SSmallOrange.github.io/p/hazel/mermaid-3_hu_355cf7bc941e18c6.png 1024w"
+srcset="https://SSmallOrange.github.io/p/hazel-learning-1/mermaid-3_hu_5856cf0f83a285c3.png 480w, https://SSmallOrange.github.io/p/hazel-learning-1/mermaid-3_hu_355cf7bc941e18c6.png 1024w"
 loading="lazy"
 alt="VertexArray"
 class="gallery-image"
@@ -822,10 +1180,10 @@ data-flex-basis="954px"
 &lt;/h3>&lt;p>&lt;strong>渲染逻辑&lt;/strong>&lt;/p>
 &lt;img src="mermaid-4.png" alt="渲染逻辑" style="zoom:150%;" />
 &lt;p>&lt;strong>整体使用流程：&lt;/strong>&lt;/p>
-&lt;p>&lt;img src="https://SSmallOrange.github.io/p/hazel/mermaid-5.png"
+&lt;p>&lt;img src="https://SSmallOrange.github.io/p/hazel-learning-1/mermaid-5.png"
 width="1751"
 height="810"
-srcset="https://SSmallOrange.github.io/p/hazel/mermaid-5_hu_7ba0db7067408f21.png 480w, https://SSmallOrange.github.io/p/hazel/mermaid-5_hu_5a6f3fcfb5264efb.png 1024w"
+srcset="https://SSmallOrange.github.io/p/hazel-learning-1/mermaid-5_hu_7ba0db7067408f21.png 480w, https://SSmallOrange.github.io/p/hazel-learning-1/mermaid-5_hu_5a6f3fcfb5264efb.png 1024w"
 loading="lazy"
 alt="调用流程"
 class="gallery-image"
