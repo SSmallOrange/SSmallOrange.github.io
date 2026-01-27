@@ -1,4 +1,4 @@
-<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Hazel学习内容整理"><title>Hazel学习笔记：游戏功能完善（持续更新）</title><link rel=canonical href=https://SSmallOrange.github.io/p/hazel-learning-2/><link rel=stylesheet href=https://SSmallOrange.github.io/scss/style.min.cfa5b1b0e78d61c00a14173992a1f3fa3b5c1b9fa34d023de959af564e7b19dd.css><meta property='og:title' content="Hazel学习笔记：游戏功能完善（持续更新）"><meta property='og:description' content="Hazel学习内容整理"><meta property='og:url' content='https://SSmallOrange.github.io/p/hazel-learning-2/'><meta property='og:site_name' content='Small_Orange'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='OpenGL'><meta property='article:tag' content='C++'><meta property='article:published_time' content='2026-01-20T20:00:31+08:00'><meta property='article:modified_time' content='2026-01-20T00:00:31+08:00'><meta property='og:image' content='https://SSmallOrange.github.io/p/hazel-learning-2/background.png'><meta name=twitter:title content="Hazel学习笔记：游戏功能完善（持续更新）"><meta name=twitter:description content="Hazel学习内容整理"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://SSmallOrange.github.io/p/hazel-learning-2/background.png'><link rel="shortcut icon" href=https://SSmallOrange.github.io/cat.ico><style>:root{--sys-font-family:"HarmonyOS_Sans_SC_Medium", Georgia, -apple-system, 'Nimbus Roman No9 L', 'PingFang SC', 'Hiragino Sans GB', 'Noto Serif SC', 'Microsoft Yahei', 'WenQuanYi Micro Hei', 'ST Heiti', sans-serif;--code-font-family:"JetBrainsMono Regular", Menlo, Monaco, Consolas, "Courier New";--article-font-family:"HarmonyOS_Sans_SC_Medium", var(--base-font-family)}</style><script>(function(){const e=document.createElement("link");e.href="https://cdn.staticfile.org/lxgw-wenkai-screen-webfont/1.6.0/style.css",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"light")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Hazel学习内容整理"><title>Hazel学习笔记：游戏功能完善（持续更新）</title><link rel=canonical href=https://SSmallOrange.github.io/p/hazel-learning-2/><link rel=stylesheet href=https://SSmallOrange.github.io/scss/style.min.b1424b41e183a0aff42b3d1abb4c0f432cd2e574d959dcc71266e014eed81526.css><meta property='og:title' content="Hazel学习笔记：游戏功能完善（持续更新）"><meta property='og:description' content="Hazel学习内容整理"><meta property='og:url' content='https://SSmallOrange.github.io/p/hazel-learning-2/'><meta property='og:site_name' content='Small_Orange'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='OpenGL'><meta property='article:tag' content='C++'><meta property='article:published_time' content='2026-01-20T20:00:31+08:00'><meta property='article:modified_time' content='2026-01-27T23:00:31+08:00'><meta property='og:image' content='https://SSmallOrange.github.io/p/hazel-learning-2/background.png'><meta name=twitter:title content="Hazel学习笔记：游戏功能完善（持续更新）"><meta name=twitter:description content="Hazel学习内容整理"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://SSmallOrange.github.io/p/hazel-learning-2/background.png'><link rel="shortcut icon" href=https://SSmallOrange.github.io/cat.ico><style>:root{--sys-font-family:"HarmonyOS_Sans_SC_Medium", Georgia, -apple-system, 'Nimbus Roman No9 L', 'PingFang SC', 'Hiragino Sans GB', 'Noto Serif SC', 'Microsoft Yahei', 'WenQuanYi Micro Hei', 'ST Heiti', sans-serif;--code-font-family:"JetBrainsMono Regular", Menlo, Monaco, Consolas, "Courier New";--article-font-family:"HarmonyOS_Sans_SC_Medium", var(--base-font-family)}</style><script>(function(){const e=document.createElement("link");e.href="https://cdn.staticfile.org/lxgw-wenkai-screen-webfont/1.6.0/style.css",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"light")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
 <span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=https://SSmallOrange.github.io/><img src=https://SSmallOrange.github.io/img/avatar_hu_5319720d44cc86.png width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=https://SSmallOrange.github.io/>Small_Orange</a></h1><h2 class=site-description>微风需要竹林，溪流需要蜻蜓</h2></div></header><ol class=menu-social><li><a href=https://github.com/SSmallOrange target=_blank title=GitHub rel=me><!doctype html><svg t="1754840269730" class="icon" viewBox="0 0 1024 1024" p-id="1463" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M682.215454 981.446137c-25.532318.0-42.553863-17.021545-42.553864-42.553864V772.932206c4.255386-34.043091-8.510773-59.575409-29.787704-80.852341-12.766159-12.766159-17.021545-29.787704-8.510773-42.553864 4.255386-17.021545 21.276932-25.532318 34.043091-29.787704 123.406204-12.766159 238.301635-55.320023 238.301635-255.323181.0-46.80925-17.021545-93.6185-51.064636-131.916976-12.766159-12.766159-12.766159-29.787704-8.510772-42.553864 12.766159-34.043091 12.766159-68.086182 4.255386-102.129272-21.276932 4.255386-55.320023 17.021545-110.640045 55.320022-8.510773 8.510773-21.276932 8.510773-34.043091 4.255387-89.363113-25.532318-187.236999-25.532318-276.600112.0-12.766159 4.255386-25.532318 4.255386-38.298477-4.255387C307.741455 104.836549 269.442978 92.07039 248.166047 87.815004c-8.510773 34.043091-8.510773 68.086182 4.255386 102.129272 4.255386 17.021545 4.255386 34.043091-8.510773 42.553864-34.043091 38.298477-51.064636 85.107727-51.064636 131.916976.0 200.003158 114.895431 242.557022 238.301635 255.323181 17.021545.0 29.787704 12.766159 34.043091 29.787704 4.255386 17.021545.0 34.043091-8.510773 42.553864-21.276932 21.276932-29.787704 46.80925-29.787704 76.596954v165.960068c0 25.532318-17.021545 42.553863-42.553863 42.553863s-42.553863-17.021545-42.553864-42.553863v-72.341568c-127.66159 21.276932-182.981613-51.064636-221.28009-97.873886-17.021545-21.276932-29.787704-38.298477-46.80925-42.553864-21.276932-4.255386-38.298477-29.787704-29.787704-51.064636 4.255386-21.276932 29.787704-38.298477 51.064636-29.787704 42.553863 12.766159 68.086182 42.553863 93.6185 72.341568 34.043091 46.80925 63.830795 80.852341 153.193908 63.830795v-4.255386c0-25.532318 4.255386-55.320023 12.766159-76.596955-119.150818-25.532318-246.812408-102.129272-246.812408-327.664748.0-63.830795 21.276932-123.406204 59.575409-170.215454-17.021545-59.575409-12.766159-114.895431 12.766159-170.215454 4.255386-12.766159 12.766159-21.276932 25.532318-25.532318 17.021545-4.255386 72.341568-12.766159 187.236999 59.575409 93.6185-21.276932 191.492386-21.276932 280.855499.0 110.640045-72.341568 170.215454-63.830795 187.236999-59.575409 12.766159 4.255386 21.276932 12.766159 25.532319 25.532318 21.276932 55.320023 25.532318 110.640045 12.766159 165.960067 38.298477 46.80925 59.575409 106.384659 59.575408 170.215454.0 242.557022-144.683136 306.387817-246.812408 331.920135 8.510773 25.532318 12.766159 55.320023 12.766159 80.852341V938.892273c0 25.532318-17.021545 42.553863-42.553863 42.553864z" p-id="1464" fill="#bfbfbf"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=https://SSmallOrange.github.io/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
 <span>主页</span></a></li><li><a href=https://SSmallOrange.github.io/%E5%85%B3%E4%BA%8E/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
 <span>关于</span></a></li><li><a href=https://SSmallOrange.github.io/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
@@ -6,9 +6,9 @@
 <span>Search</span></a></li><li><a href=https://SSmallOrange.github.io/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
 <span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
 <svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#ecs>ECS</a><ol><li><a href=#如果没有ecs我们应该如何处理游戏对象>如果没有ECS，我们应该如何处理游戏对象？</a></li><li><a href=#如果我们把继承变成组合呢>如果我们把“继承”变成“组合”呢？</a></li><li><a href=#ecs的核心所有的数据当作组件存储以逻辑为单位进行运行>ECS的核心：所有的数据当作组件存储，以逻辑为单位进行运行</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=https://SSmallOrange.github.io/p/hazel-learning-2/><img src=https://SSmallOrange.github.io/p/hazel-learning-2/background_hu_92b6813d2c0d1e2f.png srcset="https://SSmallOrange.github.io/p/hazel-learning-2/background_hu_92b6813d2c0d1e2f.png 800w, https://SSmallOrange.github.io/p/hazel-learning-2/background_hu_e7a85d5afa176523.png 1600w" width=800 height=600 loading=lazy alt="Featured image of post Hazel学习笔记：游戏功能完善（持续更新）"></a></div><div class=article-details><header class=article-category><a href=https://SSmallOrange.github.io/categories/opengl/>OpenGL</a></header><div class=article-title-wrapper><h2 class=article-title><a href=https://SSmallOrange.github.io/p/hazel-learning-2/>Hazel学习笔记：游戏功能完善（持续更新）</a></h2><h3 class=article-subtitle>Hazel学习内容整理</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#ecs>ECS</a><ol><li><a href=#如果没有ecs我们应该如何处理游戏对象>如果没有ECS，我们应该如何处理游戏对象？</a></li><li><a href=#如果我们把继承变成组合呢>如果我们把“继承”变成“组合”呢？</a></li><li><a href=#ecs的核心所有的数据当作组件存储以逻辑为单位进行运行>ECS的核心：所有的数据当作组件存储，以逻辑为单位进行运行</a></li></ol></li><li><a href=#shader>Shader</a><ol><li><a href=#shader实现屏幕水滴效果>Shader实现屏幕水滴效果</a><ol><li><a href=#效果展示>效果展示</a></li><li><a href=#实现过程>实现过程</a></li><li><a href=#总结>总结</a></li></ol></li><li><a href=#2d锥形光照实现>2D锥形光照实现</a><ol><li><a href=#效果>效果</a></li><li><a href=#实现思路>实现思路</a></li><li><a href=#其他问题>其他问题</a></li></ol></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=https://SSmallOrange.github.io/p/hazel-learning-2/><img src=https://SSmallOrange.github.io/p/hazel-learning-2/background_hu_92b6813d2c0d1e2f.png srcset="https://SSmallOrange.github.io/p/hazel-learning-2/background_hu_92b6813d2c0d1e2f.png 800w, https://SSmallOrange.github.io/p/hazel-learning-2/background_hu_e7a85d5afa176523.png 1600w" width=800 height=600 loading=lazy alt="Featured image of post Hazel学习笔记：游戏功能完善（持续更新）"></a></div><div class=article-details><header class=article-category><a href=https://SSmallOrange.github.io/categories/opengl/>OpenGL</a></header><div class=article-title-wrapper><h2 class=article-title><a href=https://SSmallOrange.github.io/p/hazel-learning-2/>Hazel学习笔记：游戏功能完善（持续更新）</a></h2><h3 class=article-subtitle>Hazel学习内容整理</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Jan 20, 2026</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>阅读时长: 4 分钟</time></div></footer></div></header><section class=article-content><h1 id=hazel学习笔记游戏功能完善>Hazel学习笔记：游戏功能完善</h1><p>由于Hazel剩下的内容非常多，我以前也没有接触过游戏、渲染部分，所以学起来比较吃力。这部分我将作为OpenGL、游戏相关知识的积累，沉淀一些个人理解，并持续更新。</p><hr><h2 id=ecs>ECS</h2><p>ECS是游戏中常用的架构，他之所以流行，是因为：他把对象的存储和使用分开，在不影响易用性的前提下，保证了性能。</p><h3 id=如果没有ecs我们应该如何处理游戏对象>如果没有ECS，我们应该如何处理游戏对象？</h3><p>假如我们现在有一个路灯和一个玩家，他们作为游戏世界的一员，首先需要有自己的位置信息，现在要让这个路灯和这个玩家都具备发光的能力，那么我们很容易能想到：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+<time class=article-time--reading>阅读时长: 13 分钟</time></div></footer></div></header><section class=article-content><h1 id=hazel学习笔记游戏功能完善>Hazel学习笔记：游戏功能完善</h1><p>由于Hazel剩下的内容非常多，我以前也没有接触过游戏、渲染部分，所以学起来比较吃力。这部分我将作为OpenGL、游戏相关知识的积累，沉淀一些个人理解，并持续更新。</p><hr><h2 id=ecs>ECS</h2><p>ECS是游戏中常用的架构，他之所以流行，是因为：他把对象的存储和使用分开，在不影响易用性的前提下，保证了性能。</p><h3 id=如果没有ecs我们应该如何处理游戏对象>如果没有ECS，我们应该如何处理游戏对象？</h3><p>假如我们现在有一个路灯和一个玩家，他们作为游戏世界的一员，首先需要有自己的位置信息，现在要让这个路灯和这个玩家都具备发光的能力，那么我们很容易能想到：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -285,19 +285,732 @@
 </span></span><span class=line><span class=cl>        <span class=p>}</span>
 </span></span><span class=line><span class=cl>    <span class=p>}</span>
 </span></span><span class=line><span class=cl><span class=p>};</span>
-</span></span></code></pre></td></tr></table></div></div><p>这个仍然有很多优化的地方，比如 <code>unordered_map</code> 可能不连续（桶与桶之间）。但 ECS 的思路大致如上。</p></section><footer class=article-footer><section class=article-tags><a href=https://SSmallOrange.github.io/tags/opengl/>OpenGL</a>
+</span></span></code></pre></td></tr></table></div></div><p>这个仍然有很多优化的地方，比如 <code>unordered_map</code> 可能不连续（桶与桶之间）。但 ECS 的思路大致如上。</p><h2 id=shader>Shader</h2><h3 id=shader实现屏幕水滴效果>Shader实现屏幕水滴效果</h3><p>以下为我代码中的雨天和屏幕水滴效果的开发记录，作为着色器的知识积累。</p><hr><h4 id=效果展示>效果展示</h4><p>想象你站在窗边，看着外面的雨。玻璃上布满了水滴，透过水滴看到的景象会有轻微的扭曲——这就是我们要用代码实现的效果。</p><video width=520 height=380 controls>
+<source src="Recording 2026-01-26 212958.mp4" type=video/mp4></video><hr><h4 id=实现过程>实现过程</h4><p>在图形渲染领域，许多实现方式都与我们的直觉相悖。例如：光线追踪中的"光线"实际上是从摄像机发出、逆向追踪到光源的；3D 游戏中那些看起来丝滑飘逸的布料，本质上是由成千上万的离散顶点模拟出来的；实时阴影并非通过物理遮挡计算，而是借助"从灯光视角拍摄的深度照片"来判断。</p><p>屏幕水滴效果同样如此。如果直接在画面上叠加一张水滴贴图，得到的只是"贴纸般的圆点"——缺乏真实感，效果单一。我们真正想要的，是那种站在雨天玻璃窗前的视觉体验：透过水滴看到的背景会产生微妙的扭曲和偏移。</p><p>这种效果源于折射——光线穿过水滴时会发生弯曲。然而在 GPU 着色器中，我们并没有真正模拟光线的物理路径，而是采用了一种巧妙的近似：直接偏移纹理的采样坐标（UV）。当一个像素位于"水滴区域"内时，我们让它去采样稍微偏移后的背景位置，视觉上就产生了"透过水滴看东西"的折射效果。</p><p>这正是渲染吸引我的魅力所在：很多的特效背后的实现逻辑总是那么的出乎意料。</p><h5 id=uv-扭曲偏移纹理坐标>UV 扭曲，偏移纹理坐标</h5><p>在着色器中，我们用 <strong>UV 坐标</strong> 来决定"从背景图的哪个位置取颜色"。但是，从背景图的哪个位置取？取多少？如何确定需要扭曲的范围？这都是我们需要计算的。</p><h5 id=网格法确定水滴位置>网格法确定水滴位置</h5><h6 id=21-如何确定水滴位置>2.1 如何确定水滴位置？</h6><p>假设我们想在屏幕上放 100 个水滴，最直接的想法是：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=c1>// 存储每个水滴的位置
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>vec2</span> <span class=n>dropPositions</span><span class=p>[</span><span class=mi>100</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span> 
+</span></span><span class=line><span class=cl>    <span class=n>vec2</span><span class=p>(</span><span class=mf>0.1</span><span class=p>,</span> <span class=mf>0.2</span><span class=p>),</span> 
+</span></span><span class=line><span class=cl>    <span class=n>vec2</span><span class=p>(</span><span class=mf>0.3</span><span class=p>,</span> <span class=mf>0.7</span><span class=p>),</span> 
+</span></span><span class=line><span class=cl>    <span class=p>...</span> 
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 在着色器中，对每个像素都要检查所有水滴
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=mi>100</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>distance</span><span class=p>(</span><span class=n>currentPixel</span><span class=p>,</span> <span class=n>dropPositions</span><span class=p>[</span><span class=n>i</span><span class=p>])</span> <span class=o>&lt;</span> <span class=mf>0.05</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 这个像素在水滴范围内
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 在CPU端控制水滴位置动态变化...
+</span></span></span></code></pre></td></tr></table></div></div><p>如果此时水滴数量增多，那么每次就需要向GPU中传送大量的数据，并且是每一帧都传！效率大大降低了，那有没有办法将水滴的位置控制放在计算性能更高的GPU端呢？</p><h6 id=22-解决方案网格--伪随机>2.2 解决方案：网格 + 伪随机</h6><p><strong>核心</strong>：通过把屏幕分成很多个格子，让每个格子内"<strong>自动生成</strong>&ldquo;一个“<strong>位置随机</strong>”水滴。</p><p>我们可以将uv坐标按照坐标划分网格，有一种快速划分网格的方法：</p><ul><li>将原本在<code>[0, 1]</code>范围内的<code>uv</code>坐标转化成<code>[10, 10]</code>的坐标（即：放大原始坐标值）</li><li>将新坐标的整数部分作为格子的<code>ID</code>，将小数部分作为新坐标在该格子内的坐标</li></ul><p><strong>代码实现</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=n>uv</span> <span class=o>*=</span> <span class=k>vec2</span><span class=p>(</span><span class=mf>10.0</span><span class=p>,</span> <span class=mf>2.5</span><span class=p>);</span>   <span class=c1>// 放大，创建 10×2.5 的网格</span>
+</span></span><span class=line><span class=cl><span class=k>vec2</span> <span class=n>cellId</span> <span class=o>=</span> <span class=n>floor</span><span class=p>(</span><span class=n>uv</span><span class=p>);</span>      <span class=c1>// 格子 ID（floor，取整数部分）</span>
+</span></span><span class=line><span class=cl><span class=k>vec2</span> <span class=n>localPos</span> <span class=o>=</span> <span class=n>fract</span><span class=p>(</span><span class=n>uv</span><span class=p>)</span> <span class=o>-</span> <span class=mf>0.5</span><span class=p>;</span> <span class=c1>// 格子内坐标（-0.5 ~ 0.5，fract，取小数部分）</span>
+</span></span></code></pre></td></tr></table></div></div><p>比如说：一个原始<code>uv</code>坐标为<code>(0.23, 0.4)</code>的像素，在经过换算后会得到一个在格子<code>[2, 1]</code>，格子内偏移量<code>(0.3, -0.2)</code>的结果。</p><h6 id=23-伪随机函数>2.3 伪随机函数</h6><p>现在每个格子需要一个"独特的水滴位置&rdquo;，我们用 <strong>伪随机函数</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=k>float</span> <span class=n>Hash21</span><span class=p>(</span><span class=k>vec2</span> <span class=n>coord</span><span class=p>)</span>  <span class=c1>// 返回 [0, 1)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>coord</span> <span class=o>=</span> <span class=n>fract</span><span class=p>(</span><span class=n>coord</span> <span class=o>*</span> <span class=k>vec2</span><span class=p>(</span><span class=mf>123.34</span><span class=p>,</span> <span class=mf>345.45</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=n>coord</span> <span class=o>+=</span> <span class=n>dot</span><span class=p>(</span><span class=n>coord</span><span class=p>,</span> <span class=n>coord</span> <span class=o>+</span> <span class=mf>34.345</span><span class=p>);</span> <span class=c1>// dot: 返回向量点积的结果</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>fract</span><span class=p>(</span><span class=n>coord</span><span class=p>.</span><span class=n>x</span> <span class=o>*</span> <span class=n>coord</span><span class=p>.</span><span class=n>y</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=k>float</span> <span class=n>cellRandom</span> <span class=o>=</span> <span class=n>Hash21</span><span class=p>(</span><span class=n>cellId</span> <span class=o>+</span> <span class=n>seed</span><span class=p>);</span>     <span class=c1>// 用格子 ID 查询</span>
+</span></span><span class=line><span class=cl><span class=k>float</span> <span class=n>dropX</span> <span class=o>=</span> <span class=n>cellRandom</span> <span class=o>-</span> <span class=mf>0.5</span><span class=p>;</span>     		 <span class=c1>// 水滴在格子内的 X 偏移 (-0.5 ~ 0.5)</span>
+</span></span></code></pre></td></tr></table></div></div><p>这样做的好处是：对于同一个格子，相同的种子来说，得到的随机数一定相同，可以作为水滴下滑的初始位置，并保证水滴在相同格子滑落时能够竖直向下（格子<code>ID</code>不变时，<code>x</code>偏移量不变）。</p><hr><h5 id=水滴动画>水滴动画</h5><h6 id=31-垂直滚动>3.1 垂直滚动</h6><p>最简单的动画：让整个 UV 向上滚动，视觉上水滴就会向下流。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=n>uv</span><span class=p>.</span><span class=n>y</span> <span class=o>+=</span> <span class=n>u_Time</span> <span class=o>*</span> <span class=mf>0.05</span><span class=p>;</span>  <span class=c1>// 随时间向上偏移</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>原理</strong>：让同一时刻的同一位置的<code>uv</code>能够处在不同的“方格”，从而达到“滚动”的错觉。</p><h6 id=32-锯齿动画>3.2 锯齿动画</h6><p>但只是匀速下落太单调了。真实的水滴会：</p><ol><li>积累一会儿</li><li>突然滑落</li><li>再积累&mldr;</li></ol><p>我们用一个特殊的 <strong>锯齿波函数</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=k>float</span> <span class=n>SawtoothWave</span><span class=p>(</span><span class=k>float</span> <span class=n>x</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=p>(</span><span class=n>cos</span><span class=p>(</span><span class=n>x</span><span class=p>)</span> <span class=o>+</span> <span class=n>cos</span><span class=p>(</span><span class=n>x</span> <span class=o>*</span> <span class=mf>3.0</span><span class=p>)</span> <span class=o>*</span> <span class=mf>0.5</span> <span class=o>+</span> <span class=n>sin</span><span class=p>(</span><span class=n>x</span> <span class=o>*</span> <span class=mf>5.0</span><span class=p>)</span> <span class=o>*</span> <span class=mf>0.1</span><span class=p>)</span> <span class=o>*</span> <span class=mf>0.4</span> <span class=o>+</span> <span class=mf>0.5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><img src=./saw.png alt=锯齿波形><p><strong>代码中的使用</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=k>float</span> <span class=n>animPhase</span> <span class=o>=</span> <span class=n>fract</span><span class=p>(</span><span class=n>time</span> <span class=o>+</span> <span class=n>cellRandom</span><span class=p>);</span>  		<span class=c1>// 每个水滴的动画起始位置不同</span>
+</span></span><span class=line><span class=cl><span class=k>float</span> <span class=n>dropY</span> <span class=o>=</span> <span class=p>(</span><span class=n>SawtoothWave</span><span class=p>(</span><span class=n>animPhase</span><span class=p>)</span> <span class=o>-</span> <span class=mf>0.5</span><span class=p>)</span> <span class=o>*</span> <span class=mf>0.9</span><span class=p>;</span> <span class=c1>// 垂直位置随时间变化</span>
+</span></span></code></pre></td></tr></table></div></div><p>通过在<code>animPhase</code>中添加<code>cellRandom</code>变量来控制同一时刻，不同格子内的水滴位置不会相同，形成“错落”的感觉。</p><h5 id=水滴形状绘制>水滴形状绘制</h5><h6 id=41-主水滴>4.1 主水滴</h6><p>一个水滴首先要有"形状"。我们用 <strong>距离场</strong> （SDF）来定义：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=k>vec2</span> <span class=n>dropCenter</span> <span class=o>=</span> <span class=k>vec2</span><span class=p>(</span><span class=n>dropX</span><span class=p>,</span> <span class=n>dropY</span><span class=p>);</span>         <span class=c1>// 水滴中心位置</span>
+</span></span><span class=line><span class=cl><span class=k>float</span> <span class=n>distToDrop</span> <span class=o>=</span> <span class=n>length</span><span class=p>(</span><span class=n>localPos</span> <span class=o>-</span> <span class=n>dropCenter</span><span class=p>);</span>     <span class=c1>// 当前像素到中心的距离</span>
+</span></span><span class=line><span class=cl><span class=k>float</span> <span class=n>mainDrop</span> <span class=o>=</span> <span class=n>smoothstep</span><span class=p>(</span><span class=mf>0.2</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>,</span> <span class=n>distToDrop</span><span class=p>);</span>    <span class=c1>// 距离 &lt; 0.2 的区域是水滴</span>
+</span></span></code></pre></td></tr></table></div></div><p>**<code>smoothstep(0.2, 0.0, d)</code> **能够在像素距离中心<code>[0, 0.2]</code>的时候返回<code>[0, 1]</code>。</p><h6 id=42-水滴尾迹>4.2 水滴尾迹</h6><p>真实的雨滴不只是一个圆点，下落时会拖出一条"尾巴"</p><p>尾迹的实现分为三步：</p><ul><li><p>第一步：限制在水滴下方</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=k>float</span> <span class=n>trailMask</span> <span class=o>=</span> <span class=n>smoothstep</span><span class=p>(</span><span class=mf>0.0</span><span class=p>,</span> <span class=mf>0.2</span><span class=p>,</span> <span class=n>localPos</span><span class=p>.</span><span class=n>y</span> <span class=o>-</span> <span class=n>dropCenter</span><span class=p>.</span><span class=n>y</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>第二步：限制尾迹长度</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=n>trailMask</span> <span class=o>*=</span> <span class=n>smoothstep</span><span class=p>(</span><span class=mf>0.5</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>,</span> <span class=n>localPos</span><span class=p>.</span><span class=n>y</span> <span class=o>-</span> <span class=n>dropCenter</span><span class=p>.</span><span class=n>y</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>第三步：限制尾迹宽度</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=n>trailMask</span> <span class=o>*=</span> <span class=n>smoothstep</span><span class=p>(</span><span class=mf>0.05</span><span class=p>,</span> <span class=mf>0.03</span><span class=p>,</span> <span class=n>abs</span><span class=p>(</span><span class=n>localPos</span><span class=p>.</span><span class=n>x</span> <span class=o>-</span> <span class=n>dropCenter</span><span class=p>.</span><span class=n>x</span><span class=p>));</span>
+</span></span></code></pre></td></tr></table></div></div></li></ul><p>你可能会问：为什么三个条件之间是用 <code>*=</code> 而不是 <code>+=</code> 或别的进行连接？</p><p>因为乘法是实现逻辑“或”的一种方式，每个 <code>smoothstep</code> 返回的是 0 ~ 1 之间的值：</p><ul><li>返回 <strong>1</strong> = 这个条件<strong>完全满足</strong></li><li>返回 <strong>0</strong> = 这个条件<strong>完全不满足</strong></li><li>返回 <strong>0.5</strong> = 这个条件<strong>部分满足</strong></li></ul><p>最终就能实现：<code>只要有一个条件不满足，则整体条件都不满足</code>的效果。</p><ul><li><p>第四步：绘制尾迹</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=k>float</span> <span class=n>trailDist</span> <span class=o>=</span> <span class=n>abs</span><span class=p>(</span><span class=n>localPos</span><span class=p>.</span><span class=n>x</span> <span class=o>-</span> <span class=n>dropCenter</span><span class=p>.</span><span class=n>x</span><span class=p>);</span>  <span class=c1>// 到尾迹中心线的距离</span>
+</span></span><span class=line><span class=cl><span class=k>float</span> <span class=n>dropTrail</span> <span class=o>=</span> <span class=n>smoothstep</span><span class=p>(</span><span class=mf>0.1</span><span class=p>,</span> <span class=mf>0.02</span><span class=p>,</span> <span class=n>trailDist</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>dropTrail</span> <span class=o>*=</span> <span class=n>trailMask</span><span class=p>;</span>  <span class=c1>// 应用三个限制条件</span>
+</span></span></code></pre></td></tr></table></div></div></li></ul><h5 id=折射>折射！</h5><p>这是整个效果的<strong>最关键一步</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=k>vec2</span> <span class=n>offsetDirection</span> <span class=o>=</span> <span class=n>localPos</span> <span class=o>-</span> <span class=n>dropCenter</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>float</span> <span class=n>offsetStrength</span> <span class=o>=</span> <span class=n>mainDrop</span> <span class=o>+</span> <span class=n>dropTrail</span> <span class=o>*</span> <span class=mf>0.5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>uvOffset</span> <span class=o>=</span> <span class=n>offsetStrength</span> <span class=o>*</span> <span class=n>offsetDirection</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>这行代码到底在做什么？为什么一行就能实现折射？</strong></p><p>让我们把它拆成三个部分：</p><hr><p><strong><code>offsetDirection</code> — 偏移方向</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=k>vec2</span> <span class=n>offsetDirection</span> <span class=o>=</span> <span class=n>localPos</span> <span class=o>-</span> <span class=n>dropCenter</span><span class=p>;</span>  <span class=c1>// 从水滴中心指向当前像素的向量</span>
+</span></span></code></pre></td></tr></table></div></div><p>真实水滴像一个<strong>凸透镜</strong>，光线会向中心聚焦。我们用 <code>localPos - dropCenter</code> 作为偏移方向，最终就会将远处相应方向的像素偏移至当前像素位置，就是在模拟"从边缘向中心弯曲"的折射效果。</p><hr><p><strong><code>mainDrop + dropTrail * 0.5</code> — 偏移强度</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=k>float</span> <span class=n>offsetStrength</span> <span class=o>=</span> <span class=n>mainDrop</span> <span class=o>+</span> <span class=n>dropTrail</span> <span class=o>*</span> <span class=mf>0.5</span><span class=p>;</span>  <span class=c1>// 0 ~ 1 之间的遮罩</span>
+</span></span></code></pre></td></tr></table></div></div><p>这是一个<strong>遮罩值</strong>，决定了"这个像素需要多大的偏移"，偏移强度随当前像素到水滴中心和尾部的距离来决定，尾部占比会小一点，因为水滴滑落时尾部水量更少。</p><hr><p>**<code>A × B</code> **</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=n>uvOffset</span> <span class=o>=</span> <span class=n>offsetStrength</span> <span class=o>*</span> <span class=n>offsetDirection</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><p>向量乘以标量 = 保持方向，改变长度。</p><hr><h5 id=多层折射叠加>多层折射叠加</h5><p>只用一层水滴会很单调——所有水滴大小相同、间距均匀。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=k>vec2</span> <span class=n>CalculateRaindropsOffset</span><span class=p>(</span><span class=k>vec2</span> <span class=n>uv</span><span class=p>,</span> <span class=k>float</span> <span class=n>intensity</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>vec2</span> <span class=n>totalOffset</span> <span class=o>=</span> <span class=k>vec2</span><span class=p>(</span><span class=mf>0.0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>totalOffset</span> <span class=o>+=</span> <span class=n>GetDrops</span><span class=p>(</span><span class=n>uv</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>,</span> <span class=n>intensity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>totalOffset</span> <span class=o>+=</span> <span class=n>GetDrops</span><span class=p>(</span><span class=n>uv</span> <span class=o>*</span> <span class=mf>1.4</span> <span class=o>+</span> <span class=mf>7.23</span><span class=p>,</span> <span class=mf>1.25</span><span class=p>,</span> <span class=n>intensity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>totalOffset</span> <span class=o>+=</span> <span class=n>GetDrops</span><span class=p>(</span><span class=n>uv</span> <span class=o>*</span> <span class=mf>2.1</span> <span class=o>+</span> <span class=mf>1.17</span><span class=p>,</span> <span class=mf>1.5</span><span class=p>,</span> <span class=n>intensity</span><span class=p>)</span> <span class=o>*</span> <span class=mf>0.5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>totalOffset</span> <span class=o>*</span> <span class=mf>0.03</span> <span class=o>*</span> <span class=n>intensity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>我们对每一次偏移设置不同的<code>seed</code>值，不同的位置，从而最终得到不同大小，不同位置的“水滴”，让水滴变得更密集，更有随机性。</p><p>随后再进行纹理采样，安全性检查，就得到了开头的水滴效果：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=k>vec2</span> <span class=n>offset</span> <span class=o>=</span> <span class=n>CalculateRaindropsOffset</span><span class=p>(</span><span class=n>uv</span><span class=p>,</span> <span class=n>u_RaindropsIntensity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>uv</span> <span class=o>=</span> <span class=n>clamp</span><span class=p>(</span><span class=n>uv</span> <span class=o>+</span> <span class=n>offset</span><span class=p>,</span> <span class=k>vec2</span><span class=p>(</span><span class=mf>0.0</span><span class=p>),</span> <span class=k>vec2</span><span class=p>(</span><span class=mf>1.0</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>vec4</span> <span class=n>color</span> <span class=o>=</span> <span class=n>texture</span><span class=p>(</span><span class=n>u_ScreenTexture</span><span class=p>,</span> <span class=n>uv</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>o_Color</span> <span class=o>=</span> <span class=n>color</span><span class=p>;</span>  <span class=c1>// 最终颜色</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=总结>总结</h4><p>现在的效果还比较简陋，后面可以继续进行拓展，同时我的效果和原始的效果相比还有很大差距。
+参考代码：https://www.shadertoy.com/view/MdfBRX</p><p>完整GLSL：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=cp>#version 450 core</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>in</span> <span class=k>vec2</span> <span class=n>v_TexCoord</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>out</span> <span class=k>vec4</span> <span class=n>o_Color</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>sampler2D</span> <span class=n>u_ScreenTexture</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>int</span> <span class=n>u_RaindropsEnabled</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>float</span> <span class=n>u_RaindropsIntensity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>float</span> <span class=n>u_RaindropsTime</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>float</span> <span class=n>Hash21</span><span class=p>(</span><span class=k>vec2</span> <span class=n>coord</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>coord</span> <span class=o>=</span> <span class=n>fract</span><span class=p>(</span><span class=n>coord</span> <span class=o>*</span> <span class=k>vec2</span><span class=p>(</span><span class=mf>123.34</span><span class=p>,</span> <span class=mf>345.45</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=n>coord</span> <span class=o>+=</span> <span class=n>dot</span><span class=p>(</span><span class=n>coord</span><span class=p>,</span> <span class=n>coord</span> <span class=o>+</span> <span class=mf>34.345</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>fract</span><span class=p>(</span><span class=n>coord</span><span class=p>.</span><span class=n>x</span> <span class=o>*</span> <span class=n>coord</span><span class=p>.</span><span class=n>y</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>float</span> <span class=n>SawtoothWave</span><span class=p>(</span><span class=k>float</span> <span class=n>x</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=p>(</span><span class=n>cos</span><span class=p>(</span><span class=n>x</span><span class=p>)</span> <span class=o>+</span> <span class=n>cos</span><span class=p>(</span><span class=n>x</span> <span class=o>*</span> <span class=mf>3.0</span><span class=p>)</span> <span class=o>*</span> <span class=mf>0.5</span> <span class=o>+</span> <span class=n>sin</span><span class=p>(</span><span class=n>x</span> <span class=o>*</span> <span class=mf>5.0</span><span class=p>)</span> <span class=o>*</span> <span class=mf>0.1</span><span class=p>)</span> <span class=o>*</span> <span class=mf>0.4</span> <span class=o>+</span> <span class=mf>0.5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>vec2</span> <span class=n>GetDrops</span><span class=p>(</span><span class=k>vec2</span> <span class=n>uv</span><span class=p>,</span> <span class=k>float</span> <span class=n>seed</span><span class=p>,</span> <span class=k>float</span> <span class=n>intensity</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>time</span> <span class=o>=</span> <span class=n>u_RaindropsTime</span> <span class=o>+</span> <span class=n>intensity</span> <span class=o>*</span> <span class=mf>30.0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>vec2</span> <span class=n>uvOffset</span> <span class=o>=</span> <span class=k>vec2</span><span class=p>(</span><span class=mf>0.0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>uv</span><span class=p>.</span><span class=n>y</span> <span class=o>+=</span> <span class=n>time</span> <span class=o>*</span> <span class=mf>0.05</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>uv</span> <span class=o>*=</span> <span class=k>vec2</span><span class=p>(</span><span class=mf>10.0</span><span class=p>,</span> <span class=mf>2.5</span><span class=p>)</span> <span class=o>*</span> <span class=n>seed</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>vec2</span> <span class=n>cellId</span> <span class=o>=</span> <span class=n>floor</span><span class=p>(</span><span class=n>uv</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>vec2</span> <span class=n>localPos</span> <span class=o>=</span> <span class=n>fract</span><span class=p>(</span><span class=n>uv</span><span class=p>)</span> <span class=o>-</span> <span class=mf>0.5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>cellRandom</span> <span class=o>=</span> <span class=n>Hash21</span><span class=p>(</span><span class=n>cellId</span> <span class=o>+</span> <span class=n>seed</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>dropX</span> <span class=o>=</span> <span class=n>cellRandom</span> <span class=o>-</span> <span class=mf>0.5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>animPhase</span> <span class=o>=</span> <span class=n>fract</span><span class=p>(</span><span class=n>time</span> <span class=o>+</span> <span class=n>cellRandom</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>dropY</span> <span class=o>=</span> <span class=p>(</span><span class=n>SawtoothWave</span><span class=p>(</span><span class=n>animPhase</span><span class=p>)</span> <span class=o>-</span> <span class=mf>0.5</span><span class=p>)</span> <span class=o>*</span> <span class=mf>0.9</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>vec2</span> <span class=n>dropCenter</span> <span class=o>=</span> <span class=k>vec2</span><span class=p>(</span><span class=n>dropX</span><span class=p>,</span> <span class=n>dropY</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>distToDrop</span> <span class=o>=</span> <span class=n>length</span><span class=p>(</span><span class=n>localPos</span> <span class=o>-</span> <span class=n>dropCenter</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>mainDrop</span> <span class=o>=</span> <span class=n>smoothstep</span><span class=p>(</span><span class=mf>0.2</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>,</span> <span class=n>distToDrop</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>trailMask</span> <span class=o>=</span> <span class=n>smoothstep</span><span class=p>(</span><span class=mf>0.0</span><span class=p>,</span> <span class=mf>0.2</span><span class=p>,</span> <span class=n>localPos</span><span class=p>.</span><span class=n>y</span> <span class=o>-</span> <span class=n>dropCenter</span><span class=p>.</span><span class=n>y</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>trailMask</span> <span class=o>*=</span> <span class=n>smoothstep</span><span class=p>(</span><span class=mf>0.5</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>,</span> <span class=n>localPos</span><span class=p>.</span><span class=n>y</span> <span class=o>-</span> <span class=n>dropCenter</span><span class=p>.</span><span class=n>y</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>trailMask</span> <span class=o>*=</span> <span class=n>smoothstep</span><span class=p>(</span><span class=mf>0.05</span><span class=p>,</span> <span class=mf>0.03</span><span class=p>,</span> <span class=n>abs</span><span class=p>(</span><span class=n>localPos</span><span class=p>.</span><span class=n>x</span> <span class=o>-</span> <span class=n>dropCenter</span><span class=p>.</span><span class=n>x</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>trailDist</span> <span class=o>=</span> <span class=n>abs</span><span class=p>(</span><span class=n>localPos</span><span class=p>.</span><span class=n>x</span> <span class=o>-</span> <span class=n>dropCenter</span><span class=p>.</span><span class=n>x</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>dropTrail</span> <span class=o>=</span> <span class=n>smoothstep</span><span class=p>(</span><span class=mf>0.1</span><span class=p>,</span> <span class=mf>0.02</span><span class=p>,</span> <span class=n>trailDist</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>dropTrail</span> <span class=o>*=</span> <span class=n>trailMask</span><span class=p>;</span><span class=n>conditions</span> <span class=p>(</span><span class=n>AND</span> <span class=n>logic</span> <span class=n>via</span> <span class=n>multiplication</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>vec2</span> <span class=n>offsetDirection</span> <span class=o>=</span> <span class=n>localPos</span> <span class=o>-</span> <span class=n>dropCenter</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>offsetStrength</span> <span class=o>=</span> <span class=n>mainDrop</span> <span class=o>+</span> <span class=n>dropTrail</span> <span class=o>*</span> <span class=mf>0.5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>uvOffset</span> <span class=o>=</span> <span class=n>offsetStrength</span> <span class=o>*</span> <span class=n>offsetDirection</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>uvOffset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>vec2</span> <span class=n>CalculateRaindropsOffset</span><span class=p>(</span><span class=k>vec2</span> <span class=n>uv</span><span class=p>,</span> <span class=k>float</span> <span class=n>intensity</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>vec2</span> <span class=n>totalOffset</span> <span class=o>=</span> <span class=k>vec2</span><span class=p>(</span><span class=mf>0.0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>totalOffset</span> <span class=o>+=</span> <span class=n>GetDrops</span><span class=p>(</span><span class=n>uv</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>,</span> <span class=n>intensity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>totalOffset</span> <span class=o>+=</span> <span class=n>GetDrops</span><span class=p>(</span><span class=n>uv</span> <span class=o>*</span> <span class=mf>1.4</span> <span class=o>+</span> <span class=mf>7.23</span><span class=p>,</span> <span class=mf>1.25</span><span class=p>,</span> <span class=n>intensity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>totalOffset</span> <span class=o>+=</span> <span class=n>GetDrops</span><span class=p>(</span><span class=n>uv</span> <span class=o>*</span> <span class=mf>2.1</span> <span class=o>+</span> <span class=mf>1.17</span><span class=p>,</span> <span class=mf>1.5</span><span class=p>,</span> <span class=n>intensity</span><span class=p>)</span> <span class=o>*</span> <span class=mf>0.5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>totalOffset</span> <span class=o>*</span> <span class=mf>0.03</span> <span class=o>*</span> <span class=n>intensity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>void</span> <span class=n>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>vec2</span> <span class=n>uv</span> <span class=o>=</span> <span class=n>v_TexCoord</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>u_RaindropsEnabled</span> <span class=o>!=</span> <span class=mo>0</span> <span class=o>&amp;&amp;</span> <span class=n>u_RaindropsIntensity</span> <span class=o>&gt;</span> <span class=mf>0.0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>vec2</span> <span class=n>offset</span> <span class=o>=</span> <span class=n>CalculateRaindropsOffset</span><span class=p>(</span><span class=n>uv</span><span class=p>,</span> <span class=n>u_RaindropsIntensity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>uv</span> <span class=o>=</span> <span class=n>clamp</span><span class=p>(</span><span class=n>uv</span> <span class=o>+</span> <span class=n>offset</span><span class=p>,</span> <span class=k>vec2</span><span class=p>(</span><span class=mf>0.0</span><span class=p>),</span> <span class=k>vec2</span><span class=p>(</span><span class=mf>1.0</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>vec4</span> <span class=n>color</span> <span class=o>=</span> <span class=n>texture</span><span class=p>(</span><span class=n>u_ScreenTexture</span><span class=p>,</span> <span class=n>uv</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>o_Color</span> <span class=o>=</span> <span class=n>color</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h3 id=2d锥形光照实现>2D锥形光照实现</h3><h4 id=效果>效果</h4><video width=720 height=480 controls>
+<source src=Light.mp4 type=video/mp4></video><hr><h4 id=实现思路>实现思路</h4><h5 id=都需要哪些数据>都需要哪些数据？</h5><p>如果想要实现一个类似于手电筒的效果，如果只渲染一个简单的三角形那是远远不够的，观察日常生活中的手电筒效果，随着照射距离增加，光照强度会逐渐降低，对于手电筒光照中心，应该是最亮的，随后向锥体两边逐渐变暗，所以我们至少需要：</p><ul><li>两个锥体，也就是两个角度</li><li>光照强度（最远能照射到的范围）</li><li>光线的衰减速率</li></ul><p>所以我们可以先确定光照需要的所有属性：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=k>enum</span> <span class=k>class</span> <span class=nc>Light2DType</span> <span class=o>:</span> <span class=kt>uint8_t</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>Spot</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=nc>Light2D</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>Light2DType</span> <span class=n>type</span> <span class=o>=</span> <span class=n>Light2DType</span><span class=o>::</span><span class=n>Spot</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>glm</span><span class=o>::</span><span class=n>vec2</span> <span class=n>position</span> <span class=o>=</span> <span class=p>{</span> <span class=mf>0.0f</span><span class=p>,</span> <span class=mf>0.0f</span> <span class=p>};</span>    <span class=c1>// 世界坐标位置
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>glm</span><span class=o>::</span><span class=n>vec3</span> <span class=n>color</span> <span class=o>=</span> <span class=p>{</span> <span class=mf>1.0f</span><span class=p>,</span> <span class=mf>1.0f</span><span class=p>,</span> <span class=mf>1.0f</span> <span class=p>};</span> <span class=c1>// RGB 颜色
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>float</span> <span class=n>intensity</span> <span class=o>=</span> <span class=mf>1.0f</span><span class=p>;</span>                  <span class=c1>// 强度 0~∞
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>float</span> <span class=n>radius</span> <span class=o>=</span> <span class=mf>5.0f</span><span class=p>;</span>                     <span class=c1>// 光照半径（光照最远距离）
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>float</span> <span class=n>falloff</span> <span class=o>=</span> <span class=mf>2.0f</span><span class=p>;</span>                    <span class=c1>// 控制光线渐变速度
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>direction</span> <span class=o>=</span> <span class=mf>0.0f</span><span class=p>;</span>                  <span class=c1>// 朝向角度（弧度）
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>float</span> <span class=n>innerAngle</span> <span class=o>=</span> <span class=mf>0.3f</span><span class=p>;</span>                 <span class=c1>// 内锥角（完全亮）
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>float</span> <span class=n>outerAngle</span> <span class=o>=</span> <span class=mf>0.6f</span><span class=p>;</span>                 <span class=c1>// 外锥角（渐变到 0）
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=kt>bool</span> <span class=n>enabled</span> <span class=o>=</span> <span class=nb>true</span><span class=p>;</span>                     <span class=c1>// 是否启用
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h5 id=距离衰减实现>距离衰减实现</h5><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=k>float</span> <span class=n>dist</span> <span class=o>=</span> <span class=n>length</span><span class=p>(</span><span class=n>currentPos</span> <span class=o>-</span> <span class=n>lightPos</span><span class=p>);</span>  <span class=c1>// 计算当前像素到光源的距离</span>
+</span></span><span class=line><span class=cl><span class=k>float</span> <span class=n>normalizedDist</span> <span class=o>=</span> <span class=n>dist</span> <span class=o>/</span> <span class=n>lightRadius</span><span class=p>;</span>  <span class=c1>// 归一化</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>float</span> <span class=n>attenuation</span> <span class=o>=</span> <span class=mf>1.0</span> <span class=o>-</span> <span class=n>pow</span><span class=p>(</span><span class=n>clamp</span><span class=p>(</span><span class=n>normalizedDist</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>),</span> <span class=n>falloff</span><span class=p>);</span>  <span class=c1>// 衰减公式</span>
+</span></span></code></pre></td></tr></table></div></div><p>这里使用<code>1-pow(normalizedDist, falloff)</code>来做到中心值最大，越靠外强度越小：</p><div style=display:flex;justify-content:center><img src=./1-x2.png alt=1-x2></div><hr><h5 id=锥形区域>锥形区域</h5><h6 id=31-角度计算>3.1 角度计算</h6><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=c1>// 从光源指向当前像素的向量</span>
+</span></span><span class=line><span class=cl><span class=k>vec2</span> <span class=n>toLight</span> <span class=o>=</span> <span class=n>currentPos</span> <span class=o>-</span> <span class=n>lightPos</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=c1>// 计算角度（弧度，-π 到 +π）</span>
+</span></span><span class=line><span class=cl><span class=k>float</span> <span class=n>angle</span> <span class=o>=</span> <span class=n>atan</span><span class=p>(</span><span class=n>toLight</span><span class=p>.</span><span class=n>y</span><span class=p>,</span> <span class=n>toLight</span><span class=p>.</span><span class=n>x</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=c1>// 计算与光源朝向的角度差</span>
+</span></span><span class=line><span class=cl><span class=k>float</span> <span class=n>angleDiff</span> <span class=o>=</span> <span class=n>abs</span><span class=p>(</span><span class=n>angle</span> <span class=o>-</span> <span class=n>lightDirection</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=c1>// 处理角度回绕（例如 -170° 和 +170° 实际只差 20°）</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=p>(</span><span class=n>angleDiff</span> <span class=o>&gt;</span> <span class=n>PI</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>angleDiff</span> <span class=o>=</span> <span class=mf>2.0</span> <span class=o>*</span> <span class=n>PI</span> <span class=o>-</span> <span class=n>angleDiff</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><h6 id=32-锥形衰减>3.2 锥形衰减</h6><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=c1>// 内锥角内：完全明亮</span>
+</span></span><span class=line><span class=cl><span class=c1>// 外锥角外：完全黑暗</span>
+</span></span><span class=line><span class=cl><span class=c1>// 内外之间：平滑过渡</span>
+</span></span><span class=line><span class=cl><span class=k>float</span> <span class=n>spotFactor</span> <span class=o>=</span> <span class=mf>1.0</span> <span class=o>-</span> <span class=n>smoothstep</span><span class=p>(</span><span class=n>innerAngle</span><span class=p>,</span> <span class=n>outerAngle</span><span class=p>,</span> <span class=n>angleDiff</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>attenuation</span> <span class=o>*=</span> <span class=n>spotFactor</span><span class=p>;</span>  <span class=c1>// 结合之前的距离衰减</span>
+</span></span></code></pre></td></tr></table></div></div><h5 id=完整的聚光灯-shader>完整的聚光灯 Shader</h5><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=cp>#version 450 core</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>in</span> <span class=k>vec2</span> <span class=n>v_TexCoord</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>out</span> <span class=k>vec4</span> <span class=n>o_Color</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>vec2</span> <span class=n>u_LightPosition</span><span class=p>;</span>   <span class=c1>// 屏幕空间 [0, 1]</span>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>vec3</span> <span class=n>u_LightColor</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>float</span> <span class=n>u_LightRadius</span><span class=p>;</span>    <span class=c1>// 屏幕空间半径</span>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>float</span> <span class=n>u_LightIntensity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>float</span> <span class=n>u_LightFalloff</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>float</span> <span class=n>u_AspectRatio</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 聚光灯参数</span>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>int</span> <span class=n>u_IsSpotLight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>float</span> <span class=n>u_LightDirection</span><span class=p>;</span> <span class=c1>// 弧度</span>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>float</span> <span class=n>u_InnerAngle</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>float</span> <span class=n>u_OuterAngle</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>const</span> <span class=k>float</span> <span class=n>PI</span> <span class=o>=</span> <span class=mf>3.14159265359</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>void</span> <span class=n>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>vec2</span> <span class=n>uv</span> <span class=o>=</span> <span class=n>v_TexCoord</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1>// 修正宽高比</span>
+</span></span><span class=line><span class=cl>    <span class=k>vec2</span> <span class=n>correctedUV</span> <span class=o>=</span> <span class=n>uv</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>correctedUV</span><span class=p>.</span><span class=n>x</span> <span class=o>*=</span> <span class=n>u_AspectRatio</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>vec2</span> <span class=n>correctedLightPos</span> <span class=o>=</span> <span class=n>u_LightPosition</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>correctedLightPos</span><span class=p>.</span><span class=n>x</span> <span class=o>*=</span> <span class=n>u_AspectRatio</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1>// 计算到光源的距离</span>
+</span></span><span class=line><span class=cl>    <span class=k>vec2</span> <span class=n>toLight</span> <span class=o>=</span> <span class=n>correctedUV</span> <span class=o>-</span> <span class=n>correctedLightPos</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>dist</span> <span class=o>=</span> <span class=n>length</span><span class=p>(</span><span class=n>toLight</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1>// 距离衰减</span>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>normalizedDist</span> <span class=o>=</span> <span class=n>dist</span> <span class=o>/</span> <span class=p>(</span><span class=n>u_LightRadius</span> <span class=o>*</span> <span class=n>u_AspectRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>attenuation</span> <span class=o>=</span> <span class=mf>1.0</span> <span class=o>-</span> <span class=n>pow</span><span class=p>(</span><span class=n>clamp</span><span class=p>(</span><span class=n>normalizedDist</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>),</span> <span class=n>u_LightFalloff</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>attenuation</span> <span class=o>=</span> <span class=n>clamp</span><span class=p>(</span><span class=n>attenuation</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1>// 聚光灯角度衰减</span>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>angle</span> <span class=o>=</span> <span class=n>atan</span><span class=p>(</span><span class=n>toLight</span><span class=p>.</span><span class=n>y</span><span class=p>,</span> <span class=n>toLight</span><span class=p>.</span><span class=n>x</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>angleDiff</span> <span class=o>=</span> <span class=n>abs</span><span class=p>(</span><span class=n>angle</span> <span class=o>-</span> <span class=n>u_LightDirection</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 处理角度回绕</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>angleDiff</span> <span class=o>&gt;</span> <span class=n>PI</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>angleDiff</span> <span class=o>=</span> <span class=mf>2.0</span> <span class=o>*</span> <span class=n>PI</span> <span class=o>-</span> <span class=n>angleDiff</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>float</span> <span class=n>spotFactor</span> <span class=o>=</span> <span class=mf>1.0</span> <span class=o>-</span> <span class=n>smoothstep</span><span class=p>(</span><span class=n>u_InnerAngle</span><span class=p>,</span> <span class=n>u_OuterAngle</span><span class=p>,</span> <span class=n>angleDiff</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>attenuation</span> <span class=o>*=</span> <span class=n>spotFactor</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>vec3</span> <span class=n>finalColor</span> <span class=o>=</span> <span class=n>u_LightColor</span> <span class=o>*</span> <span class=n>u_LightIntensity</span> <span class=o>*</span> <span class=n>attenuation</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>o_Color</span> <span class=o>=</span> <span class=k>vec4</span><span class=p>(</span><span class=n>finalColor</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h4 id=其他问题>其他问题</h4><h5 id=如何处理光源叠加>如何处理光源叠加？</h5><p>场景中可能有多个光源——主角的手电筒、墙上的火把、地上的蜡烛&mldr;
+最直接的想法是把所有光照效果<strong>相加</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>光源A + 光源B + 光源C = 最终光照
+</span></span></code></pre></td></tr></table></div></div><p>在 OpenGL 中实现：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=n>glEnable</span><span class=p>(</span><span class=n>GL_BLEND</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>glBlendFunc</span><span class=p>(</span><span class=n>GL_ONE</span><span class=p>,</span> <span class=n>GL_ONE</span><span class=p>);</span>  <span class=c1>// 源 × 1 + 目标 × 1
+</span></span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=kt>void</span> <span class=n>OpenGLLightingPass</span><span class=o>::</span><span class=n>BeginLightMap</span><span class=p>(</span><span class=k>const</span> <span class=n>LightingConfig</span><span class=o>&amp;</span> <span class=n>config</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>m_lightMapFBO</span><span class=o>-&gt;</span><span class=n>Bind</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 用环境光颜色清空光照图
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>glm</span><span class=o>::</span><span class=n>vec3</span> <span class=n>ambient</span> <span class=o>=</span> <span class=n>config</span><span class=p>.</span><span class=n>ambientColor</span> <span class=o>*</span> <span class=n>config</span><span class=p>.</span><span class=n>ambientIntensity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>glClearColor</span><span class=p>(</span><span class=n>ambient</span><span class=p>.</span><span class=n>r</span><span class=p>,</span> <span class=n>ambient</span><span class=p>.</span><span class=n>g</span><span class=p>,</span> <span class=n>ambient</span><span class=p>.</span><span class=n>b</span><span class=p>,</span> <span class=mf>1.0f</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>glClear</span><span class=p>(</span><span class=n>GL_COLOR_BUFFER_BIT</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 启用加法混合
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>glEnable</span><span class=p>(</span><span class=n>GL_BLEND</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>glBlendFunc</span><span class=p>(</span><span class=n>GL_ONE</span><span class=p>,</span> <span class=n>GL_ONE</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>OpenGLLightingPass</span><span class=o>::</span><span class=n>EndLightMap</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 恢复标准 Alpha 混合
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>glBlendFunc</span><span class=p>(</span><span class=n>GL_SRC_ALPHA</span><span class=p>,</span> <span class=n>GL_ONE_MINUS_SRC_ALPHA</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>m_lightMapFBO</span><span class=o>-&gt;</span><span class=n>Unbind</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h5 id=framebuffer-渲染管线>Framebuffer 渲染管线</h5><p><strong>渲染代码：</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=kt>void</span> <span class=n>LightLayer</span><span class=o>::</span><span class=n>OnUpdate</span><span class=p>(</span><span class=n>Yuicy</span><span class=o>::</span><span class=n>Timestep</span> <span class=n>ts</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// 获取鼠标位置（屏幕坐标）
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>auto</span> <span class=p>[</span><span class=n>mouseX</span><span class=p>,</span> <span class=n>mouseY</span><span class=p>]</span> <span class=o>=</span> <span class=n>Yuicy</span><span class=o>::</span><span class=n>Input</span><span class=o>::</span><span class=n>GetMousePosition</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// 归一化、Y轴翻转
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>glm</span><span class=o>::</span><span class=n>vec2</span> <span class=n>mouseUV</span> <span class=o>=</span> <span class=p>{</span><span class=n>mouseX</span> <span class=o>/</span> <span class=n>viewportSize</span><span class=p>.</span><span class=n>x</span><span class=p>,</span> <span class=mf>1.0f</span> <span class=o>-</span> <span class=p>(</span><span class=n>mouseY</span> <span class=o>/</span> <span class=n>viewportSize</span><span class=p>.</span><span class=n>y</span><span class=p>)};</span>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=c1>// 假设灯光射出位置为屏幕中心
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>glm</span><span class=o>::</span><span class=n>vec2</span> <span class=n>lightPos</span> <span class=o>=</span> <span class=p>{</span> <span class=mf>0.5f</span><span class=p>,</span> <span class=mf>0.5f</span> <span class=p>};</span>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=c1>// 灯光照射角度
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>glm</span><span class=o>::</span><span class=n>vec2</span> <span class=n>dir</span> <span class=o>=</span> <span class=n>mouseUV</span> <span class=o>-</span> <span class=n>lightPos</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=n>lightDirection</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>atan2</span><span class=p>(</span><span class=n>dir</span><span class=p>.</span><span class=n>y</span><span class=p>,</span> <span class=n>dir</span><span class=p>.</span><span class=n>x</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 场景渲染
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>sceneFbo</span><span class=o>-&gt;</span><span class=n>Bind</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>	<span class=n>Yuicy</span><span class=o>::</span><span class=n>RenderCommand</span><span class=o>::</span><span class=n>SetClearColor</span><span class=p>({</span> <span class=mf>0.1f</span><span class=p>,</span> <span class=mf>0.1f</span><span class=p>,</span> <span class=mf>0.1f</span><span class=p>,</span> <span class=mf>1.0f</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl>	<span class=n>Yuicy</span><span class=o>::</span><span class=n>RenderCommand</span><span class=o>::</span><span class=n>Clear</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// Render...
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>sceneFbo</span><span class=o>-&gt;</span><span class=n>Unbind</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 灯光渲染
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>lightFbo</span><span class=o>-&gt;</span><span class=n>Bind</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=c1>// 清屏
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>glm</span><span class=o>::</span><span class=n>vec3</span> <span class=n>ambient</span> <span class=o>=</span> <span class=n>ambientColor</span> <span class=o>*</span> <span class=n>ambientIntensity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=n>Yuicy</span><span class=o>::</span><span class=n>RenderCommand</span><span class=o>::</span><span class=n>SetClearColor</span><span class=p>({</span> <span class=n>ambient</span><span class=p>.</span><span class=n>r</span><span class=p>,</span> <span class=n>ambient</span><span class=p>.</span><span class=n>g</span><span class=p>,</span> <span class=n>ambient</span><span class=p>.</span><span class=n>b</span><span class=p>,</span> <span class=mf>1.0f</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl>	<span class=n>Yuicy</span><span class=o>::</span><span class=n>RenderCommand</span><span class=o>::</span><span class=n>Clear</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=p>(</span><span class=n>lightEnabled</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// 混合模式处理灯光叠加
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=n>glEnable</span><span class=p>(</span><span class=n>GL_BLEND</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>glBlendFunc</span><span class=p>(</span><span class=n>GL_ONE</span><span class=p>,</span> <span class=n>GL_ONE</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=n>lightShader</span><span class=o>-&gt;</span><span class=n>Bind</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>		
+</span></span><span class=line><span class=cl>		<span class=n>lightShader</span><span class=o>-&gt;</span><span class=n>SetFloat2</span><span class=p>(</span><span class=s>&#34;u_LightPosition&#34;</span><span class=p>,</span> <span class=p>{</span> <span class=mf>0.5f</span><span class=p>,</span> <span class=mf>0.5f</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl>		<span class=n>lightShader</span><span class=o>-&gt;</span><span class=n>SetFloat3</span><span class=p>(</span><span class=s>&#34;u_LightColor&#34;</span><span class=p>,</span> <span class=n>lightColor</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>lightShader</span><span class=o>-&gt;</span><span class=n>SetFloat</span><span class=p>(</span><span class=s>&#34;u_LightRadius&#34;</span><span class=p>,</span> <span class=n>lightRadius</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>lightShader</span><span class=o>-&gt;</span><span class=n>SetFloat</span><span class=p>(</span><span class=s>&#34;u_LightIntensity&#34;</span><span class=p>,</span> <span class=n>lightIntensity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>lightShader</span><span class=o>-&gt;</span><span class=n>SetFloat</span><span class=p>(</span><span class=s>&#34;u_LightFalloff&#34;</span><span class=p>,</span> <span class=n>lightFalloff</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>lightShader</span><span class=o>-&gt;</span><span class=n>SetFloat</span><span class=p>(</span><span class=s>&#34;u_AspectRatio&#34;</span><span class=p>,</span> <span class=n>viewportSize</span><span class=p>.</span><span class=n>x</span> <span class=o>/</span> <span class=n>viewportSize</span><span class=p>.</span><span class=n>y</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>lightShader</span><span class=o>-&gt;</span><span class=n>SetFloat</span><span class=p>(</span><span class=s>&#34;u_LightDirection&#34;</span><span class=p>,</span> <span class=n>lightDirection</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>lightShader</span><span class=o>-&gt;</span><span class=n>SetFloat</span><span class=p>(</span><span class=s>&#34;u_InnerAngle&#34;</span><span class=p>,</span> <span class=n>innerAngle</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>lightShader</span><span class=o>-&gt;</span><span class=n>SetFloat</span><span class=p>(</span><span class=s>&#34;u_OuterAngle&#34;</span><span class=p>,</span> <span class=n>outerAngle</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>		<span class=n>quadVao</span><span class=o>-&gt;</span><span class=n>Bind</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>		<span class=n>Yuicy</span><span class=o>::</span><span class=n>RenderCommand</span><span class=o>::</span><span class=n>DrawIndexed</span><span class=p>(</span><span class=n>quadVao</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>		<span class=n>glBlendFunc</span><span class=p>(</span><span class=n>GL_SRC_ALPHA</span><span class=p>,</span> <span class=n>GL_ONE_MINUS_SRC_ALPHA</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>lightFbo</span><span class=o>-&gt;</span><span class=n>Unbind</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 场景混合着色器
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>Yuicy</span><span class=o>::</span><span class=n>RenderCommand</span><span class=o>::</span><span class=n>SetClearColor</span><span class=p>({</span> <span class=mf>0.0f</span><span class=p>,</span> <span class=mf>0.0f</span><span class=p>,</span> <span class=mf>0.0f</span><span class=p>,</span> <span class=mf>1.0f</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl>	<span class=n>Yuicy</span><span class=o>::</span><span class=n>RenderCommand</span><span class=o>::</span><span class=n>Clear</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>compositeShader</span><span class=o>-&gt;</span><span class=n>Bind</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 绑定场景纹理
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=kt>uint32_t</span> <span class=n>sceneTexId</span> <span class=o>=</span> <span class=n>sceneFbo</span><span class=o>-&gt;</span><span class=n>GetColorAttachmentRendererID</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// glBindTextureUnit(0, sceneTexId);
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>glActiveTexture</span><span class=p>(</span><span class=n>GL_TEXTURE0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=n>glBindTexture</span><span class=p>(</span><span class=n>GL_TEXTURE_2D</span><span class=p>,</span> <span class=n>sceneTexId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=n>compositeShader</span><span class=o>-&gt;</span><span class=n>SetInt</span><span class=p>(</span><span class=s>&#34;u_SceneTexture&#34;</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 绑定灯光纹理
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=kt>uint32_t</span> <span class=n>lightTexId</span> <span class=o>=</span> <span class=n>lightFbo</span><span class=o>-&gt;</span><span class=n>GetColorAttachmentRendererID</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// glBindTextureUnit(1, lightTexId);
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>glActiveTexture</span><span class=p>(</span><span class=n>GL_TEXTURE1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=n>glBindTexture</span><span class=p>(</span><span class=n>GL_TEXTURE_2D</span><span class=p>,</span> <span class=n>lightTexId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=n>compositeShader</span><span class=o>-&gt;</span><span class=n>SetInt</span><span class=p>(</span><span class=s>&#34;u_LightMap&#34;</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>compositeShader</span><span class=o>-&gt;</span><span class=n>SetInt</span><span class=p>(</span><span class=s>&#34;u_LightingEnabled&#34;</span><span class=p>,</span> <span class=n>lightEnabled</span> <span class=o>?</span> <span class=mi>1</span> <span class=o>:</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>quadVao</span><span class=o>-&gt;</span><span class=n>Bind</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>	<span class=n>Yuicy</span><span class=o>::</span><span class=n>RenderCommand</span><span class=o>::</span><span class=n>DrawIndexed</span><span class=p>(</span><span class=n>quadVao</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><hr><p>要在后处理中加入光照，只需要将光照计算的结果与其他处理效果相乘：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-glsl data-lang=glsl><span class=line><span class=cl><span class=k>uniform</span> <span class=k>sampler2D</span> <span class=n>u_ScreenTexture</span><span class=p>;</span>  <span class=c1>// 场景纹理</span>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>sampler2D</span> <span class=n>u_LightMap</span><span class=p>;</span>       <span class=c1>// 光照图</span>
+</span></span><span class=line><span class=cl><span class=k>uniform</span> <span class=k>int</span> <span class=n>u_LightingEnabled</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>void</span> <span class=n>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>vec4</span> <span class=n>sceneColor</span> <span class=o>=</span> <span class=n>texture</span><span class=p>(</span><span class=n>u_ScreenTexture</span><span class=p>,</span> <span class=n>v_TexCoord</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>u_LightingEnabled</span> <span class=o>!=</span> <span class=mo>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>vec3</span> <span class=n>lightColor</span> <span class=o>=</span> <span class=n>texture</span><span class=p>(</span><span class=n>u_LightMap</span><span class=p>,</span> <span class=n>v_TexCoord</span><span class=p>).</span><span class=n>rgb</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>sceneColor</span><span class=p>.</span><span class=n>rgb</span> <span class=o>*=</span> <span class=n>lightColor</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>o_Color</span> <span class=o>=</span> <span class=n>sceneColor</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><hr><div class=draggable-container><div class=draggable-content><object type=image/svg+xml data=Frame.svg style=width:2170px;height:2963px>
+您的浏览器不支持 SVG</object></div></div></section><footer class=article-footer><section class=article-tags><a href=https://SSmallOrange.github.io/tags/opengl/>OpenGL</a>
 <a href=https://SSmallOrange.github.io/tags/c++/>C++</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
 <span>Licensed under CC BY-NC-SA 4.0</span></section><section class=article-lastmod><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<span>最后更新于 Jan 20, 2026 00:00 CST</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=https://SSmallOrange.github.io/p/hazel-learning-1/><div class=article-image><img src=https://SSmallOrange.github.io/p/hazel-learning-1/background.b2ac31dbd5b28d919da72ca8ae9b5ac0_hu_e6f5cc6be471ec12.png width=250 height=150 loading=lazy alt="Featured image of post Hazel学习笔记：Renderer2D（持续更新）" data-key=Hazel-Learning-1 data-hash="md5-sqwx29WyjZGdpyyorptawA=="></div><div class=article-details><h2 class=article-title>Hazel学习笔记：Renderer2D（持续更新）</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//hugo-theme-stack.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+<span>最后更新于 Jan 27, 2026 23:00 CST</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=https://SSmallOrange.github.io/p/hazel-learning-1/><div class=article-image><img src=https://SSmallOrange.github.io/p/hazel-learning-1/background.b2ac31dbd5b28d919da72ca8ae9b5ac0_hu_e6f5cc6be471ec12.png width=250 height=150 loading=lazy alt="Featured image of post Hazel学习笔记：Renderer2D（持续更新）" data-key=Hazel-Learning-1 data-hash="md5-sqwx29WyjZGdpyyorptawA=="></div><div class=article-details><h2 class=article-title>Hazel学习笔记：Renderer2D（持续更新）</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//hugo-theme-stack.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
 2026 Small_Orange</section><section class=powerby><br></section><section class=count_info><div>本博客已稳定运行
 <span id=ds class=running-days></span>
 天
 <span id=hs class=running-days></span>
 小时
 <span id=ms class=running-days></span>
-分钟</div><div>共发表 6 篇文章 · 总计 15.69 k 字</div><div><span id=busuanzi_container_site_pv>本站总访问量<span id=busuanzi_value_site_pv></span>次</span></div></section><script>let s1="2025-8-12";s1=new Date(s1.replace(/-/g,"/"));let s2=new Date,timeDifference=s2.getTime()-s1.getTime(),days=Math.floor(timeDifference/(1e3*60*60*24)),hours=Math.floor(timeDifference%(1e3*60*60*24)/(1e3*60*60)),minutes=Math.floor(timeDifference%(1e3*60*60)/(1e3*60));document.getElementById("ds").innerHTML=days,document.getElementById("hs").innerHTML=hours,document.getElementById("ms").innerHTML=minutes</script><script>(function(e,t){var s=document,o="script",n=s.createElement(o),i=s.getElementsByTagName(o)[0];n.src=e,t&&n.addEventListener("load",function(e){t(e)}),i.parentNode.insertBefore(n,i)})("//cdn.bootcss.com/pangu/4.0.7/pangu.min.js",function(){pangu.spacingPage()})</script></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+分钟</div><div>共发表 6 篇文章 · 总计 20.26 k 字</div><div><span id=busuanzi_container_site_pv>本站总访问量<span id=busuanzi_value_site_pv></span>次</span></div></section><script>let s1="2025-8-12";s1=new Date(s1.replace(/-/g,"/"));let s2=new Date,timeDifference=s2.getTime()-s1.getTime(),days=Math.floor(timeDifference/(1e3*60*60*24)),hours=Math.floor(timeDifference%(1e3*60*60*24)/(1e3*60*60)),minutes=Math.floor(timeDifference%(1e3*60*60)/(1e3*60));document.getElementById("ds").innerHTML=days,document.getElementById("hs").innerHTML=hours,document.getElementById("ms").innerHTML=minutes</script><script>(function(e,t){var s=document,o="script",n=s.createElement(o),i=s.getElementsByTagName(o)[0];n.src=e,t&&n.addEventListener("load",function(e){t(e)}),i.parentNode.insertBefore(n,i)})("//cdn.bootcss.com/pangu/4.0.7/pangu.min.js",function(){pangu.spacingPage()})</script></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
 <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
 </button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=https://SSmallOrange.github.io/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=https://SSmallOrange.github.io/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script><script src=https://SSmallOrange.github.io/js/draggable.js defer></script></body></html>

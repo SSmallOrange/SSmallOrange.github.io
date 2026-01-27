@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OpenGL on Small_Orange</title><link>https://SSmallOrange.github.io/tags/opengl/</link><description>Recent content in OpenGL on Small_Orange</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 20 Jan 2026 00:00:31 +0800</lastBuildDate><atom:link href="https://SSmallOrange.github.io/tags/opengl/index.xml" rel="self" type="application/rss+xml"/><item><title>Hazel学习笔记：游戏功能完善（持续更新）</title><link>https://SSmallOrange.github.io/p/hazel-learning-2/</link><pubDate>Tue, 20 Jan 2026 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/hazel-learning-2/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/hazel-learning-2/background.png" alt="Featured image of post Hazel学习笔记：游戏功能完善（持续更新）" />&lt;h1 id="hazel学习笔记游戏功能完善">Hazel学习笔记：游戏功能完善
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OpenGL on Small_Orange</title><link>https://SSmallOrange.github.io/tags/opengl/</link><description>Recent content in OpenGL on Small_Orange</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 27 Jan 2026 23:00:31 +0800</lastBuildDate><atom:link href="https://SSmallOrange.github.io/tags/opengl/index.xml" rel="self" type="application/rss+xml"/><item><title>Hazel学习笔记：游戏功能完善（持续更新）</title><link>https://SSmallOrange.github.io/p/hazel-learning-2/</link><pubDate>Tue, 20 Jan 2026 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/hazel-learning-2/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/hazel-learning-2/background.png" alt="Featured image of post Hazel学习笔记：游戏功能完善（持续更新）" />&lt;h1 id="hazel学习笔记游戏功能完善">Hazel学习笔记：游戏功能完善
 &lt;/h1>&lt;p>由于Hazel剩下的内容非常多，我以前也没有接触过游戏、渲染部分，所以学起来比较吃力。这部分我将作为OpenGL、游戏相关知识的积累，沉淀一些个人理解，并持续更新。&lt;/p>
 &lt;hr>
 &lt;h2 id="ecs">ECS
@@ -356,7 +356,1037 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>这个仍然有很多优化的地方，比如 &lt;code>unordered_map&lt;/code> 可能不连续（桶与桶之间）。但 ECS 的思路大致如上。&lt;/p></description></item><item><title>Hazel学习笔记：Renderer2D（持续更新）</title><link>https://SSmallOrange.github.io/p/hazel-learning-1/</link><pubDate>Mon, 24 Nov 2025 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/hazel-learning-1/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/hazel-learning-1/background.png" alt="Featured image of post Hazel学习笔记：Renderer2D（持续更新）" />&lt;h1 id="hazel学习笔记renderer2d部分">Hazel学习笔记：Renderer2D部分
+&lt;/div>&lt;p>这个仍然有很多优化的地方，比如 &lt;code>unordered_map&lt;/code> 可能不连续（桶与桶之间）。但 ECS 的思路大致如上。&lt;/p>
+&lt;h2 id="shader">Shader
+&lt;/h2>&lt;h3 id="shader实现屏幕水滴效果">Shader实现屏幕水滴效果
+&lt;/h3>&lt;p>以下为我代码中的雨天和屏幕水滴效果的开发记录，作为着色器的知识积累。&lt;/p>
+&lt;hr>
+&lt;h4 id="效果展示">效果展示
+&lt;/h4>&lt;p>想象你站在窗边，看着外面的雨。玻璃上布满了水滴，透过水滴看到的景象会有轻微的扭曲——这就是我们要用代码实现的效果。&lt;/p>
+&lt;video width="520" height="380" controls>
+&lt;source src="Recording 2026-01-26 212958.mp4" type="video/mp4">
+&lt;/video>
+&lt;hr>
+&lt;h4 id="实现过程">实现过程
+&lt;/h4>&lt;p>在图形渲染领域，许多实现方式都与我们的直觉相悖。例如：光线追踪中的&amp;quot;光线&amp;quot;实际上是从摄像机发出、逆向追踪到光源的；3D 游戏中那些看起来丝滑飘逸的布料，本质上是由成千上万的离散顶点模拟出来的；实时阴影并非通过物理遮挡计算，而是借助&amp;quot;从灯光视角拍摄的深度照片&amp;quot;来判断。&lt;/p>
+&lt;p>屏幕水滴效果同样如此。如果直接在画面上叠加一张水滴贴图，得到的只是&amp;quot;贴纸般的圆点&amp;quot;——缺乏真实感，效果单一。我们真正想要的，是那种站在雨天玻璃窗前的视觉体验：透过水滴看到的背景会产生微妙的扭曲和偏移。&lt;/p>
+&lt;p>这种效果源于折射——光线穿过水滴时会发生弯曲。然而在 GPU 着色器中，我们并没有真正模拟光线的物理路径，而是采用了一种巧妙的近似：直接偏移纹理的采样坐标（UV）。当一个像素位于&amp;quot;水滴区域&amp;quot;内时，我们让它去采样稍微偏移后的背景位置，视觉上就产生了&amp;quot;透过水滴看东西&amp;quot;的折射效果。&lt;/p>
+&lt;p>这正是渲染吸引我的魅力所在：很多的特效背后的实现逻辑总是那么的出乎意料。&lt;/p>
+&lt;h5 id="uv-扭曲偏移纹理坐标">UV 扭曲，偏移纹理坐标
+&lt;/h5>&lt;p>在着色器中，我们用 &lt;strong>UV 坐标&lt;/strong> 来决定&amp;quot;从背景图的哪个位置取颜色&amp;quot;。但是，从背景图的哪个位置取？取多少？如何确定需要扭曲的范围？这都是我们需要计算的。&lt;/p>
+&lt;h5 id="网格法确定水滴位置">网格法确定水滴位置
+&lt;/h5>&lt;h6 id="21-如何确定水滴位置">2.1 如何确定水滴位置？
+&lt;/h6>&lt;p>假设我们想在屏幕上放 100 个水滴，最直接的想法是：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 存储每个水滴的位置
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">vec2&lt;/span> &lt;span class="n">dropPositions&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">100&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.2&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.7&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 在着色器中，对每个像素都要检查所有水滴
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">100&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">distance&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">currentPixel&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dropPositions&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mf">0.05&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 这个像素在水滴范围内
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 在CPU端控制水滴位置动态变化...
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>如果此时水滴数量增多，那么每次就需要向GPU中传送大量的数据，并且是每一帧都传！效率大大降低了，那有没有办法将水滴的位置控制放在计算性能更高的GPU端呢？&lt;/p>
+&lt;h6 id="22-解决方案网格--伪随机">2.2 解决方案：网格 + 伪随机
+&lt;/h6>&lt;p>&lt;strong>核心&lt;/strong>：通过把屏幕分成很多个格子，让每个格子内&amp;quot;&lt;strong>自动生成&lt;/strong>&amp;ldquo;一个“&lt;strong>位置随机&lt;/strong>”水滴。&lt;/p>
+&lt;p>我们可以将uv坐标按照坐标划分网格，有一种快速划分网格的方法：&lt;/p>
+&lt;ul>
+&lt;li>将原本在&lt;code>[0, 1]&lt;/code>范围内的&lt;code>uv&lt;/code>坐标转化成&lt;code>[10, 10]&lt;/code>的坐标（即：放大原始坐标值）&lt;/li>
+&lt;li>将新坐标的整数部分作为格子的&lt;code>ID&lt;/code>，将小数部分作为新坐标在该格子内的坐标&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>代码实现&lt;/strong>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="n">uv&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="k">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">10.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">2.5&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 放大，创建 10×2.5 的网格&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">vec2&lt;/span> &lt;span class="n">cellId&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">floor&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">uv&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 格子 ID（floor，取整数部分）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">vec2&lt;/span> &lt;span class="n">localPos&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">fract&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">uv&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mf">0.5&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 格子内坐标（-0.5 ~ 0.5，fract，取小数部分）&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>比如说：一个原始&lt;code>uv&lt;/code>坐标为&lt;code>(0.23, 0.4)&lt;/code>的像素，在经过换算后会得到一个在格子&lt;code>[2, 1]&lt;/code>，格子内偏移量&lt;code>(0.3, -0.2)&lt;/code>的结果。&lt;/p>
+&lt;h6 id="23-伪随机函数">2.3 伪随机函数
+&lt;/h6>&lt;p>现在每个格子需要一个&amp;quot;独特的水滴位置&amp;rdquo;，我们用 &lt;strong>伪随机函数&lt;/strong>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">Hash21&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">vec2&lt;/span> &lt;span class="n">coord&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 返回 [0, 1)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">coord&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">fract&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">coord&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="k">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">123.34&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">345.45&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">coord&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">dot&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">coord&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">coord&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mf">34.345&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// dot: 返回向量点积的结果&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">fract&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">coord&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">coord&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">cellRandom&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Hash21&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">cellId&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">seed&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 用格子 ID 查询&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">dropX&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">cellRandom&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mf">0.5&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 水滴在格子内的 X 偏移 (-0.5 ~ 0.5)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这样做的好处是：对于同一个格子，相同的种子来说，得到的随机数一定相同，可以作为水滴下滑的初始位置，并保证水滴在相同格子滑落时能够竖直向下（格子&lt;code>ID&lt;/code>不变时，&lt;code>x&lt;/code>偏移量不变）。&lt;/p>
+&lt;hr>
+&lt;h5 id="水滴动画">水滴动画
+&lt;/h5>&lt;h6 id="31-垂直滚动">3.1 垂直滚动
+&lt;/h6>&lt;p>最简单的动画：让整个 UV 向上滚动，视觉上水滴就会向下流。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="n">uv&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">u_Time&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.05&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 随时间向上偏移&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>原理&lt;/strong>：让同一时刻的同一位置的&lt;code>uv&lt;/code>能够处在不同的“方格”，从而达到“滚动”的错觉。&lt;/p>
+&lt;h6 id="32-锯齿动画">3.2 锯齿动画
+&lt;/h6>&lt;p>但只是匀速下落太单调了。真实的水滴会：&lt;/p>
+&lt;ol>
+&lt;li>积累一会儿&lt;/li>
+&lt;li>突然滑落&lt;/li>
+&lt;li>再积累&amp;hellip;&lt;/li>
+&lt;/ol>
+&lt;p>我们用一个特殊的 &lt;strong>锯齿波函数&lt;/strong>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">SawtoothWave&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">float&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">cos&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">cos&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">3.0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.5&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">sin&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">5.0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.4&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mf">0.5&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;img src="./saw.png" alt="锯齿波形">
+&lt;p>&lt;strong>代码中的使用&lt;/strong>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">animPhase&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">fract&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">time&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">cellRandom&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 每个水滴的动画起始位置不同&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">dropY&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">SawtoothWave&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">animPhase&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mf">0.5&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.9&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 垂直位置随时间变化&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>通过在&lt;code>animPhase&lt;/code>中添加&lt;code>cellRandom&lt;/code>变量来控制同一时刻，不同格子内的水滴位置不会相同，形成“错落”的感觉。&lt;/p>
+&lt;h5 id="水滴形状绘制">水滴形状绘制
+&lt;/h5>&lt;h6 id="41-主水滴">4.1 主水滴
+&lt;/h6>&lt;p>一个水滴首先要有&amp;quot;形状&amp;quot;。我们用 &lt;strong>距离场&lt;/strong> （SDF）来定义：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="k">vec2&lt;/span> &lt;span class="n">dropCenter&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dropX&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dropY&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 水滴中心位置&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">distToDrop&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">length&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">localPos&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">dropCenter&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 当前像素到中心的距离&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">mainDrop&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">smoothstep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">distToDrop&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 距离 &amp;lt; 0.2 的区域是水滴&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>**&lt;code>smoothstep(0.2, 0.0, d)&lt;/code> **能够在像素距离中心&lt;code>[0, 0.2]&lt;/code>的时候返回&lt;code>[0, 1]&lt;/code>。&lt;/p>
+&lt;h6 id="42-水滴尾迹">4.2 水滴尾迹
+&lt;/h6>&lt;p>真实的雨滴不只是一个圆点，下落时会拖出一条&amp;quot;尾巴&amp;quot;&lt;/p>
+&lt;p>尾迹的实现分为三步：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>第一步：限制在水滴下方&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">trailMask&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">smoothstep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">localPos&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">dropCenter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>第二步：限制尾迹长度&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="n">trailMask&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="n">smoothstep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">localPos&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">dropCenter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>第三步：限制尾迹宽度&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="n">trailMask&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="n">smoothstep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.05&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.03&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">abs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">localPos&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">dropCenter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;p>你可能会问：为什么三个条件之间是用 &lt;code>*=&lt;/code> 而不是 &lt;code>+=&lt;/code> 或别的进行连接？&lt;/p>
+&lt;p>因为乘法是实现逻辑“或”的一种方式，每个 &lt;code>smoothstep&lt;/code> 返回的是 0 ~ 1 之间的值：&lt;/p>
+&lt;ul>
+&lt;li>返回 &lt;strong>1&lt;/strong> = 这个条件&lt;strong>完全满足&lt;/strong>&lt;/li>
+&lt;li>返回 &lt;strong>0&lt;/strong> = 这个条件&lt;strong>完全不满足&lt;/strong>&lt;/li>
+&lt;li>返回 &lt;strong>0.5&lt;/strong> = 这个条件&lt;strong>部分满足&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;p>最终就能实现：&lt;code>只要有一个条件不满足，则整体条件都不满足&lt;/code>的效果。&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>第四步：绘制尾迹&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">trailDist&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">abs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">localPos&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">dropCenter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 到尾迹中心线的距离&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">dropTrail&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">smoothstep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.02&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">trailDist&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">dropTrail&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="n">trailMask&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 应用三个限制条件&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;h5 id="折射">折射！
+&lt;/h5>&lt;p>这是整个效果的&lt;strong>最关键一步&lt;/strong>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="k">vec2&lt;/span> &lt;span class="n">offsetDirection&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">localPos&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">dropCenter&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">offsetStrength&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">mainDrop&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">dropTrail&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.5&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">uvOffset&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">offsetStrength&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">offsetDirection&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>这行代码到底在做什么？为什么一行就能实现折射？&lt;/strong>&lt;/p>
+&lt;p>让我们把它拆成三个部分：&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>&lt;code>offsetDirection&lt;/code> — 偏移方向&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="k">vec2&lt;/span> &lt;span class="n">offsetDirection&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">localPos&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">dropCenter&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 从水滴中心指向当前像素的向量&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>真实水滴像一个&lt;strong>凸透镜&lt;/strong>，光线会向中心聚焦。我们用 &lt;code>localPos - dropCenter&lt;/code> 作为偏移方向，最终就会将远处相应方向的像素偏移至当前像素位置，就是在模拟&amp;quot;从边缘向中心弯曲&amp;quot;的折射效果。&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>&lt;code>mainDrop + dropTrail * 0.5&lt;/code> — 偏移强度&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">offsetStrength&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">mainDrop&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">dropTrail&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.5&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 0 ~ 1 之间的遮罩&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这是一个&lt;strong>遮罩值&lt;/strong>，决定了&amp;quot;这个像素需要多大的偏移&amp;quot;，偏移强度随当前像素到水滴中心和尾部的距离来决定，尾部占比会小一点，因为水滴滑落时尾部水量更少。&lt;/p>
+&lt;hr>
+&lt;p>**&lt;code>A × B&lt;/code> **&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="n">uvOffset&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">offsetStrength&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">offsetDirection&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>向量乘以标量 = 保持方向，改变长度。&lt;/p>
+&lt;hr>
+&lt;h5 id="多层折射叠加">多层折射叠加
+&lt;/h5>&lt;p>只用一层水滴会很单调——所有水滴大小相同、间距均匀。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="k">vec2&lt;/span> &lt;span class="n">CalculateRaindropsOffset&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">vec2&lt;/span> &lt;span class="n">uv&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">float&lt;/span> &lt;span class="n">intensity&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec2&lt;/span> &lt;span class="n">totalOffset&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">totalOffset&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">GetDrops&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">uv&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">intensity&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">totalOffset&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">GetDrops&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">uv&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">1.4&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mf">7.23&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.25&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">intensity&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">totalOffset&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">GetDrops&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">uv&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">2.1&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mf">1.17&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">intensity&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.5&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">totalOffset&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.03&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">intensity&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>我们对每一次偏移设置不同的&lt;code>seed&lt;/code>值，不同的位置，从而最终得到不同大小，不同位置的“水滴”，让水滴变得更密集，更有随机性。&lt;/p>
+&lt;p>随后再进行纹理采样，安全性检查，就得到了开头的水滴效果：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="k">vec2&lt;/span> &lt;span class="n">offset&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">CalculateRaindropsOffset&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">uv&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">u_RaindropsIntensity&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">uv&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">clamp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">uv&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">offset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="k">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">1.0&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">vec4&lt;/span> &lt;span class="n">color&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">texture&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">u_ScreenTexture&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">uv&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">o_Color&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">color&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 最终颜色&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="总结">总结
+&lt;/h4>&lt;p>现在的效果还比较简陋，后面可以继续进行拓展，同时我的效果和原始的效果相比还有很大差距。
+参考代码：https://www.shadertoy.com/view/MdfBRX&lt;/p>
+&lt;p>完整GLSL：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;span class="lnt">75
+&lt;/span>&lt;span class="lnt">76
+&lt;/span>&lt;span class="lnt">77
+&lt;/span>&lt;span class="lnt">78
+&lt;/span>&lt;span class="lnt">79
+&lt;/span>&lt;span class="lnt">80
+&lt;/span>&lt;span class="lnt">81
+&lt;/span>&lt;span class="lnt">82
+&lt;/span>&lt;span class="lnt">83
+&lt;/span>&lt;span class="lnt">84
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#version 450 core&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">in&lt;/span> &lt;span class="k">vec2&lt;/span> &lt;span class="n">v_TexCoord&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">out&lt;/span> &lt;span class="k">vec4&lt;/span> &lt;span class="n">o_Color&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">sampler2D&lt;/span> &lt;span class="n">u_ScreenTexture&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">int&lt;/span> &lt;span class="n">u_RaindropsEnabled&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">float&lt;/span> &lt;span class="n">u_RaindropsIntensity&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">float&lt;/span> &lt;span class="n">u_RaindropsTime&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">Hash21&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">vec2&lt;/span> &lt;span class="n">coord&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">coord&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">fract&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">coord&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="k">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">123.34&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">345.45&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">coord&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">dot&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">coord&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">coord&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mf">34.345&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">fract&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">coord&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">coord&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">SawtoothWave&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">float&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">cos&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">cos&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">3.0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.5&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">sin&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">5.0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.4&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mf">0.5&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">vec2&lt;/span> &lt;span class="n">GetDrops&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">vec2&lt;/span> &lt;span class="n">uv&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">float&lt;/span> &lt;span class="n">seed&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">float&lt;/span> &lt;span class="n">intensity&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">time&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">u_RaindropsTime&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">intensity&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">30.0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec2&lt;/span> &lt;span class="n">uvOffset&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">uv&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">time&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.05&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">uv&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="k">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">10.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">2.5&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">seed&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec2&lt;/span> &lt;span class="n">cellId&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">floor&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">uv&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec2&lt;/span> &lt;span class="n">localPos&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">fract&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">uv&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mf">0.5&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">cellRandom&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Hash21&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">cellId&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">seed&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">dropX&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">cellRandom&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mf">0.5&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">animPhase&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">fract&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">time&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">cellRandom&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">dropY&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">SawtoothWave&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">animPhase&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mf">0.5&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.9&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec2&lt;/span> &lt;span class="n">dropCenter&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dropX&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dropY&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">distToDrop&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">length&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">localPos&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">dropCenter&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">mainDrop&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">smoothstep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">distToDrop&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">trailMask&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">smoothstep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">localPos&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">dropCenter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">trailMask&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="n">smoothstep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">localPos&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">dropCenter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">trailMask&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="n">smoothstep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.05&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.03&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">abs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">localPos&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">dropCenter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">trailDist&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">abs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">localPos&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">dropCenter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">dropTrail&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">smoothstep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.02&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">trailDist&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">dropTrail&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="n">trailMask&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="n">conditions&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">AND&lt;/span> &lt;span class="n">logic&lt;/span> &lt;span class="n">via&lt;/span> &lt;span class="n">multiplication&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec2&lt;/span> &lt;span class="n">offsetDirection&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">localPos&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">dropCenter&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">offsetStrength&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">mainDrop&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">dropTrail&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.5&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">uvOffset&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">offsetStrength&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">offsetDirection&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">uvOffset&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">vec2&lt;/span> &lt;span class="n">CalculateRaindropsOffset&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">vec2&lt;/span> &lt;span class="n">uv&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">float&lt;/span> &lt;span class="n">intensity&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec2&lt;/span> &lt;span class="n">totalOffset&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">totalOffset&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">GetDrops&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">uv&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">intensity&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">totalOffset&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">GetDrops&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">uv&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">1.4&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mf">7.23&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.25&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">intensity&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">totalOffset&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="n">GetDrops&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">uv&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">2.1&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mf">1.17&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">intensity&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.5&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">totalOffset&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">0.03&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">intensity&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">void&lt;/span> &lt;span class="n">main&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec2&lt;/span> &lt;span class="n">uv&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">v_TexCoord&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">u_RaindropsEnabled&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="mo">0&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">u_RaindropsIntensity&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mf">0.0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec2&lt;/span> &lt;span class="n">offset&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">CalculateRaindropsOffset&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">uv&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">u_RaindropsIntensity&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">uv&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">clamp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">uv&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">offset&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="k">vec2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">1.0&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec4&lt;/span> &lt;span class="n">color&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">texture&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">u_ScreenTexture&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">uv&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">o_Color&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">color&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;h3 id="2d锥形光照实现">2D锥形光照实现
+&lt;/h3>&lt;h4 id="效果">效果
+&lt;/h4>&lt;video width="720" height="480" controls>
+&lt;source src="Light.mp4" type="video/mp4">
+&lt;/video>
+&lt;hr>
+&lt;h4 id="实现思路">实现思路
+&lt;/h4>&lt;h5 id="都需要哪些数据">都需要哪些数据？
+&lt;/h5>&lt;p>如果想要实现一个类似于手电筒的效果，如果只渲染一个简单的三角形那是远远不够的，观察日常生活中的手电筒效果，随着照射距离增加，光照强度会逐渐降低，对于手电筒光照中心，应该是最亮的，随后向锥体两边逐渐变暗，所以我们至少需要：&lt;/p>
+&lt;ul>
+&lt;li>两个锥体，也就是两个角度&lt;/li>
+&lt;li>光照强度（最远能照射到的范围）&lt;/li>
+&lt;li>光线的衰减速率&lt;/li>
+&lt;/ul>
+&lt;p>所以我们可以先确定光照需要的所有属性：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">enum&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="nc">Light2DType&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="kt">uint8_t&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Spot&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">Light2D&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Light2DType&lt;/span> &lt;span class="n">type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Light2DType&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Spot&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">glm&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">vec2&lt;/span> &lt;span class="n">position&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mf">0.0f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.0f&lt;/span> &lt;span class="p">};&lt;/span> &lt;span class="c1">// 世界坐标位置
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">glm&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">vec3&lt;/span> &lt;span class="n">color&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mf">1.0f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.0f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.0f&lt;/span> &lt;span class="p">};&lt;/span> &lt;span class="c1">// RGB 颜色
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">float&lt;/span> &lt;span class="n">intensity&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">1.0f&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 强度 0~∞
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">float&lt;/span> &lt;span class="n">radius&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">5.0f&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 光照半径（光照最远距离）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">float&lt;/span> &lt;span class="n">falloff&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">2.0f&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 控制光线渐变速度
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">float&lt;/span> &lt;span class="n">direction&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">0.0f&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 朝向角度（弧度）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">float&lt;/span> &lt;span class="n">innerAngle&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">0.3f&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 内锥角（完全亮）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">float&lt;/span> &lt;span class="n">outerAngle&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">0.6f&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 外锥角（渐变到 0）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">bool&lt;/span> &lt;span class="n">enabled&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">true&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 是否启用
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;h5 id="距离衰减实现">距离衰减实现
+&lt;/h5>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">dist&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">length&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">currentPos&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">lightPos&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 计算当前像素到光源的距离&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">normalizedDist&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">dist&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">lightRadius&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 归一化&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">attenuation&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">1.0&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">pow&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">clamp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">normalizedDist&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">falloff&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 衰减公式&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这里使用&lt;code>1-pow(normalizedDist, falloff)&lt;/code>来做到中心值最大，越靠外强度越小：&lt;/p>
+&lt;div style="display: flex; justify-content: center;">
+&lt;img src="./1-x2.png" alt="1-x2">
+&lt;/div>
+&lt;hr>
+&lt;h5 id="锥形区域">锥形区域
+&lt;/h5>&lt;h6 id="31-角度计算">3.1 角度计算
+&lt;/h6>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 从光源指向当前像素的向量&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">vec2&lt;/span> &lt;span class="n">toLight&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">currentPos&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">lightPos&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 计算角度（弧度，-π 到 +π）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">angle&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">atan&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">toLight&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">toLight&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 计算与光源朝向的角度差&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">angleDiff&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">abs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">angle&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">lightDirection&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 处理角度回绕（例如 -170° 和 +170° 实际只差 20°）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">angleDiff&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">PI&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">angleDiff&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">2.0&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">PI&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">angleDiff&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h6 id="32-锥形衰减">3.2 锥形衰减
+&lt;/h6>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 内锥角内：完全明亮&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 外锥角外：完全黑暗&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 内外之间：平滑过渡&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">float&lt;/span> &lt;span class="n">spotFactor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">1.0&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">smoothstep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">innerAngle&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">outerAngle&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">angleDiff&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">attenuation&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="n">spotFactor&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 结合之前的距离衰减&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h5 id="完整的聚光灯-shader">完整的聚光灯 Shader
+&lt;/h5>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#version 450 core&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">in&lt;/span> &lt;span class="k">vec2&lt;/span> &lt;span class="n">v_TexCoord&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">out&lt;/span> &lt;span class="k">vec4&lt;/span> &lt;span class="n">o_Color&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">vec2&lt;/span> &lt;span class="n">u_LightPosition&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 屏幕空间 [0, 1]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">vec3&lt;/span> &lt;span class="n">u_LightColor&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">float&lt;/span> &lt;span class="n">u_LightRadius&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 屏幕空间半径&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">float&lt;/span> &lt;span class="n">u_LightIntensity&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">float&lt;/span> &lt;span class="n">u_LightFalloff&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">float&lt;/span> &lt;span class="n">u_AspectRatio&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 聚光灯参数&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">int&lt;/span> &lt;span class="n">u_IsSpotLight&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">float&lt;/span> &lt;span class="n">u_LightDirection&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 弧度&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">float&lt;/span> &lt;span class="n">u_InnerAngle&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">float&lt;/span> &lt;span class="n">u_OuterAngle&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">const&lt;/span> &lt;span class="k">float&lt;/span> &lt;span class="n">PI&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">3.14159265359&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">void&lt;/span> &lt;span class="n">main&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec2&lt;/span> &lt;span class="n">uv&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">v_TexCoord&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 修正宽高比&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec2&lt;/span> &lt;span class="n">correctedUV&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">uv&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">correctedUV&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="n">u_AspectRatio&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec2&lt;/span> &lt;span class="n">correctedLightPos&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">u_LightPosition&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">correctedLightPos&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="n">u_AspectRatio&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 计算到光源的距离&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec2&lt;/span> &lt;span class="n">toLight&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">correctedUV&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">correctedLightPos&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">dist&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">length&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">toLight&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 距离衰减&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">normalizedDist&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">dist&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">u_LightRadius&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">u_AspectRatio&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">attenuation&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">1.0&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">pow&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">clamp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">normalizedDist&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">u_LightFalloff&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">attenuation&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">clamp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">attenuation&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 聚光灯角度衰减&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">angle&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">atan&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">toLight&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">toLight&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">angleDiff&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">abs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">angle&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">u_LightDirection&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 处理角度回绕&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">angleDiff&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">PI&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">angleDiff&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">2.0&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">PI&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">angleDiff&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">float&lt;/span> &lt;span class="n">spotFactor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">1.0&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">smoothstep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">u_InnerAngle&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">u_OuterAngle&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">angleDiff&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">attenuation&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="n">spotFactor&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec3&lt;/span> &lt;span class="n">finalColor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">u_LightColor&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">u_LightIntensity&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">attenuation&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">o_Color&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">vec4&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">finalColor&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;h4 id="其他问题">其他问题
+&lt;/h4>&lt;h5 id="如何处理光源叠加">如何处理光源叠加？
+&lt;/h5>&lt;p>场景中可能有多个光源——主角的手电筒、墙上的火把、地上的蜡烛&amp;hellip;
+最直接的想法是把所有光照效果&lt;strong>相加&lt;/strong>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">光源A + 光源B + 光源C = 最终光照
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在 OpenGL 中实现：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">glEnable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_BLEND&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">glBlendFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_ONE&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GL_ONE&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 源 × 1 + 目标 × 1
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="n">OpenGLLightingPass&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">BeginLightMap&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">LightingConfig&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">config&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">m_lightMapFBO&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">Bind&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 用环境光颜色清空光照图
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">glm&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">vec3&lt;/span> &lt;span class="n">ambient&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">config&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">ambientColor&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">config&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">ambientIntensity&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">glClearColor&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ambient&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ambient&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">g&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ambient&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">b&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.0f&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">glClear&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_COLOR_BUFFER_BIT&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 启用加法混合
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">glEnable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_BLEND&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">glBlendFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_ONE&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GL_ONE&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="n">OpenGLLightingPass&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">EndLightMap&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 恢复标准 Alpha 混合
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">glBlendFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_SRC_ALPHA&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GL_ONE_MINUS_SRC_ALPHA&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">m_lightMapFBO&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">Unbind&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;h5 id="framebuffer-渲染管线">Framebuffer 渲染管线
+&lt;/h5>&lt;p>&lt;strong>渲染代码：&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;span class="lnt">75
+&lt;/span>&lt;span class="lnt">76
+&lt;/span>&lt;span class="lnt">77
+&lt;/span>&lt;span class="lnt">78
+&lt;/span>&lt;span class="lnt">79
+&lt;/span>&lt;span class="lnt">80
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="n">LightLayer&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">OnUpdate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Yuicy&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Timestep&lt;/span> &lt;span class="n">ts&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 获取鼠标位置（屏幕坐标）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">auto&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">mouseX&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">mouseY&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Yuicy&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Input&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">GetMousePosition&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 归一化、Y轴翻转
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">glm&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">vec2&lt;/span> &lt;span class="n">mouseUV&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="n">mouseX&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">viewportSize&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.0f&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">mouseY&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">viewportSize&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">)};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 假设灯光射出位置为屏幕中心
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">glm&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">vec2&lt;/span> &lt;span class="n">lightPos&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mf">0.5f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.5f&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 灯光照射角度
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">glm&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">vec2&lt;/span> &lt;span class="n">dir&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">mouseUV&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">lightPos&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lightDirection&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">atan2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dir&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dir&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 场景渲染
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">sceneFbo&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">Bind&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Yuicy&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">RenderCommand&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">SetClearColor&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="mf">0.1f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.1f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.1f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.0f&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Yuicy&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">RenderCommand&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Clear&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Render...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">sceneFbo&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">Unbind&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 灯光渲染
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">lightFbo&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">Bind&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 清屏
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">glm&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">vec3&lt;/span> &lt;span class="n">ambient&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">ambientColor&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">ambientIntensity&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Yuicy&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">RenderCommand&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">SetClearColor&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="n">ambient&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">r&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ambient&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">g&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ambient&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">b&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.0f&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Yuicy&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">RenderCommand&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Clear&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">lightEnabled&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 混合模式处理灯光叠加
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">glEnable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_BLEND&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">glBlendFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_ONE&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GL_ONE&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lightShader&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">Bind&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lightShader&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">SetFloat2&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;u_LightPosition&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mf">0.5f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.5f&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lightShader&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">SetFloat3&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;u_LightColor&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lightColor&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lightShader&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">SetFloat&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;u_LightRadius&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lightRadius&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lightShader&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">SetFloat&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;u_LightIntensity&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lightIntensity&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lightShader&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">SetFloat&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;u_LightFalloff&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lightFalloff&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lightShader&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">SetFloat&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;u_AspectRatio&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">viewportSize&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">viewportSize&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lightShader&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">SetFloat&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;u_LightDirection&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lightDirection&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lightShader&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">SetFloat&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;u_InnerAngle&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">innerAngle&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lightShader&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">SetFloat&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;u_OuterAngle&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">outerAngle&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">quadVao&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">Bind&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Yuicy&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">RenderCommand&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">DrawIndexed&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">quadVao&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">glBlendFunc&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_SRC_ALPHA&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GL_ONE_MINUS_SRC_ALPHA&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lightFbo&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">Unbind&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 场景混合着色器
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">Yuicy&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">RenderCommand&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">SetClearColor&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="mf">0.0f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.0f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.0f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">1.0f&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Yuicy&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">RenderCommand&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Clear&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">compositeShader&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">Bind&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 绑定场景纹理
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">uint32_t&lt;/span> &lt;span class="n">sceneTexId&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sceneFbo&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">GetColorAttachmentRendererID&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// glBindTextureUnit(0, sceneTexId);
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">glActiveTexture&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_TEXTURE0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">glBindTexture&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_TEXTURE_2D&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">sceneTexId&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">compositeShader&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">SetInt&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;u_SceneTexture&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 绑定灯光纹理
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">uint32_t&lt;/span> &lt;span class="n">lightTexId&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">lightFbo&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">GetColorAttachmentRendererID&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// glBindTextureUnit(1, lightTexId);
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">glActiveTexture&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_TEXTURE1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">glBindTexture&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_TEXTURE_2D&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lightTexId&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">compositeShader&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">SetInt&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;u_LightMap&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">compositeShader&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">SetInt&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;u_LightingEnabled&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lightEnabled&lt;/span> &lt;span class="o">?&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">quadVao&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">Bind&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Yuicy&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">RenderCommand&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">DrawIndexed&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">quadVao&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;p>要在后处理中加入光照，只需要将光照计算的结果与其他处理效果相乘：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-glsl" data-lang="glsl">&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">sampler2D&lt;/span> &lt;span class="n">u_ScreenTexture&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 场景纹理&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">sampler2D&lt;/span> &lt;span class="n">u_LightMap&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 光照图&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">uniform&lt;/span> &lt;span class="k">int&lt;/span> &lt;span class="n">u_LightingEnabled&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">void&lt;/span> &lt;span class="n">main&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec4&lt;/span> &lt;span class="n">sceneColor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">texture&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">u_ScreenTexture&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">v_TexCoord&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">u_LightingEnabled&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="mo">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">vec3&lt;/span> &lt;span class="n">lightColor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">texture&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">u_LightMap&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">v_TexCoord&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="n">rgb&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sceneColor&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">rgb&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="n">lightColor&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">o_Color&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sceneColor&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;div class="draggable-container">
+&lt;div class="draggable-content">
+&lt;object type="image/svg+xml" data="Frame.svg" style="width: 2170px; height: 2963px;">
+您的浏览器不支持 SVG
+&lt;/object>
+&lt;/div>
+&lt;/div></description></item><item><title>Hazel学习笔记：Renderer2D（持续更新）</title><link>https://SSmallOrange.github.io/p/hazel-learning-1/</link><pubDate>Mon, 24 Nov 2025 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/hazel-learning-1/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/hazel-learning-1/background.png" alt="Featured image of post Hazel学习笔记：Renderer2D（持续更新）" />&lt;h1 id="hazel学习笔记renderer2d部分">Hazel学习笔记：Renderer2D部分
 &lt;/h1>&lt;p>​ 最近一段时间一直想拓展一下个人的技术栈，想学习一些图形学的知识，毕竟目前在做客户端相关的开发，学一些图形相关的知识应该也没有什么坏处，从我过去一段时间的工作经历来看：只要是学过的芝士，总有一天会用得上的。&lt;/p>
 &lt;p>​ 正好翻B站看到了有人搬运了&lt;a class="link" href="https://www.youtube.com/@TheCherno" target="_blank" rel="noopener"
 >TheCherno&lt;/a>大佬的&lt;code>Hazel游戏引擎&lt;/code>教程，就决定从这里入手学习，了解&lt;code>OpenGL&lt;/code>和一些图形学的基础知识，并将一些芝士整理在此， 对于引擎基础部分的搭建就先略过（比如：日志部分（&lt;code>log&lt;/code>）、项目搭建（&lt;code>Premake&lt;/code>）、事件、窗口等，后面可以单开一节整理&lt;code>Premake&lt;/code>和性能分析部分），重点整理他对&lt;code>OpenGL&lt;/code>的封装部分，以及后面的Renderer2D的抽象。&lt;/p>
