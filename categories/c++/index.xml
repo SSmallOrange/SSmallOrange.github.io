@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>C++ on Small_Orange</title><link>https://SSmallOrange.github.io/categories/c++/</link><description>Recent content in C++ on Small_Orange</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 02 Feb 2026 22:00:31 +0800</lastBuildDate><atom:link href="https://SSmallOrange.github.io/categories/c++/index.xml" rel="self" type="application/rss+xml"/><item><title>Sol2：在C++中调用Lua脚本</title><link>https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/</link><pubDate>Mon, 02 Feb 2026 21:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/background.png" alt="Featured image of post Sol2：在C++中调用Lua脚本" />&lt;h1 id="sol2在c中调用lua脚本">Sol2：在C++中调用Lua脚本
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>C++ on Small_Orange</title><link>https://SSmallOrange.github.io/categories/c++/</link><description>Recent content in C++ on Small_Orange</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 27 Feb 2026 23:00:31 +0800</lastBuildDate><atom:link href="https://SSmallOrange.github.io/categories/c++/index.xml" rel="self" type="application/rss+xml"/><item><title>Sol2：在C++中调用Lua脚本</title><link>https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/</link><pubDate>Mon, 02 Feb 2026 21:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/background.png" alt="Featured image of post Sol2：在C++中调用Lua脚本" />&lt;h1 id="sol2在c中调用lua脚本">Sol2：在C++中调用Lua脚本
 &lt;/h1>&lt;blockquote>
 &lt;p>本文档记录了在 C++ 代码中使用 sol2 嵌入 Lua 脚本时的一些个人理解。&lt;/p>&lt;/blockquote>
 &lt;hr>
@@ -2060,4 +2060,9 @@ C++20 Concepts 的核心优势是&lt;strong>语义化&lt;/strong>：让代码比
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item></channel></rss>
+&lt;/div></description></item><item><title>技术碎片（持续更新）</title><link>https://SSmallOrange.github.io/p/technological-fragments/</link><pubDate>Sun, 20 Jul 2025 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/technological-fragments/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/technological-fragments/background.png" alt="Featured image of post 技术碎片（持续更新）" />&lt;h1 id="modern-c">Modern C++
+&lt;/h1>&lt;h2 id="grammar">Grammar
+&lt;/h2>&lt;h1 id="algorithm-template">Algorithm Template
+&lt;/h1>&lt;h1 id="qt">Qt
+&lt;/h1>&lt;h1 id="场景问题">场景问题
+&lt;/h1></description></item></channel></rss>
