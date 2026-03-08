@@ -1,4 +1,4 @@
-<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="C++语法、场景问题与工程杂谈"><title>技术碎片（持续更新）</title><link rel=canonical href=https://SSmallOrange.github.io/p/technological-fragments/><link rel=stylesheet href=https://SSmallOrange.github.io/scss/style.min.2043f885f6f353b052f2d6886e6e8b3447f4695c78c150b823fb8386ee34a229.css><meta property='og:title' content="技术碎片（持续更新）"><meta property='og:description' content="C++语法、场景问题与工程杂谈"><meta property='og:url' content='https://SSmallOrange.github.io/p/technological-fragments/'><meta property='og:site_name' content='Small_Orange'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='C++'><meta property='article:published_time' content='2025-07-20T20:00:31+08:00'><meta property='article:modified_time' content='2026-02-27T23:00:31+08:00'><meta property='og:image' content='https://SSmallOrange.github.io/p/technological-fragments/background.png'><meta name=twitter:title content="技术碎片（持续更新）"><meta name=twitter:description content="C++语法、场景问题与工程杂谈"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://SSmallOrange.github.io/p/technological-fragments/background.png'><link rel="shortcut icon" href=https://SSmallOrange.github.io/cat.ico><style>:root{--sys-font-family:"HarmonyOS_Sans_SC_Medium", Georgia, -apple-system, 'Nimbus Roman No9 L', 'PingFang SC', 'Hiragino Sans GB', 'Noto Serif SC', 'Microsoft Yahei', 'WenQuanYi Micro Hei', 'ST Heiti', sans-serif;--code-font-family:"JetBrainsMono Regular", Menlo, Monaco, Consolas, "Courier New";--article-font-family:"HarmonyOS_Sans_SC_Medium", var(--base-font-family)}</style><script>(function(){const e=document.createElement("link");e.href="https://cdn.staticfile.org/lxgw-wenkai-screen-webfont/1.6.0/style.css",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"dark")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="C++语法、场景问题与工程杂谈"><title>技术碎片（持续更新）</title><link rel=canonical href=https://SSmallOrange.github.io/p/technological-fragments/><link rel=stylesheet href=https://SSmallOrange.github.io/scss/style.min.2043f885f6f353b052f2d6886e6e8b3447f4695c78c150b823fb8386ee34a229.css><meta property='og:title' content="技术碎片（持续更新）"><meta property='og:description' content="C++语法、场景问题与工程杂谈"><meta property='og:url' content='https://SSmallOrange.github.io/p/technological-fragments/'><meta property='og:site_name' content='Small_Orange'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='技术碎片'><meta property='article:published_time' content='2025-07-20T20:00:31+08:00'><meta property='article:modified_time' content='2026-02-27T23:00:31+08:00'><meta property='og:image' content='https://SSmallOrange.github.io/p/technological-fragments/background.png'><meta name=twitter:title content="技术碎片（持续更新）"><meta name=twitter:description content="C++语法、场景问题与工程杂谈"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://SSmallOrange.github.io/p/technological-fragments/background.png'><link rel="shortcut icon" href=https://SSmallOrange.github.io/cat.ico><style>:root{--sys-font-family:"HarmonyOS_Sans_SC_Medium", Georgia, -apple-system, 'Nimbus Roman No9 L', 'PingFang SC', 'Hiragino Sans GB', 'Noto Serif SC', 'Microsoft Yahei', 'WenQuanYi Micro Hei', 'ST Heiti', sans-serif;--code-font-family:"JetBrainsMono Regular", Menlo, Monaco, Consolas, "Courier New";--article-font-family:"HarmonyOS_Sans_SC_Medium", var(--base-font-family)}</style><script>(function(){const e=document.createElement("link");e.href="https://cdn.staticfile.org/lxgw-wenkai-screen-webfont/1.6.0/style.css",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"dark")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
 <span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=https://SSmallOrange.github.io/><img src=https://SSmallOrange.github.io/img/avatar_hu_5319720d44cc86.png width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=https://SSmallOrange.github.io/>Small_Orange</a></h1><h2 class=site-description>微风需要竹林，溪流需要蜻蜓</h2></div></header><ol class=menu-social><li><a href=https://github.com/SSmallOrange target=_blank title=GitHub rel=me><!doctype html><svg t="1754840269730" class="icon" viewBox="0 0 1024 1024" p-id="1463" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M682.215454 981.446137c-25.532318.0-42.553863-17.021545-42.553864-42.553864V772.932206c4.255386-34.043091-8.510773-59.575409-29.787704-80.852341-12.766159-12.766159-17.021545-29.787704-8.510773-42.553864 4.255386-17.021545 21.276932-25.532318 34.043091-29.787704 123.406204-12.766159 238.301635-55.320023 238.301635-255.323181.0-46.80925-17.021545-93.6185-51.064636-131.916976-12.766159-12.766159-12.766159-29.787704-8.510772-42.553864 12.766159-34.043091 12.766159-68.086182 4.255386-102.129272-21.276932 4.255386-55.320023 17.021545-110.640045 55.320022-8.510773 8.510773-21.276932 8.510773-34.043091 4.255387-89.363113-25.532318-187.236999-25.532318-276.600112.0-12.766159 4.255386-25.532318 4.255386-38.298477-4.255387C307.741455 104.836549 269.442978 92.07039 248.166047 87.815004c-8.510773 34.043091-8.510773 68.086182 4.255386 102.129272 4.255386 17.021545 4.255386 34.043091-8.510773 42.553864-34.043091 38.298477-51.064636 85.107727-51.064636 131.916976.0 200.003158 114.895431 242.557022 238.301635 255.323181 17.021545.0 29.787704 12.766159 34.043091 29.787704 4.255386 17.021545.0 34.043091-8.510773 42.553864-21.276932 21.276932-29.787704 46.80925-29.787704 76.596954v165.960068c0 25.532318-17.021545 42.553863-42.553863 42.553863s-42.553863-17.021545-42.553864-42.553863v-72.341568c-127.66159 21.276932-182.981613-51.064636-221.28009-97.873886-17.021545-21.276932-29.787704-38.298477-46.80925-42.553864-21.276932-4.255386-38.298477-29.787704-29.787704-51.064636 4.255386-21.276932 29.787704-38.298477 51.064636-29.787704 42.553863 12.766159 68.086182 42.553863 93.6185 72.341568 34.043091 46.80925 63.830795 80.852341 153.193908 63.830795v-4.255386c0-25.532318 4.255386-55.320023 12.766159-76.596955-119.150818-25.532318-246.812408-102.129272-246.812408-327.664748.0-63.830795 21.276932-123.406204 59.575409-170.215454-17.021545-59.575409-12.766159-114.895431 12.766159-170.215454 4.255386-12.766159 12.766159-21.276932 25.532318-25.532318 17.021545-4.255386 72.341568-12.766159 187.236999 59.575409 93.6185-21.276932 191.492386-21.276932 280.855499.0 110.640045-72.341568 170.215454-63.830795 187.236999-59.575409 12.766159 4.255386 21.276932 12.766159 25.532319 25.532318 21.276932 55.320023 25.532318 110.640045 12.766159 165.960067 38.298477 46.80925 59.575409 106.384659 59.575408 170.215454.0 242.557022-144.683136 306.387817-246.812408 331.920135 8.510773 25.532318 12.766159 55.320023 12.766159 80.852341V938.892273c0 25.532318-17.021545 42.553863-42.553863 42.553864z" p-id="1464" fill="#bfbfbf"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=https://SSmallOrange.github.io/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
 <span>主页</span></a></li><li><a href=https://SSmallOrange.github.io/%E5%85%B3%E4%BA%8E/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
 <span>关于</span></a></li><li><a href=https://SSmallOrange.github.io/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
@@ -6,10 +6,907 @@
 <span>Search</span></a></li><li><a href=https://SSmallOrange.github.io/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
 <span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
 <svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
-<span>暗色模式</span></li></ol></li></ol></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=https://SSmallOrange.github.io/p/technological-fragments/><img src=https://SSmallOrange.github.io/p/technological-fragments/background_hu_fa53946a66f2aa37.png srcset="https://SSmallOrange.github.io/p/technological-fragments/background_hu_fa53946a66f2aa37.png 800w, https://SSmallOrange.github.io/p/technological-fragments/background_hu_d2f3e1a7e8c3e52d.png 1600w" width=800 height=450 loading=lazy alt="Featured image of post 技术碎片（持续更新）"></a></div><div class=article-details><header class=article-category><a href=https://SSmallOrange.github.io/categories/%E9%9D%A2%E8%AF%95/>面试
-</a><a href=https://SSmallOrange.github.io/categories/c++/>C++</a></header><div class=article-title-wrapper><h2 class=article-title><a href=https://SSmallOrange.github.io/p/technological-fragments/>技术碎片（持续更新）</a></h2><h3 class=article-subtitle>C++语法、场景问题与工程杂谈</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#grammar>Grammar</a><ol><li><a href=#stdranges>std::ranges</a></li><li><a href=#stdfilesystem>std::filesystem</a></li><li><a href=#容器小tips>容器小tips</a></li><li><a href=#containertool-class>Container/Tool Class</a><ol><li><a href=#stdstring>std::string</a></li><li><a href=#stdvector>std::vector</a></li><li><a href=#堆栈>堆、栈</a></li><li><a href=#stdmap>std::map</a></li><li><a href=#线程池>线程池</a></li><li><a href=#无锁队列>无锁队列</a></li></ol></li></ol></li><li><a href=#algorithm-template>Algorithm Template</a><ol><li><a href=#排序>排序</a><ol><li><a href=#快速排序>快速排序</a></li><li><a href=#归并排序>归并排序</a></li></ol></li><li><a href=#并查集>并查集</a></li><li><a href=#trie-树>Trie 树</a></li><li><a href=#lru>LRU</a></li><li><a href=#二叉平衡树>二叉平衡树</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=https://SSmallOrange.github.io/p/technological-fragments/><img src=https://SSmallOrange.github.io/p/technological-fragments/background_hu_fa53946a66f2aa37.png srcset="https://SSmallOrange.github.io/p/technological-fragments/background_hu_fa53946a66f2aa37.png 800w, https://SSmallOrange.github.io/p/technological-fragments/background_hu_d2f3e1a7e8c3e52d.png 1600w" width=800 height=450 loading=lazy alt="Featured image of post 技术碎片（持续更新）"></a></div><div class=article-details><header class=article-category><a href=https://SSmallOrange.github.io/categories/c++/>C++</a></header><div class=article-title-wrapper><h2 class=article-title><a href=https://SSmallOrange.github.io/p/technological-fragments/>技术碎片（持续更新）</a></h2><h3 class=article-subtitle>C++语法、场景问题与工程杂谈</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
 <time class=article-time--published>Jul 20, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-<time class=article-time--reading>阅读时长: 1 分钟</time></div></footer></div></header><section class=article-content><h1 id=modern-c>Modern C++</h1><h2 id=grammar>Grammar</h2><h1 id=algorithm-template>Algorithm Template</h1><h1 id=qt>Qt</h1><h1 id=场景问题>场景问题</h1></section><footer class=article-footer><section class=article-tags><a href=https://SSmallOrange.github.io/tags/c++/>C++</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<time class=article-time--reading>阅读时长: 7 分钟</time></div></footer></div></header><section class=article-content><h1 id=modern-c>Modern C++</h1><h2 id=grammar>Grammar</h2><h3 id=stdranges>std::ranges</h3><p>std::ranges 库的核心思想是让算法直接操作容器（而非迭代器对），并支持管道式（pipeline）链式调用。</p><p>对比以前的迭代器使用方式：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=c1>// 找到指定元素
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>std</span><span class=o>::</span><span class=n>sort</span><span class=p>(</span><span class=n>v</span><span class=p>.</span><span class=n>begin</span><span class=p>(),</span> <span class=n>v</span><span class=p>.</span><span class=n>end</span><span class=p>());</span>
+</span></span><span class=line><span class=cl><span class=k>auto</span> <span class=n>it</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>find</span><span class=p>(</span><span class=n>v</span><span class=p>.</span><span class=n>begin</span><span class=p>(),</span> <span class=n>v</span><span class=p>.</span><span class=n>end</span><span class=p>(),</span> <span class=mi>4</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// std::ranges
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>std</span><span class=o>::</span><span class=n>ranges</span><span class=o>::</span><span class=n>sort</span><span class=p>(</span><span class=n>v</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=k>auto</span> <span class=n>it</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>ranges</span><span class=o>::</span><span class=n>find</span><span class=p>(</span><span class=n>v</span><span class=p>,</span> <span class=mi>4</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>以下是一些std::ranges的常用方式：</p><p><strong>转换：</strong></p><ul><li><strong>std::transform</strong><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++></code></pre></td></tr></table></div></div></li></ul><p><strong>过滤：</strong></p><ul><li><strong>std::filter</strong><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++></code></pre></td></tr></table></div></div></li></ul><p><strong>排序：</strong></p><ul><li><strong>std::sort</strong><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++></code></pre></td></tr></table></div></div></li></ul><p><strong>查找：</strong></p><ul><li><p><strong>std::find</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++></code></pre></td></tr></table></div></div><p><strong>遍历：</strong></p></li><li><p><strong>for_each</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=c1>// 将数组内所有元素置0
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>matrix</span><span class=p>{</span><span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=n>std</span><span class=o>::</span><span class=n>ranges</span><span class=o>::</span><span class=n>for_each</span><span class=p>(</span><span class=n>matrix</span><span class=p>,</span> <span class=p>[](</span><span class=k>auto</span><span class=o>&amp;</span> <span class=n>value</span><span class=p>)</span> <span class=p>{</span> <span class=n>value</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div></li></ul><p><strong>判断是否存在满足条件的元素：</strong></p><ul><li><strong>contains</strong><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=c1>// 检查是否包含0元素
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>matrix</span><span class=p>{</span><span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=kt>bool</span> <span class=n>hasZero</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>ranges</span><span class=o>::</span><span class=n>contains</span><span class=p>(</span><span class=n>matrix</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><strong>any_of</strong><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=c1>// 检查是否包含0元素
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>matrix</span><span class=p>{</span><span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=kt>bool</span> <span class=n>hasZero</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>ranges</span><span class=o>::</span><span class=n>any_of</span><span class=p>(</span><span class=n>matrix</span><span class=p>,</span> <span class=p>[](</span><span class=k>auto</span><span class=o>&amp;</span> <span class=n>value</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kt>bool</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>value</span> <span class=o>==</span> <span class=mi>0</span> 
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span></code></pre></td></tr></table></div></div></li></ul><p><strong>其他：</strong></p><ul><li><p><strong>take</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++></code></pre></td></tr></table></div></div></li></ul><hr><h3 id=stdfilesystem>std::filesystem</h3><h3 id=容器小tips>容器小tips</h3><hr><h3 id=containertool-class>Container/Tool Class</h3><h4 id=stdstring>std::string</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span><span class=lnt>226
+</span><span class=lnt>227
+</span><span class=lnt>228
+</span><span class=lnt>229
+</span><span class=lnt>230
+</span><span class=lnt>231
+</span><span class=lnt>232
+</span><span class=lnt>233
+</span><span class=lnt>234
+</span><span class=lnt>235
+</span><span class=lnt>236
+</span><span class=lnt>237
+</span><span class=lnt>238
+</span><span class=lnt>239
+</span><span class=lnt>240
+</span><span class=lnt>241
+</span><span class=lnt>242
+</span><span class=lnt>243
+</span><span class=lnt>244
+</span><span class=lnt>245
+</span><span class=lnt>246
+</span><span class=lnt>247
+</span><span class=lnt>248
+</span><span class=lnt>249
+</span><span class=lnt>250
+</span><span class=lnt>251
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;cstring&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;algorithm&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdexcept&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>MyString</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	<span class=k>using</span> <span class=n>iterator</span> <span class=o>=</span> <span class=kt>char</span><span class=o>*</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=k>using</span> <span class=n>const_iterator</span> <span class=o>=</span> <span class=k>const</span> <span class=kt>char</span><span class=o>*</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=k>static</span> <span class=k>const</span> <span class=n>size_t</span> <span class=n>npos</span> <span class=o>=</span> <span class=k>static_cast</span><span class=o>&lt;</span><span class=n>size_t</span><span class=o>&gt;</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>MyString</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=o>:</span> <span class=n>m_data</span><span class=p>(</span><span class=k>new</span> <span class=kt>char</span><span class=p>[</span><span class=mi>1</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>		<span class=p>,</span> <span class=n>m_size</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>,</span> <span class=n>m_capacity</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=n>m_data</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=sc>&#39;\0&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>MyString</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>str</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>(</span><span class=n>str</span> <span class=o>==</span> <span class=k>nullptr</span><span class=p>)</span> 
+</span></span><span class=line><span class=cl>		<span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=n>m_size</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>			<span class=n>m_capacity</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>			<span class=n>m_data</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>char</span><span class=p>[</span><span class=mi>1</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>			<span class=n>m_data</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=sc>&#39;\0&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=k>else</span>
+</span></span><span class=line><span class=cl>		<span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=n>m_size</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>strlen</span><span class=p>(</span><span class=n>str</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>			<span class=n>m_capacity</span> <span class=o>=</span> <span class=n>m_size</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>			<span class=n>m_data</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>char</span><span class=p>[</span><span class=n>m_capacity</span> <span class=o>+</span> <span class=mi>1</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>			<span class=n>std</span><span class=o>::</span><span class=n>memcpy</span><span class=p>(</span><span class=n>m_data</span><span class=p>,</span> <span class=n>str</span><span class=p>,</span> <span class=n>m_size</span> <span class=o>+</span> <span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>MyString</span><span class=p>(</span><span class=n>size_t</span> <span class=n>count</span><span class=p>,</span> <span class=kt>char</span> <span class=n>ch</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=o>:</span> <span class=n>m_data</span><span class=p>(</span><span class=k>new</span> <span class=kt>char</span><span class=p>[</span><span class=n>count</span> <span class=o>+</span> <span class=mi>1</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>		<span class=p>,</span> <span class=n>m_size</span><span class=p>(</span><span class=n>count</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>,</span> <span class=n>m_capacity</span><span class=p>(</span><span class=n>count</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=n>std</span><span class=o>::</span><span class=n>memset</span><span class=p>(</span><span class=n>m_data</span><span class=p>,</span> <span class=n>ch</span><span class=p>,</span> <span class=n>count</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>m_data</span><span class=p>[</span><span class=n>m_size</span><span class=p>]</span> <span class=o>=</span> <span class=sc>&#39;\0&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=o>~</span><span class=n>MyString</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>delete</span><span class=p>[]</span> <span class=n>m_data</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 拷贝构造
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>MyString</span><span class=p>(</span><span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>other</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=o>:</span> <span class=n>m_data</span><span class=p>(</span><span class=k>new</span> <span class=kt>char</span><span class=p>[</span><span class=n>other</span><span class=p>.</span><span class=n>m_size</span> <span class=o>+</span> <span class=mi>1</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>		<span class=p>,</span> <span class=n>m_size</span><span class=p>(</span><span class=n>other</span><span class=p>.</span><span class=n>m_size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>,</span> <span class=n>m_capacity</span><span class=p>(</span><span class=n>other</span><span class=p>.</span><span class=n>m_size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=n>std</span><span class=o>::</span><span class=n>memcpy</span><span class=p>(</span><span class=n>m_data</span><span class=p>,</span> <span class=n>other</span><span class=p>.</span><span class=n>m_data</span><span class=p>,</span> <span class=n>m_size</span> <span class=o>+</span> <span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 移动构造
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>MyString</span><span class=p>(</span><span class=n>MyString</span><span class=o>&amp;&amp;</span> <span class=n>other</span><span class=p>)</span> <span class=k>noexcept</span>
+</span></span><span class=line><span class=cl>		<span class=o>:</span> <span class=n>m_data</span><span class=p>(</span><span class=n>other</span><span class=p>.</span><span class=n>m_data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>,</span> <span class=n>m_size</span><span class=p>(</span><span class=n>other</span><span class=p>.</span><span class=n>m_size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>,</span> <span class=n>m_capacity</span><span class=p>(</span><span class=n>other</span><span class=p>.</span><span class=n>m_capacity</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=n>other</span><span class=p>.</span><span class=n>m_data</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>char</span><span class=p>[</span><span class=mi>1</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>		<span class=n>other</span><span class=p>.</span><span class=n>m_data</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=sc>&#39;\0&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=n>other</span><span class=p>.</span><span class=n>m_size</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=n>other</span><span class=p>.</span><span class=n>m_capacity</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>MyString</span><span class=o>&amp;</span> <span class=k>operator</span><span class=o>=</span><span class=p>(</span><span class=n>MyString</span> <span class=n>other</span><span class=p>)</span> <span class=k>noexcept</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=n>swap</span><span class=p>(</span><span class=n>other</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=o>*</span><span class=k>this</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 容量相关
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>size_t</span> <span class=nf>size</span><span class=p>()</span>     <span class=k>const</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_size</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=n>size_t</span> <span class=nf>length</span><span class=p>()</span>   <span class=k>const</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_size</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=n>size_t</span> <span class=nf>capacity</span><span class=p>()</span> <span class=k>const</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_capacity</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=kt>bool</span>   <span class=nf>empty</span><span class=p>()</span>    <span class=k>const</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_size</span> <span class=o>==</span> <span class=mi>0</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// c_str()
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=nf>c_str</span><span class=p>()</span>  <span class=k>const</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_data</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=nf>data</span><span class=p>()</span>   <span class=k>const</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_data</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 预分配容量
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=kt>void</span> <span class=nf>reserve</span><span class=p>(</span><span class=n>size_t</span> <span class=n>newCap</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>(</span><span class=n>newCap</span> <span class=o>&lt;=</span> <span class=n>m_capacity</span><span class=p>)</span> <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=kt>char</span><span class=o>*</span> <span class=n>newData</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>char</span><span class=p>[</span><span class=n>newCap</span> <span class=o>+</span> <span class=mi>1</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>		<span class=n>std</span><span class=o>::</span><span class=n>memcpy</span><span class=p>(</span><span class=n>newData</span><span class=p>,</span> <span class=n>m_data</span><span class=p>,</span> <span class=n>m_size</span> <span class=o>+</span> <span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=k>delete</span><span class=p>[]</span> <span class=n>m_data</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=n>m_data</span> <span class=o>=</span> <span class=n>newData</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=n>m_capacity</span> <span class=o>=</span> <span class=n>newCap</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=kt>void</span> <span class=nf>clear</span><span class=p>()</span> <span class=k>noexcept</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=n>m_size</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=n>m_data</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=sc>&#39;\0&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// operator[]
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=kt>char</span><span class=o>&amp;</span> <span class=k>operator</span><span class=p>[](</span><span class=n>size_t</span> <span class=n>pos</span><span class=p>)</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_data</span><span class=p>[</span><span class=n>pos</span><span class=p>];</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>const</span> <span class=kt>char</span><span class=o>&amp;</span> <span class=k>operator</span><span class=p>[](</span><span class=n>size_t</span> <span class=n>pos</span><span class=p>)</span> <span class=k>const</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_data</span><span class=p>[</span><span class=n>pos</span><span class=p>];</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// at() 做越界检查，抛 std::out_of_range
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=kt>char</span><span class=o>&amp;</span> <span class=n>at</span><span class=p>(</span><span class=n>size_t</span> <span class=n>pos</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>(</span><span class=n>pos</span> <span class=o>&gt;=</span> <span class=n>m_size</span><span class=p>)</span> <span class=k>throw</span> <span class=n>std</span><span class=o>::</span><span class=n>out_of_range</span><span class=p>(</span><span class=s>&#34;MyString::at&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=n>m_data</span><span class=p>[</span><span class=n>pos</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>const</span> <span class=kt>char</span><span class=o>&amp;</span> <span class=n>at</span><span class=p>(</span><span class=n>size_t</span> <span class=n>pos</span><span class=p>)</span> <span class=k>const</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>(</span><span class=n>pos</span> <span class=o>&gt;=</span> <span class=n>m_size</span><span class=p>)</span> <span class=k>throw</span> <span class=n>std</span><span class=o>::</span><span class=n>out_of_range</span><span class=p>(</span><span class=s>&#34;MyString::at&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=n>m_data</span><span class=p>[</span><span class=n>pos</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=kt>char</span><span class=o>&amp;</span> <span class=n>front</span><span class=p>()</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_data</span><span class=p>[</span><span class=mi>0</span><span class=p>];</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>const</span> <span class=kt>char</span><span class=o>&amp;</span> <span class=n>front</span><span class=p>()</span> <span class=k>const</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_data</span><span class=p>[</span><span class=mi>0</span><span class=p>];</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=kt>char</span><span class=o>&amp;</span> <span class=n>back</span><span class=p>()</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_data</span><span class=p>[</span><span class=n>m_size</span> <span class=o>-</span> <span class=mi>1</span><span class=p>];</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>const</span> <span class=kt>char</span><span class=o>&amp;</span> <span class=n>back</span><span class=p>()</span>  <span class=k>const</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_data</span><span class=p>[</span><span class=n>m_size</span> <span class=o>-</span> <span class=mi>1</span><span class=p>];</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=c1>// 修改
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>MyString</span><span class=o>&amp;</span> <span class=k>operator</span><span class=o>+=</span><span class=p>(</span><span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>rhs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=n>append</span><span class=p>(</span><span class=n>rhs</span><span class=p>.</span><span class=n>m_data</span><span class=p>,</span> <span class=n>rhs</span><span class=p>.</span><span class=n>m_size</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=o>*</span><span class=k>this</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>MyString</span><span class=o>&amp;</span> <span class=k>operator</span><span class=o>+=</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>str</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=n>append</span><span class=p>(</span><span class=n>str</span><span class=p>,</span> <span class=n>std</span><span class=o>::</span><span class=n>strlen</span><span class=p>(</span><span class=n>str</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=o>*</span><span class=k>this</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>MyString</span><span class=o>&amp;</span> <span class=k>operator</span><span class=o>+=</span><span class=p>(</span><span class=kt>char</span> <span class=n>ch</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=n>push_back</span><span class=p>(</span><span class=n>ch</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=o>*</span><span class=k>this</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 2 倍扩容
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=kt>void</span> <span class=nf>push_back</span><span class=p>(</span><span class=kt>char</span> <span class=n>ch</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>(</span><span class=n>m_size</span> <span class=o>==</span> <span class=n>m_capacity</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=n>reserve</span><span class=p>(</span><span class=n>m_capacity</span> <span class=o>==</span> <span class=mi>0</span> <span class=o>?</span> <span class=mi>1</span> <span class=o>:</span> <span class=n>m_capacity</span> <span class=o>*</span> <span class=mi>2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=n>m_data</span><span class=p>[</span><span class=n>m_size</span><span class=o>++</span><span class=p>]</span> <span class=o>=</span> <span class=n>ch</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=n>m_data</span><span class=p>[</span><span class=n>m_size</span><span class=p>]</span> <span class=o>=</span> <span class=sc>&#39;\0&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=kt>void</span> <span class=nf>pop_back</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>(</span><span class=n>m_size</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=n>m_data</span><span class=p>[</span><span class=o>--</span><span class=n>m_size</span><span class=p>]</span> <span class=o>=</span> <span class=sc>&#39;\0&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>size_t</span> <span class=nf>find</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>target</span><span class=p>,</span> <span class=n>size_t</span> <span class=n>pos</span> <span class=o>=</span> <span class=mi>0</span><span class=p>)</span> <span class=k>const</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>(</span><span class=n>pos</span> <span class=o>&gt;</span> <span class=n>m_size</span><span class=p>)</span> <span class=k>return</span> <span class=n>npos</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>found</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>strstr</span><span class=p>(</span><span class=n>m_data</span> <span class=o>+</span> <span class=n>pos</span><span class=p>,</span> <span class=n>target</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=n>found</span> <span class=o>?</span> <span class=k>static_cast</span><span class=o>&lt;</span><span class=n>size_t</span><span class=o>&gt;</span><span class=p>(</span><span class=n>found</span> <span class=o>-</span> <span class=n>m_data</span><span class=p>)</span> <span class=o>:</span> <span class=n>npos</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>size_t</span> <span class=nf>find</span><span class=p>(</span><span class=kt>char</span> <span class=n>ch</span><span class=p>,</span> <span class=n>size_t</span> <span class=n>pos</span> <span class=o>=</span> <span class=mi>0</span><span class=p>)</span> <span class=k>const</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>for</span> <span class=p>(</span><span class=n>size_t</span> <span class=n>i</span> <span class=o>=</span> <span class=n>pos</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>m_size</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=p>(</span><span class=n>m_data</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=n>ch</span><span class=p>)</span> <span class=k>return</span> <span class=n>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=n>npos</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>size_t</span> <span class=nf>find</span><span class=p>(</span><span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>str</span><span class=p>,</span> <span class=n>size_t</span> <span class=n>pos</span> <span class=o>=</span> <span class=mi>0</span><span class=p>)</span> <span class=k>const</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=n>find</span><span class=p>(</span><span class=n>str</span><span class=p>.</span><span class=n>m_data</span><span class=p>,</span> <span class=n>pos</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>MyString</span> <span class=nf>substr</span><span class=p>(</span><span class=n>size_t</span> <span class=n>pos</span> <span class=o>=</span> <span class=mi>0</span><span class=p>,</span> <span class=n>size_t</span> <span class=n>count</span> <span class=o>=</span> <span class=n>npos</span><span class=p>)</span> <span class=k>const</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>(</span><span class=n>pos</span> <span class=o>&gt;</span> <span class=n>m_size</span><span class=p>)</span> <span class=k>throw</span> <span class=n>std</span><span class=o>::</span><span class=n>out_of_range</span><span class=p>(</span><span class=s>&#34;MyString::substr&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>size_t</span> <span class=n>len</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>min</span><span class=p>(</span><span class=n>count</span><span class=p>,</span> <span class=n>m_size</span> <span class=o>-</span> <span class=n>pos</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>MyString</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=n>result</span><span class=p>.</span><span class=n>reserve</span><span class=p>(</span><span class=n>len</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>result</span><span class=p>.</span><span class=n>m_size</span> <span class=o>=</span> <span class=n>len</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=n>std</span><span class=o>::</span><span class=n>memcpy</span><span class=p>(</span><span class=n>result</span><span class=p>.</span><span class=n>m_data</span><span class=p>,</span> <span class=n>m_data</span> <span class=o>+</span> <span class=n>pos</span><span class=p>,</span> <span class=n>len</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>result</span><span class=p>.</span><span class=n>m_data</span><span class=p>[</span><span class=n>len</span><span class=p>]</span> <span class=o>=</span> <span class=sc>&#39;\0&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=kt>void</span> <span class=nf>swap</span><span class=p>(</span><span class=n>MyString</span><span class=o>&amp;</span> <span class=n>other</span><span class=p>)</span> <span class=k>noexcept</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=n>std</span><span class=o>::</span><span class=n>swap</span><span class=p>(</span><span class=n>m_data</span><span class=p>,</span> <span class=n>other</span><span class=p>.</span><span class=n>m_data</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>std</span><span class=o>::</span><span class=n>swap</span><span class=p>(</span><span class=n>m_size</span><span class=p>,</span> <span class=n>other</span><span class=p>.</span><span class=n>m_size</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>std</span><span class=o>::</span><span class=n>swap</span><span class=p>(</span><span class=n>m_capacity</span><span class=p>,</span> <span class=n>other</span><span class=p>.</span><span class=n>m_capacity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=kt>int</span> <span class=nf>compare</span><span class=p>(</span><span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>other</span><span class=p>)</span> <span class=k>const</span> <span class=k>noexcept</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=n>std</span><span class=o>::</span><span class=n>strcmp</span><span class=p>(</span><span class=n>m_data</span><span class=p>,</span> <span class=n>other</span><span class=p>.</span><span class=n>m_data</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>iterator</span>       <span class=nf>begin</span><span class=p>()</span>        <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_data</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=n>iterator</span>       <span class=nf>end</span><span class=p>()</span>          <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_data</span> <span class=o>+</span> <span class=n>m_size</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=n>const_iterator</span> <span class=nf>begin</span><span class=p>()</span>  <span class=k>const</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_data</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=n>const_iterator</span> <span class=nf>end</span><span class=p>()</span>    <span class=k>const</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_data</span> <span class=o>+</span> <span class=n>m_size</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=n>const_iterator</span> <span class=nf>cbegin</span><span class=p>()</span> <span class=k>const</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_data</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=n>const_iterator</span> <span class=nf>cend</span><span class=p>()</span>   <span class=k>const</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>m_data</span> <span class=o>+</span> <span class=n>m_size</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// operator+
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>friend</span> <span class=n>MyString</span> <span class=k>operator</span><span class=o>+</span><span class=p>(</span><span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>lhs</span><span class=p>,</span> <span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>rhs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=n>MyString</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=n>result</span><span class=p>.</span><span class=n>reserve</span><span class=p>(</span><span class=n>lhs</span><span class=p>.</span><span class=n>m_size</span> <span class=o>+</span> <span class=n>rhs</span><span class=p>.</span><span class=n>m_size</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>result</span><span class=p>.</span><span class=n>append</span><span class=p>(</span><span class=n>lhs</span><span class=p>.</span><span class=n>m_data</span><span class=p>,</span> <span class=n>lhs</span><span class=p>.</span><span class=n>m_size</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>result</span><span class=p>.</span><span class=n>append</span><span class=p>(</span><span class=n>rhs</span><span class=p>.</span><span class=n>m_data</span><span class=p>,</span> <span class=n>rhs</span><span class=p>.</span><span class=n>m_size</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// 比较运算符：先比 size 做短路优化
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>friend</span> <span class=kt>bool</span> <span class=k>operator</span><span class=o>==</span><span class=p>(</span><span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>a</span><span class=p>,</span> <span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>b</span><span class=p>)</span> <span class=k>noexcept</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=n>a</span><span class=p>.</span><span class=n>m_size</span> <span class=o>==</span> <span class=n>b</span><span class=p>.</span><span class=n>m_size</span> <span class=o>&amp;&amp;</span> <span class=n>std</span><span class=o>::</span><span class=n>memcmp</span><span class=p>(</span><span class=n>a</span><span class=p>.</span><span class=n>m_data</span><span class=p>,</span> <span class=n>b</span><span class=p>.</span><span class=n>m_data</span><span class=p>,</span> <span class=n>a</span><span class=p>.</span><span class=n>m_size</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>friend</span> <span class=kt>bool</span> <span class=k>operator</span><span class=o>!=</span><span class=p>(</span><span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>a</span><span class=p>,</span> <span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>b</span><span class=p>)</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=o>!</span><span class=p>(</span><span class=n>a</span> <span class=o>==</span> <span class=n>b</span><span class=p>);</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>friend</span> <span class=kt>bool</span> <span class=k>operator</span><span class=o>&lt;</span> <span class=p>(</span><span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>a</span><span class=p>,</span> <span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>b</span><span class=p>)</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>a</span><span class=p>.</span><span class=n>compare</span><span class=p>(</span><span class=n>b</span><span class=p>)</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>friend</span> <span class=kt>bool</span> <span class=k>operator</span><span class=o>&lt;=</span><span class=p>(</span><span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>a</span><span class=p>,</span> <span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>b</span><span class=p>)</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>a</span><span class=p>.</span><span class=n>compare</span><span class=p>(</span><span class=n>b</span><span class=p>)</span> <span class=o>&lt;=</span> <span class=mi>0</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>friend</span> <span class=kt>bool</span> <span class=k>operator</span><span class=o>&gt;</span> <span class=p>(</span><span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>a</span><span class=p>,</span> <span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>b</span><span class=p>)</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>a</span><span class=p>.</span><span class=n>compare</span><span class=p>(</span><span class=n>b</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>friend</span> <span class=kt>bool</span> <span class=k>operator</span><span class=o>&gt;=</span><span class=p>(</span><span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>a</span><span class=p>,</span> <span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>b</span><span class=p>)</span> <span class=k>noexcept</span> <span class=p>{</span> <span class=k>return</span> <span class=n>a</span><span class=p>.</span><span class=n>compare</span><span class=p>(</span><span class=n>b</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=mi>0</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>private</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// 追加 len 个字符到末尾
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=kt>void</span> <span class=n>append</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>str</span><span class=p>,</span> <span class=n>size_t</span> <span class=n>len</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>(</span><span class=n>m_size</span> <span class=o>+</span> <span class=n>len</span> <span class=o>&gt;</span> <span class=n>m_capacity</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=n>reserve</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>max</span><span class=p>(</span><span class=n>m_capacity</span> <span class=o>*</span> <span class=mi>2</span><span class=p>,</span> <span class=n>m_size</span> <span class=o>+</span> <span class=n>len</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=n>std</span><span class=o>::</span><span class=n>memcpy</span><span class=p>(</span><span class=n>m_data</span> <span class=o>+</span> <span class=n>m_size</span><span class=p>,</span> <span class=n>str</span><span class=p>,</span> <span class=n>len</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=n>m_size</span> <span class=o>+=</span> <span class=n>len</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=n>m_data</span><span class=p>[</span><span class=n>m_size</span><span class=p>]</span> <span class=o>=</span> <span class=sc>&#39;\0&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=kt>char</span><span class=o>*</span> <span class=n>m_data</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=n>size_t</span> <span class=n>m_size</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=n>size_t</span> <span class=n>m_capacity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><h5 id=一些小细节>一些小细节</h5><p><strong>比较运算符</strong></p><p>关于比较运算符的重载，C++20提供了更高效的 <code>&lt;=></code> 运算符重载，可以更高效的重载比较运算符，所以上面的代码可以修改为：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;compare&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=c1>// ...
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>friend</span> <span class=kt>bool</span> <span class=k>operator</span><span class=o>==</span><span class=p>(</span><span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>a</span><span class=p>,</span> <span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>b</span><span class=p>)</span> <span class=k>noexcept</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>a</span><span class=p>.</span><span class=n>m_size</span> <span class=o>==</span> <span class=n>b</span><span class=p>.</span><span class=n>m_size</span> <span class=o>&amp;&amp;</span> <span class=n>std</span><span class=o>::</span><span class=n>memcmp</span><span class=p>(</span><span class=n>a</span><span class=p>.</span><span class=n>m_data</span><span class=p>,</span> <span class=n>b</span><span class=p>.</span><span class=n>m_data</span><span class=p>,</span> <span class=n>a</span><span class=p>.</span><span class=n>m_size</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>friend</span> <span class=n>std</span><span class=o>::</span><span class=n>strong_ordering</span> <span class=k>operator</span><span class=o>&lt;=&gt;</span><span class=p>(</span><span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>a</span><span class=p>,</span> <span class=k>const</span> <span class=n>MyString</span><span class=o>&amp;</span> <span class=n>b</span><span class=p>)</span> <span class=k>noexcept</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>result</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>strcmp</span><span class=p>(</span><span class=n>a</span><span class=p>.</span><span class=n>m_data</span><span class=p>,</span> <span class=n>b</span><span class=p>.</span><span class=n>m_data</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>result</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span> <span class=k>return</span> <span class=n>std</span><span class=o>::</span><span class=n>strong_ordering</span><span class=o>::</span><span class=n>less</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>result</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span> <span class=k>return</span> <span class=n>std</span><span class=o>::</span><span class=n>strong_ordering</span><span class=o>::</span><span class=n>greater</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>std</span><span class=o>::</span><span class=n>strong_ordering</span><span class=o>::</span><span class=n>equal</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>对于比较结果，C++20提供了三种不同强度的类型：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=n>std</span><span class=o>::</span><span class=n>strong_ordering</span>	<span class=c1>// ：强排序，equal时两个值完全相同，可以相互替换（枚举、字符串、Point值类型等）
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>std</span><span class=o>::</span><span class=n>weak_ordering</span>		<span class=c1>// ：弱排序，equal时两个值不一定完全相同，仅仅在判断时表示相同
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=n>std</span><span class=o>::</span><span class=n>partial_ordering</span>   <span class=c1>// ：部分排序，相比于weak_ordering，还多了一个 unordered 状态，表示两个值无法比较大小
+</span></span></span></code></pre></td></tr></table></div></div><p><strong>友元</strong></p><p>C++ 中有三种友元形式：<code>友元函数</code>、<code>友元类</code>、<code>友元成员函数</code>：</p><p><strong>友元函数</strong></p><p>类内定义的友元函数：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>class</span> <span class=nc>Object</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	<span class=n>Object</span><span class=p>(</span><span class=n>size_t</span> <span class=n>size</span><span class=p>)</span> <span class=o>:</span> <span class=n>m_size</span><span class=p>(</span><span class=n>size</span><span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 在类体内部直接定义
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>friend</span> <span class=kt>bool</span> <span class=k>operator</span><span class=o>==</span><span class=p>(</span><span class=k>const</span> <span class=n>Object</span><span class=o>&amp;</span> <span class=n>a</span><span class=p>,</span> <span class=k>const</span> <span class=n>Object</span><span class=o>&amp;</span> <span class=n>b</span><span class=p>)</span> <span class=k>noexcept</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>a</span><span class=p>.</span><span class=n>m_size</span> <span class=o>==</span> <span class=n>b</span><span class=p>.</span><span class=n>m_size</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=k>private</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>size_t</span> <span class=n>m_size</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>这种定义方式会使得函数在全局命名空间不可见，只有当参数中包含<code>Object</code>类时，才会在<code>Object</code>的命名空间中查找该函数。对于<code>Object(2) == 2</code> 和 <code>2 == Object(2)</code>，如果没有<code>friend</code>，后者会编译失败（在C++20之前）。</p><blockquote><p>C++20之后引入了新的 <code>==</code> 运算符规则，允许编译器翻转运算符两边的内容）。</p></blockquote><p>普通友元函数：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>class</span> <span class=nc>Object</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	<span class=n>Object</span><span class=p>(</span><span class=n>size_t</span> <span class=n>size</span><span class=p>)</span> <span class=o>:</span> <span class=n>m_size</span><span class=p>(</span><span class=n>size</span><span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>	<span class=k>friend</span> <span class=kt>bool</span> <span class=k>operator</span><span class=o>==</span><span class=p>(</span><span class=k>const</span> <span class=n>Object</span><span class=o>&amp;</span> <span class=n>a</span><span class=p>,</span> <span class=k>const</span> <span class=n>Object</span><span class=o>&amp;</span> <span class=n>b</span><span class=p>)</span> <span class=k>noexcept</span><span class=p>;</span>  <span class=c1>// 声明
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>private</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>size_t</span> <span class=n>m_size</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 在类外部定义
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>friend</span> <span class=kt>bool</span> <span class=k>operator</span><span class=o>==</span><span class=p>(</span><span class=k>const</span> <span class=n>Object</span><span class=o>&amp;</span> <span class=n>a</span><span class=p>,</span> <span class=k>const</span> <span class=n>Object</span><span class=o>&amp;</span> <span class=n>b</span><span class=p>)</span> <span class=k>noexcept</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>a</span><span class=p>.</span><span class=n>m_size</span> <span class=o>==</span> <span class=n>b</span><span class=p>.</span><span class=n>m_size</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>适用于同时需要访问两个类的私有成员的场景。</p><p><strong>友元类</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>class</span> <span class=nc>Object</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	<span class=n>Object</span><span class=p>(</span><span class=n>size_t</span> <span class=n>size</span><span class=p>)</span> <span class=o>:</span> <span class=n>m_size</span><span class=p>(</span><span class=n>size</span><span class=p>)</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>	<span class=k>friend</span> <span class=k>class</span> <span class=nc>OtherClass</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>private</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>size_t</span> <span class=n>m_size</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>OtherClass</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=n>print</span><span class=p>(</span><span class=k>const</span> <span class=n>Object</span><span class=o>&amp;</span> <span class=n>obj</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>obj</span><span class=p>.</span><span class=n>m_size</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>  <span class=c1>// 可以访问对方的私有成员，且单向访问
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>友元成员函数</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>class</span> <span class=nc>B</span><span class=p>;</span> <span class=c1>// 前向声明
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>A</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=n>inspect</span><span class=p>(</span><span class=k>const</span> <span class=n>B</span><span class=o>&amp;</span> <span class=n>b</span><span class=p>);</span>  <span class=c1>// 需要访问 B 的私有成员
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>B</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>friend</span> <span class=kt>void</span> <span class=n>A</span><span class=o>::</span><span class=n>inspect</span><span class=p>(</span><span class=k>const</span> <span class=n>B</span><span class=o>&amp;</span> <span class=n>b</span><span class=p>);</span>  <span class=c1>// 只授权 A 的这一个函数
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>private</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>m_secret</span> <span class=o>=</span> <span class=mi>42</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>A</span><span class=o>::</span><span class=n>inspect</span><span class=p>(</span><span class=k>const</span> <span class=n>B</span><span class=o>&amp;</span> <span class=n>b</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>b</span><span class=p>.</span><span class=n>m_secret</span><span class=p>;</span>  <span class=c1>// 可以访问对方的私有成员，且单向访问
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=stdvector>std::vector</h4><h4 id=堆栈>堆、栈</h4><h4 id=stdmap>std::map</h4><h4 id=线程池>线程池</h4><h4 id=无锁队列>无锁队列</h4><h2 id=algorithm-template>Algorithm Template</h2><h3 id=排序>排序</h3><h4 id=快速排序>快速排序</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=c1>// 快速排序
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>int</span> <span class=nf>_Partition</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&amp;</span> <span class=n>arr</span><span class=p>,</span> <span class=kt>int</span> <span class=n>first</span><span class=p>,</span> <span class=kt>int</span> <span class=n>last</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=p>(</span><span class=n>first</span> <span class=o>==</span> <span class=n>last</span><span class=p>)</span> <span class=k>return</span> <span class=n>first</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=kt>int</span> <span class=n>posVal</span> <span class=o>=</span> <span class=n>arr</span><span class=p>[</span><span class=n>last</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>	<span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>first</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=n>first</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=n>last</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>(</span><span class=n>arr</span><span class=p>[</span><span class=n>j</span><span class=p>]</span> <span class=o>&lt;</span> <span class=n>posVal</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>			<span class=n>std</span><span class=o>::</span><span class=n>swap</span><span class=p>(</span><span class=n>arr</span><span class=p>[</span><span class=n>i</span><span class=o>++</span><span class=p>],</span> <span class=n>arr</span><span class=p>[</span><span class=n>j</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=n>std</span><span class=o>::</span><span class=n>swap</span><span class=p>(</span><span class=n>arr</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=n>arr</span><span class=p>[</span><span class=n>last</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=n>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>QuickSort</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&amp;</span> <span class=n>arr</span><span class=p>,</span> <span class=kt>int</span> <span class=n>first</span><span class=p>,</span> <span class=kt>int</span> <span class=n>last</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=p>(</span><span class=n>first</span> <span class=o>&gt;=</span> <span class=n>last</span><span class=p>)</span> <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=kt>int</span> <span class=n>pos</span> <span class=o>=</span> <span class=n>_Partition</span><span class=p>(</span><span class=n>arr</span><span class=p>,</span> <span class=n>first</span><span class=p>,</span> <span class=n>last</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=n>QuickSort</span><span class=p>(</span><span class=n>arr</span><span class=p>,</span> <span class=n>first</span><span class=p>,</span> <span class=n>pos</span> <span class=o>-</span> <span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=n>QuickSort</span><span class=p>(</span><span class=n>arr</span><span class=p>,</span> <span class=n>pos</span> <span class=o>+</span> <span class=mi>1</span><span class=p>,</span> <span class=n>last</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>时间复杂度：</strong></p><p>对于理想待排序数组，即每次都能正好平均分原始数组时，树的递归深度<code>（即“循环次数”）</code>为：将数组长度N除以2直到长度为1或0的次数，即：<code>N/2^x = 1</code>，<code>x = log2N</code>。对于每一层树的处理，所有节点长度总是N，所以最终复杂度为：<code>O(NlogN)</code>。</p><blockquote><p>对于最坏情况，即每次拆分数组都只能将原始数组分成<code>0</code>和<code>n - 1</code>的两个子数组，此时循环次数会退化回N，时间复杂度也来到最差情况：<code>O(N^2)</code></p><p>对于std::sort，内部在选基准点时会选取前、中、后三个基准点，并取居中的数作为基准以避免极端情况，当递归次数过多时也会退化为“堆排序”。</p></blockquote><p>快速排序的优势在于：每次处理子数组都是顺序处理，CPU友好，并且空间复杂度为递归深度<code>O(logN)</code>，且没有资源拷贝开销。</p><p><strong>Partition</strong></p><p>上面的快排的Partition实现采用了<strong>快慢指针法</strong>，代码实现精简，但是可以注意到，对于近乎有序的数组，比如：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>arr</span><span class=p>{</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>在初次排序时，需要swap七次才能将数字1放到他该放到的位置，这对于讲究速率的排序算法来说很致命，所以，我们可以通过<strong>双指针法</strong>来避免上述问题：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=kt>int</span> <span class=nf>_Partition2</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&amp;</span> <span class=n>arr</span><span class=p>,</span> <span class=kt>int</span> <span class=n>first</span><span class=p>,</span> <span class=kt>int</span> <span class=n>last</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=kt>int</span> <span class=n>pivot</span> <span class=o>=</span> <span class=n>arr</span><span class=p>[</span><span class=n>last</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>	<span class=kt>int</span> <span class=n>left</span> <span class=o>=</span> <span class=n>first</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=kt>int</span> <span class=n>right</span> <span class=o>=</span> <span class=n>last</span> <span class=o>-</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=k>while</span> <span class=p>(</span><span class=nb>true</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>while</span> <span class=p>(</span><span class=n>left</span> <span class=o>&lt;=</span> <span class=n>right</span> <span class=o>&amp;&amp;</span> <span class=n>arr</span><span class=p>[</span><span class=n>left</span><span class=p>]</span> <span class=o>&lt;</span> <span class=n>pivot</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=n>left</span><span class=o>++</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=k>while</span> <span class=p>(</span><span class=n>left</span> <span class=o>&lt;=</span> <span class=n>right</span> <span class=o>&amp;&amp;</span> <span class=n>arr</span><span class=p>[</span><span class=n>right</span><span class=p>]</span> <span class=o>&gt;=</span> <span class=n>pivot</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=n>right</span><span class=o>--</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>(</span><span class=n>left</span> <span class=o>&gt;=</span> <span class=n>right</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=n>std</span><span class=o>::</span><span class=n>swap</span><span class=p>(</span><span class=n>arr</span><span class=p>[</span><span class=n>left</span><span class=p>],</span> <span class=n>arr</span><span class=p>[</span><span class=n>right</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>		<span class=n>left</span><span class=o>++</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=n>right</span><span class=o>--</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>std</span><span class=o>::</span><span class=n>swap</span><span class=p>(</span><span class=n>arr</span><span class=p>[</span><span class=n>left</span><span class=p>],</span> <span class=n>arr</span><span class=p>[</span><span class=n>last</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=n>left</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>这种算法可以尽量避免不必要的交换，一定程度上提高排序的速度，毕竟Partition的目的只是分区。</p><p>如果要支持迭代器类型，可以将参数做如下修改：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>template</span> <span class=o>&lt;</span><span class=k>typename</span> <span class=n>RandomIt</span><span class=p>,</span> <span class=k>typename</span> <span class=n>Compare</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>less</span><span class=o>&lt;</span><span class=k>typename</span> <span class=n>std</span><span class=o>::</span><span class=n>iterator_traits</span><span class=o>&lt;</span><span class=n>RandomIt</span><span class=o>&gt;::</span><span class=n>value_type</span><span class=o>&gt;&gt;</span>
+</span></span><span class=line><span class=cl><span class=n>RandomIt</span> <span class=n>partition</span><span class=p>(</span><span class=n>RandomIt</span> <span class=n>first</span><span class=p>,</span> <span class=n>RandomIt</span> <span class=n>last</span><span class=p>,</span> <span class=n>Compare</span> <span class=n>comp</span> <span class=o>=</span> <span class=n>Compare</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=p>(</span><span class=n>first</span> <span class=o>==</span> <span class=n>last</span><span class=p>)</span> <span class=k>return</span> <span class=n>first</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>auto</span> <span class=n>pivot_it</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>prev</span><span class=p>(</span><span class=n>last</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=k>auto</span><span class=o>&amp;</span> <span class=n>pivot_val</span> <span class=o>=</span> <span class=o>*</span><span class=n>pivot_it</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=k>auto</span> <span class=n>store</span> <span class=o>=</span> <span class=n>first</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=p>(</span><span class=k>auto</span> <span class=n>it</span> <span class=o>=</span> <span class=n>first</span><span class=p>;</span> <span class=n>it</span> <span class=o>!=</span> <span class=n>pivot_it</span><span class=p>;</span> <span class=o>++</span><span class=n>it</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>(</span><span class=n>comp</span><span class=p>(</span><span class=o>*</span><span class=n>it</span><span class=p>,</span> <span class=n>pivot_val</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=n>std</span><span class=o>::</span><span class=n>swap</span><span class=p>(</span><span class=o>*</span><span class=n>it</span><span class=p>,</span> <span class=o>*</span><span class=n>store</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>			<span class=o>++</span><span class=n>store</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=n>std</span><span class=o>::</span><span class=n>swap</span><span class=p>(</span><span class=o>*</span><span class=n>store</span><span class=p>,</span> <span class=o>*</span><span class=n>pivot_it</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=n>store</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>template</span> <span class=o>&lt;</span><span class=k>typename</span> <span class=n>RandomIt</span><span class=p>,</span> <span class=k>typename</span> <span class=n>Compare</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>less</span><span class=o>&lt;</span><span class=k>typename</span> <span class=n>std</span><span class=o>::</span><span class=n>iterator_traits</span><span class=o>&lt;</span><span class=n>RandomIt</span><span class=o>&gt;::</span><span class=n>value_type</span><span class=o>&gt;&gt;</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>quick_sort</span><span class=p>(</span><span class=n>RandomIt</span> <span class=n>first</span><span class=p>,</span> <span class=n>RandomIt</span> <span class=n>last</span><span class=p>,</span> <span class=n>Compare</span> <span class=n>comp</span> <span class=o>=</span> <span class=n>Compare</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>distance</span><span class=p>(</span><span class=n>first</span><span class=p>,</span> <span class=n>last</span><span class=p>)</span> <span class=o>&lt;=</span> <span class=mi>1</span><span class=p>)</span> <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>auto</span> <span class=n>pivot_pos</span> <span class=o>=</span> <span class=o>::</span><span class=n>partition</span><span class=p>(</span><span class=n>first</span><span class=p>,</span> <span class=n>last</span><span class=p>,</span> <span class=n>comp</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=n>quick_sort</span><span class=p>(</span><span class=n>first</span><span class=p>,</span> <span class=n>pivot_pos</span><span class=p>,</span> <span class=n>comp</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=n>quick_sort</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>next</span><span class=p>(</span><span class=n>pivot_pos</span><span class=p>),</span> <span class=n>last</span><span class=p>,</span> <span class=n>comp</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>这里的<code>RandomIt</code>可以换成C++20的<code>std::random_access_iterator</code>，以限制迭代器为随机访问迭代器，否则当传入的迭代器类型为双向迭代器时，<code>std::distance</code>复杂度会退化成<code>O(n)</code>，通过<code>while (++it)</code>来前进计算距离。</p><p>同时对于一长串的迭代器类型萃取，c++14提供了透明比较器 <code>std::less&lt;></code>，可以在进行比较时根据传入的参数来生成相应的实例化代码，区别在于前者仅支持相同类型的 &lsquo;&lt;&rsquo; 比较。</p><hr><h4 id=归并排序>归并排序</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=kt>void</span> <span class=nf>_MergeRecursive</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&amp;</span> <span class=n>arr</span><span class=p>,</span> <span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&amp;</span> <span class=n>temp</span><span class=p>,</span> <span class=kt>int</span> <span class=n>first</span><span class=p>,</span> <span class=kt>int</span> <span class=n>mid</span><span class=p>,</span> <span class=kt>int</span> <span class=n>last</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=kt>int</span> <span class=n>tempIndex</span> <span class=o>=</span> <span class=n>first</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=n>first</span><span class=p>,</span> <span class=n>j</span> <span class=o>=</span> <span class=n>mid</span> <span class=o>+</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=k>while</span> <span class=p>(</span><span class=n>i</span> <span class=o>&lt;=</span> <span class=n>mid</span> <span class=o>&amp;&amp;</span> <span class=n>j</span> <span class=o>&lt;=</span> <span class=n>last</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>(</span><span class=n>arr</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;=</span> <span class=n>arr</span><span class=p>[</span><span class=n>j</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>			<span class=n>temp</span><span class=p>[</span><span class=n>tempIndex</span><span class=o>++</span><span class=p>]</span> <span class=o>=</span> <span class=n>arr</span><span class=p>[</span><span class=n>i</span><span class=o>++</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>		<span class=k>else</span>
+</span></span><span class=line><span class=cl>			<span class=n>temp</span><span class=p>[</span><span class=n>tempIndex</span><span class=o>++</span><span class=p>]</span> <span class=o>=</span> <span class=n>arr</span><span class=p>[</span><span class=n>j</span><span class=o>++</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>while</span> <span class=p>(</span><span class=n>i</span> <span class=o>&lt;=</span> <span class=n>mid</span><span class=p>)</span> <span class=n>temp</span><span class=p>[</span><span class=n>tempIndex</span><span class=o>++</span><span class=p>]</span> <span class=o>=</span> <span class=n>arr</span><span class=p>[</span><span class=n>i</span><span class=o>++</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>	<span class=k>while</span> <span class=p>(</span><span class=n>j</span> <span class=o>&lt;=</span> <span class=n>last</span><span class=p>)</span> <span class=n>temp</span><span class=p>[</span><span class=n>tempIndex</span><span class=o>++</span><span class=p>]</span> <span class=o>=</span> <span class=n>arr</span><span class=p>[</span><span class=n>j</span><span class=o>++</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>k</span> <span class=o>=</span> <span class=n>first</span><span class=p>;</span> <span class=n>k</span> <span class=o>&lt;=</span> <span class=n>last</span><span class=p>;</span> <span class=n>k</span><span class=o>++</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=n>arr</span><span class=p>[</span><span class=n>k</span><span class=p>]</span> <span class=o>=</span> <span class=n>temp</span><span class=p>[</span><span class=n>k</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>MergeSortImpl</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&amp;</span> <span class=n>arr</span><span class=p>,</span> <span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&amp;</span> <span class=n>temp</span><span class=p>,</span> <span class=kt>int</span> <span class=n>first</span><span class=p>,</span> <span class=kt>int</span> <span class=n>last</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=p>(</span><span class=n>first</span> <span class=o>&gt;=</span> <span class=n>last</span><span class=p>)</span> <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=kt>int</span> <span class=n>mid</span> <span class=o>=</span> <span class=n>first</span> <span class=o>+</span> <span class=p>(</span><span class=n>last</span> <span class=o>-</span> <span class=n>first</span><span class=p>)</span> <span class=o>/</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=n>MergeSortImpl</span><span class=p>(</span><span class=n>arr</span><span class=p>,</span> <span class=n>temp</span><span class=p>,</span> <span class=n>first</span><span class=p>,</span> <span class=n>mid</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=n>MergeSortImpl</span><span class=p>(</span><span class=n>arr</span><span class=p>,</span> <span class=n>temp</span><span class=p>,</span> <span class=n>mid</span> <span class=o>+</span> <span class=mi>1</span><span class=p>,</span> <span class=n>last</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=n>_MergeRecursive</span><span class=p>(</span><span class=n>arr</span><span class=p>,</span> <span class=n>temp</span><span class=p>,</span> <span class=n>first</span><span class=p>,</span> <span class=n>mid</span><span class=p>,</span> <span class=n>last</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>MergeSort</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&amp;</span> <span class=n>arr</span><span class=p>,</span> <span class=kt>int</span> <span class=n>first</span><span class=p>,</span> <span class=kt>int</span> <span class=n>last</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>temp</span><span class=p>(</span><span class=n>arr</span><span class=p>);</span>  <span class=c1>// 复用数组
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=n>MergeSortImpl</span><span class=p>(</span><span class=n>arr</span><span class=p>,</span> <span class=n>temp</span><span class=p>,</span> <span class=n>first</span><span class=p>,</span> <span class=n>last</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=并查集>并查集</h3><h3 id=trie-树>Trie 树</h3><h3 id=lru>LRU</h3><h3 id=二叉平衡树>二叉平衡树</h3><h1 id=qt>Qt</h1><h1 id=场景问题>场景问题</h1></section><footer class=article-footer><section class=article-tags><a href=https://SSmallOrange.github.io/tags/%E6%8A%80%E6%9C%AF%E7%A2%8E%E7%89%87/>技术碎片</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
 <span>Licensed under CC BY-NC-SA 4.0</span></section><section class=article-lastmod><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
 <span>最后更新于 Feb 27, 2026 23:00 CST</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/><div class=article-image><img src=https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/background.4c2627a94c29f21238032a59df63f422_hu_49ea8278ae109f38.png width=250 height=150 loading=lazy alt="Featured image of post Sol2：在C++中调用Lua脚本" data-key=Sol2-Call-LuaScriptOnCPPCode data-hash="md5-TCYnqUwp8hI4AypZ32P0Ig=="></div><div class=article-details><h2 class=article-title>Sol2：在C++中调用Lua脚本</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//hugo-theme-stack.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
 2026 Small_Orange</section><section class=powerby><br></section><section class=count_info><div>本博客已稳定运行
@@ -18,7 +915,7 @@
 <span id=hs class=running-days></span>
 小时
 <span id=ms class=running-days></span>
-分钟</div><div>共发表 8 篇文章 · 总计 27.21 k 字</div><div><span id=busuanzi_container_site_pv>本站总访问量<span id=busuanzi_value_site_pv></span>次</span></div></section><script>let s1="2025-8-12";s1=new Date(s1.replace(/-/g,"/"));let s2=new Date,timeDifference=s2.getTime()-s1.getTime(),days=Math.floor(timeDifference/(1e3*60*60*24)),hours=Math.floor(timeDifference%(1e3*60*60*24)/(1e3*60*60)),minutes=Math.floor(timeDifference%(1e3*60*60)/(1e3*60));document.getElementById("ds").innerHTML=days,document.getElementById("hs").innerHTML=hours,document.getElementById("ms").innerHTML=minutes</script><script>(function(e,t){var s=document,o="script",n=s.createElement(o),i=s.getElementsByTagName(o)[0];n.src=e,t&&n.addEventListener("load",function(e){t(e)}),i.parentNode.insertBefore(n,i)})("//cdn.bootcss.com/pangu/4.0.7/pangu.min.js",function(){pangu.spacingPage()})</script></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+分钟</div><div>共发表 8 篇文章 · 总计 30.58 k 字</div><div><span id=busuanzi_container_site_pv>本站总访问量<span id=busuanzi_value_site_pv></span>次</span></div></section><script>let s1="2025-8-12";s1=new Date(s1.replace(/-/g,"/"));let s2=new Date,timeDifference=s2.getTime()-s1.getTime(),days=Math.floor(timeDifference/(1e3*60*60*24)),hours=Math.floor(timeDifference%(1e3*60*60*24)/(1e3*60*60)),minutes=Math.floor(timeDifference%(1e3*60*60)/(1e3*60));document.getElementById("ds").innerHTML=days,document.getElementById("hs").innerHTML=hours,document.getElementById("ms").innerHTML=minutes</script><script>(function(e,t){var s=document,o="script",n=s.createElement(o),i=s.getElementsByTagName(o)[0];n.src=e,t&&n.addEventListener("load",function(e){t(e)}),i.parentNode.insertBefore(n,i)})("//cdn.bootcss.com/pangu/4.0.7/pangu.min.js",function(){pangu.spacingPage()})</script></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
 <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">

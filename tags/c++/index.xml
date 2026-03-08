@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>C++ on Small_Orange</title><link>https://SSmallOrange.github.io/tags/c++/</link><description>Recent content in C++ on Small_Orange</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 27 Feb 2026 23:00:31 +0800</lastBuildDate><atom:link href="https://SSmallOrange.github.io/tags/c++/index.xml" rel="self" type="application/rss+xml"/><item><title>现代反射实现（四）：Json反序列化</title><link>https://SSmallOrange.github.io/p/reflection4/</link><pubDate>Sat, 15 Nov 2025 21:58:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/reflection4/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/reflection4/reflection-4.png" alt="Featured image of post 现代反射实现（四）：Json反序列化" />&lt;h2 id="第四章基于反射的-json-反序列化">第四章：基于反射的 Json 反序列化
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>C++ on Small_Orange</title><link>https://SSmallOrange.github.io/tags/c++/</link><description>Recent content in C++ on Small_Orange</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 27 Jan 2026 23:00:31 +0800</lastBuildDate><atom:link href="https://SSmallOrange.github.io/tags/c++/index.xml" rel="self" type="application/rss+xml"/><item><title>现代反射实现（四）：Json反序列化</title><link>https://SSmallOrange.github.io/p/reflection4/</link><pubDate>Sat, 15 Nov 2025 21:58:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/reflection4/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/reflection4/reflection-4.png" alt="Featured image of post 现代反射实现（四）：Json反序列化" />&lt;h2 id="第四章基于反射的-json-反序列化">第四章：基于反射的 Json 反序列化
 &lt;/h2>&lt;p>前一章我们已经用编译期反射实现了 Json 序列化，把一个聚合类型一次性吐成一段 Json 字符串，不需要手写拼接。&lt;/p>
 &lt;p>这章做反方向的事情：&lt;/p>
 &lt;blockquote>
@@ -4069,9 +4069,4 @@ data-flex-basis="518px"
 &lt;li>&lt;strong>可变参数模板与参数包展开&lt;/strong>让我们能在编译期遍历所有成员类型，并生成序列化/反序列化代码。&lt;/li>
 &lt;/ul>
 &lt;blockquote>
-&lt;p>下一章，我们会在这些语法基础上，开始构建&lt;strong>编译期静态反射的核心机制&lt;/strong>，看看如何一步步获取结构体的成员数量、成员引用 tuple、成员名称。&lt;/p>&lt;/blockquote></description></item><item><title>技术碎片（持续更新）</title><link>https://SSmallOrange.github.io/p/technological-fragments/</link><pubDate>Sun, 20 Jul 2025 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/technological-fragments/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/technological-fragments/background.png" alt="Featured image of post 技术碎片（持续更新）" />&lt;h1 id="modern-c">Modern C++
-&lt;/h1>&lt;h2 id="grammar">Grammar
-&lt;/h2>&lt;h1 id="algorithm-template">Algorithm Template
-&lt;/h1>&lt;h1 id="qt">Qt
-&lt;/h1>&lt;h1 id="场景问题">场景问题
-&lt;/h1></description></item></channel></rss>
+&lt;p>下一章，我们会在这些语法基础上，开始构建&lt;strong>编译期静态反射的核心机制&lt;/strong>，看看如何一步步获取结构体的成员数量、成员引用 tuple、成员名称。&lt;/p>&lt;/blockquote></description></item></channel></rss>
