@@ -1,6 +1,8 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Lua on Small_Orange</title><link>https://SSmallOrange.github.io/categories/lua/</link><description>Recent content in Lua on Small_Orange</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 02 Feb 2026 22:00:31 +0800</lastBuildDate><atom:link href="https://SSmallOrange.github.io/categories/lua/index.xml" rel="self" type="application/rss+xml"/><item><title>Sol2：在C++中调用Lua脚本</title><link>https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/</link><pubDate>Mon, 02 Feb 2026 21:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/background.png" alt="Featured image of post Sol2：在C++中调用Lua脚本" />&lt;h1 id="sol2在c中调用lua脚本">Sol2：在C++中调用Lua脚本
-&lt;/h1>&lt;blockquote>
-&lt;p>本文档记录了在 C++ 代码中使用 sol2 嵌入 Lua 脚本时的一些个人理解。&lt;/p>&lt;/blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Lua on Small_Orange</title><link>https://SSmallOrange.github.io/categories/lua/</link><description>Recent content in Lua on Small_Orange</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 02 Feb 2026 22:00:31 +0800</lastBuildDate><atom:link href="https://SSmallOrange.github.io/categories/lua/index.xml" rel="self" type="application/rss+xml"/><item><title>Sol2：在C++中调用Lua脚本</title><link>https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/</link><pubDate>Mon, 02 Feb 2026 21:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/background.jpg" alt="Featured image of post Sol2：在C++中调用Lua脚本" />&lt;h1 id="sol2在c中调用lua脚本">Sol2：在C++中调用Lua脚本
+&lt;/h1>
+&lt;blockquote>
+&lt;p>本文档记录了在 C++ 代码中使用 sol2 嵌入 Lua 脚本时的一些个人理解。&lt;/p>
+&lt;/blockquote>
 &lt;hr>
 &lt;h2 id="向lua中注册自定义用户类型">向Lua中注册自定义用户类型
 &lt;/h2>&lt;p>先看一段代码：&lt;/p>
@@ -53,9 +55,16 @@
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>这段代码用来向&lt;code>lua&lt;/code>脚本中注册一个c++类型，支持一些基本的元方法重载（比如四则运算、比大小、迭代(&lt;code>pair&lt;/code>或&lt;code>ipair&lt;/code>)等）。&lt;/p>
-&lt;blockquote>
-&lt;p>[!Tip]
-更多类型可以查看源码：types.hpp: enum class meta_function&lt;/p>&lt;/blockquote>
+&lt;div class="markdown-alert markdown-alert-tip">
+&lt;p class="markdown-alert-title">
+&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+&lt;path fill="currentColor"
+d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.5 8.5 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.75.75 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z" />
+&lt;/svg>
+Tip
+&lt;/p>
+&lt;p>更多类型可以查看源码：types.hpp: enum class meta_function&lt;/p>
+&lt;/div>
 &lt;hr>
 &lt;h3 id="q1-usertype-和-table-有什么区别">Q1: UserType 和 Table 有什么区别？
 &lt;/h3>&lt;p>在 sol2 中，&lt;code>new_usertype&amp;lt;T&amp;gt;&lt;/code> 和 &lt;code>create_named_table&lt;/code> 都可以在 Lua 中创建一个“Table”，但它们的本质完全不同：&lt;/p>
@@ -161,8 +170,10 @@
 &lt;/div>&lt;p>对于这段代码，我们可以看到，他的函数入参似乎自由度非常高，既可以设置构造函数，又可以设置成员变量，还可以做元操作的重载，一个函数的入参能够这么复杂，肯定不是一个简单的**“函数重载”**能够搞定的。&lt;/p>
 &lt;hr>
 &lt;h4 id="new_usertype-解析1state_viewnew_usertype">new_usertype 解析1：&lt;code>state_view::new_usertype&lt;/code>
-&lt;/h4>&lt;blockquote>
-&lt;p>源码位置：&lt;code>sol/state_view.hpp&lt;/code>&lt;/p>&lt;/blockquote>
+&lt;/h4>
+&lt;blockquote>
+&lt;p>源码位置：&lt;code>sol/state_view.hpp&lt;/code>&lt;/p>
+&lt;/blockquote>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -202,8 +213,10 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h4 id="new_usertype-解析2basic_table_corenew_usertype">new_usertype 解析2：&lt;code>basic_table_core::new_usertype&lt;/code>
-&lt;/h4>&lt;blockquote>
-&lt;p>源码位置：&lt;code>sol/table.hpp&lt;/code>&lt;/p>&lt;/blockquote>
+&lt;/h4>
+&lt;blockquote>
+&lt;p>源码位置：&lt;code>sol/table.hpp&lt;/code>&lt;/p>
+&lt;/blockquote>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
@@ -553,9 +566,17 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;blockquote>
-&lt;p>[!TIP]
-C++20 Concepts 的核心优势是&lt;strong>语义化&lt;/strong>：让代码比原本的“模板元编程”更通俗易懂&amp;quot;如果 Arg 是一个构造器类型&amp;quot;，而不是&amp;quot;如果 &lt;code>is_constructor&amp;lt;Arg&amp;gt;::value&lt;/code> 为真&amp;quot;。&lt;/p>&lt;/blockquote>
+&lt;/div>
+&lt;div class="markdown-alert markdown-alert-tip">
+&lt;p class="markdown-alert-title">
+&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+&lt;path fill="currentColor"
+d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.5 8.5 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.75.75 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z" />
+&lt;/svg>
+Tip
+&lt;/p>
+&lt;p>C++20 Concepts 的核心优势是&lt;strong>语义化&lt;/strong>：让代码比原本的“模板元编程”更通俗易懂&amp;quot;如果 Arg 是一个构造器类型&amp;quot;，而不是&amp;quot;如果 &lt;code>is_constructor&amp;lt;Arg&amp;gt;::value&lt;/code> 为真&amp;quot;。&lt;/p>
+&lt;/div>
 &lt;hr>
 &lt;h5 id="static_assert-和-成员指针">&lt;code>static_assert&lt;/code> 和 成员指针
 &lt;/h5>&lt;div class="highlight">&lt;div class="chroma">
@@ -685,8 +706,10 @@ C++20 Concepts 的核心优势是&lt;strong>语义化&lt;/strong>：让代码比
 &lt;/div>
 &lt;/div>&lt;hr>
 &lt;h4 id="new_usertype-解析3tuple_set">new_usertype 解析3：&lt;code>tuple_set&lt;/code>
-&lt;/h4>&lt;blockquote>
-&lt;p>源码位置：&lt;code>sol/usertype.hpp&lt;/code>&lt;/p>&lt;/blockquote>
+&lt;/h4>
+&lt;blockquote>
+&lt;p>源码位置：&lt;code>sol/usertype.hpp&lt;/code>&lt;/p>
+&lt;/blockquote>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -795,8 +818,10 @@ C++20 Concepts 的核心优势是&lt;strong>语义化&lt;/strong>：让代码比
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h4 id="new_usertype-解析4-usertype_storageset">new_usertype 解析4： &lt;code>usertype_storage::set&lt;/code>
-&lt;/h4>&lt;blockquote>
-&lt;p>源码位置：&lt;code>sol/usertype_storage.hpp&lt;/code>&lt;/p>&lt;/blockquote>
+&lt;/h4>
+&lt;blockquote>
+&lt;p>源码位置：&lt;code>sol/usertype_storage.hpp&lt;/code>&lt;/p>
+&lt;/blockquote>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1

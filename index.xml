@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Small_Orange</title><link>https://SSmallOrange.github.io/</link><description>Recent content on Small_Orange</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 27 Feb 2026 23:00:31 +0800</lastBuildDate><atom:link href="https://SSmallOrange.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>现代反射实现（四）：Json反序列化</title><link>https://SSmallOrange.github.io/p/reflection4/</link><pubDate>Sat, 15 Nov 2025 21:58:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/reflection4/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/reflection4/reflection-4.png" alt="Featured image of post 现代反射实现（四）：Json反序列化" />&lt;h2 id="第四章基于反射的-json-反序列化">第四章：基于反射的 Json 反序列化
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Small_Orange</title><link>https://SSmallOrange.github.io/</link><description>Recent content on Small_Orange</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 27 Feb 2026 23:00:31 +0800</lastBuildDate><atom:link href="https://SSmallOrange.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>现代反射实现（四）：Json反序列化</title><link>https://SSmallOrange.github.io/p/reflection4/</link><pubDate>Sat, 15 Nov 2025 21:58:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/reflection4/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/reflection4/reflection-4.jpg" alt="Featured image of post 现代反射实现（四）：Json反序列化" />&lt;h2 id="第四章基于反射的-json-反序列化">第四章：基于反射的 Json 反序列化
 &lt;/h2>&lt;p>前一章我们已经用编译期反射实现了 Json 序列化，把一个聚合类型一次性吐成一段 Json 字符串，不需要手写拼接。&lt;/p>
 &lt;p>这章做反方向的事情：&lt;/p>
 &lt;blockquote>
-&lt;p>给定一段 Json 文本，把它自动填充进一个结构体对象里，支持嵌套结构体、顺序容器、关联容器等常见组合。&lt;/p>&lt;/blockquote>
+&lt;p>给定一段 Json 文本，把它自动填充进一个结构体对象里，支持嵌套结构体、顺序容器、关联容器等常见组合。&lt;/p>
+&lt;/blockquote>
 &lt;p>最终对外只保留一个接口：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -43,7 +44,8 @@
 &lt;p>序列化的时候，我们只需要在“有对象”的场景下遍历一遍成员，把 &lt;code>(member_name, member_reference)&lt;/code>这一对在运行时交给 &lt;code>to_json_value&lt;/code> 就行，所以直接用 &lt;strong>tuple + 泛型 lambda&lt;/strong> 遍历就够了。
 反序列化就不一样了，真正要解决的是下面这个问题：&lt;/p>
 &lt;blockquote>
-&lt;p>当 RapidJSON 回调告诉我「现在读到了 key = &amp;lsquo;id&amp;rsquo;」，如何在 O(1) 时间里找到这个成员在结构体里的“位置”和“类型”，然后把后续的值事件填到正确的成员上？&lt;/p>&lt;/blockquote>
+&lt;p>当 RapidJSON 回调告诉我「现在读到了 key = &amp;lsquo;id&amp;rsquo;」，如何在 O(1) 时间里找到这个成员在结构体里的“位置”和“类型”，然后把后续的值事件填到正确的成员上？&lt;/p>
+&lt;/blockquote>
 &lt;p>也就是说，我们需要把“结构体的成员元信息”预先组织成某种 Key → Value 的形式：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -634,9 +636,11 @@
 &lt;p>本章相关测试代码：
 &lt;a class="link" href="https://github.com/SSmallOrange/TinyReflection/blob/master/test/test_reflection_from_json.cpp" target="_blank" rel="noopener"
 >https://github.com/SSmallOrange/TinyReflection/blob/master/test/test_reflection_from_json.cpp&lt;/a>&lt;/p>
-&lt;p>目前c++26已经更新了反射能力，后面考虑与时俱进。&lt;/p></description></item><item><title>Sol2：在C++中调用Lua脚本</title><link>https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/</link><pubDate>Mon, 02 Feb 2026 21:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/background.png" alt="Featured image of post Sol2：在C++中调用Lua脚本" />&lt;h1 id="sol2在c中调用lua脚本">Sol2：在C++中调用Lua脚本
-&lt;/h1>&lt;blockquote>
-&lt;p>本文档记录了在 C++ 代码中使用 sol2 嵌入 Lua 脚本时的一些个人理解。&lt;/p>&lt;/blockquote>
+&lt;p>目前c++26已经更新了反射能力，后面考虑与时俱进。&lt;/p></description></item><item><title>Sol2：在C++中调用Lua脚本</title><link>https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/</link><pubDate>Mon, 02 Feb 2026 21:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/sol2-call-luascriptoncppcode/background.jpg" alt="Featured image of post Sol2：在C++中调用Lua脚本" />&lt;h1 id="sol2在c中调用lua脚本">Sol2：在C++中调用Lua脚本
+&lt;/h1>
+&lt;blockquote>
+&lt;p>本文档记录了在 C++ 代码中使用 sol2 嵌入 Lua 脚本时的一些个人理解。&lt;/p>
+&lt;/blockquote>
 &lt;hr>
 &lt;h2 id="向lua中注册自定义用户类型">向Lua中注册自定义用户类型
 &lt;/h2>&lt;p>先看一段代码：&lt;/p>
@@ -689,9 +693,16 @@
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>这段代码用来向&lt;code>lua&lt;/code>脚本中注册一个c++类型，支持一些基本的元方法重载（比如四则运算、比大小、迭代(&lt;code>pair&lt;/code>或&lt;code>ipair&lt;/code>)等）。&lt;/p>
-&lt;blockquote>
-&lt;p>[!Tip]
-更多类型可以查看源码：types.hpp: enum class meta_function&lt;/p>&lt;/blockquote>
+&lt;div class="markdown-alert markdown-alert-tip">
+&lt;p class="markdown-alert-title">
+&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+&lt;path fill="currentColor"
+d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.5 8.5 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.75.75 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z" />
+&lt;/svg>
+Tip
+&lt;/p>
+&lt;p>更多类型可以查看源码：types.hpp: enum class meta_function&lt;/p>
+&lt;/div>
 &lt;hr>
 &lt;h3 id="q1-usertype-和-table-有什么区别">Q1: UserType 和 Table 有什么区别？
 &lt;/h3>&lt;p>在 sol2 中，&lt;code>new_usertype&amp;lt;T&amp;gt;&lt;/code> 和 &lt;code>create_named_table&lt;/code> 都可以在 Lua 中创建一个“Table”，但它们的本质完全不同：&lt;/p>
@@ -797,8 +808,10 @@
 &lt;/div>&lt;p>对于这段代码，我们可以看到，他的函数入参似乎自由度非常高，既可以设置构造函数，又可以设置成员变量，还可以做元操作的重载，一个函数的入参能够这么复杂，肯定不是一个简单的**“函数重载”**能够搞定的。&lt;/p>
 &lt;hr>
 &lt;h4 id="new_usertype-解析1state_viewnew_usertype">new_usertype 解析1：&lt;code>state_view::new_usertype&lt;/code>
-&lt;/h4>&lt;blockquote>
-&lt;p>源码位置：&lt;code>sol/state_view.hpp&lt;/code>&lt;/p>&lt;/blockquote>
+&lt;/h4>
+&lt;blockquote>
+&lt;p>源码位置：&lt;code>sol/state_view.hpp&lt;/code>&lt;/p>
+&lt;/blockquote>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -838,8 +851,10 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h4 id="new_usertype-解析2basic_table_corenew_usertype">new_usertype 解析2：&lt;code>basic_table_core::new_usertype&lt;/code>
-&lt;/h4>&lt;blockquote>
-&lt;p>源码位置：&lt;code>sol/table.hpp&lt;/code>&lt;/p>&lt;/blockquote>
+&lt;/h4>
+&lt;blockquote>
+&lt;p>源码位置：&lt;code>sol/table.hpp&lt;/code>&lt;/p>
+&lt;/blockquote>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
@@ -1189,9 +1204,17 @@
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;blockquote>
-&lt;p>[!TIP]
-C++20 Concepts 的核心优势是&lt;strong>语义化&lt;/strong>：让代码比原本的“模板元编程”更通俗易懂&amp;quot;如果 Arg 是一个构造器类型&amp;quot;，而不是&amp;quot;如果 &lt;code>is_constructor&amp;lt;Arg&amp;gt;::value&lt;/code> 为真&amp;quot;。&lt;/p>&lt;/blockquote>
+&lt;/div>
+&lt;div class="markdown-alert markdown-alert-tip">
+&lt;p class="markdown-alert-title">
+&lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+&lt;path fill="currentColor"
+d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.5 8.5 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.75.75 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z" />
+&lt;/svg>
+Tip
+&lt;/p>
+&lt;p>C++20 Concepts 的核心优势是&lt;strong>语义化&lt;/strong>：让代码比原本的“模板元编程”更通俗易懂&amp;quot;如果 Arg 是一个构造器类型&amp;quot;，而不是&amp;quot;如果 &lt;code>is_constructor&amp;lt;Arg&amp;gt;::value&lt;/code> 为真&amp;quot;。&lt;/p>
+&lt;/div>
 &lt;hr>
 &lt;h5 id="static_assert-和-成员指针">&lt;code>static_assert&lt;/code> 和 成员指针
 &lt;/h5>&lt;div class="highlight">&lt;div class="chroma">
@@ -1321,8 +1344,10 @@ C++20 Concepts 的核心优势是&lt;strong>语义化&lt;/strong>：让代码比
 &lt;/div>
 &lt;/div>&lt;hr>
 &lt;h4 id="new_usertype-解析3tuple_set">new_usertype 解析3：&lt;code>tuple_set&lt;/code>
-&lt;/h4>&lt;blockquote>
-&lt;p>源码位置：&lt;code>sol/usertype.hpp&lt;/code>&lt;/p>&lt;/blockquote>
+&lt;/h4>
+&lt;blockquote>
+&lt;p>源码位置：&lt;code>sol/usertype.hpp&lt;/code>&lt;/p>
+&lt;/blockquote>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -1431,8 +1456,10 @@ C++20 Concepts 的核心优势是&lt;strong>语义化&lt;/strong>：让代码比
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h4 id="new_usertype-解析4-usertype_storageset">new_usertype 解析4： &lt;code>usertype_storage::set&lt;/code>
-&lt;/h4>&lt;blockquote>
-&lt;p>源码位置：&lt;code>sol/usertype_storage.hpp&lt;/code>&lt;/p>&lt;/blockquote>
+&lt;/h4>
+&lt;blockquote>
+&lt;p>源码位置：&lt;code>sol/usertype_storage.hpp&lt;/code>&lt;/p>
+&lt;/blockquote>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
@@ -4917,9 +4944,11 @@ alt="调用流程"
 class="gallery-image"
 data-flex-grow="216"
 data-flex-basis="518px"
->&lt;/p></description></item><item><title>现代反射实现（三）：Json序列化</title><link>https://SSmallOrange.github.io/p/reflection3/</link><pubDate>Sat, 15 Nov 2025 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/reflection3/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/reflection3/reflection_json.thumb.1000_0.png" alt="Featured image of post 现代反射实现（三）：Json序列化" />&lt;h2 id="第三章基于反射的-json-序列化">第三章：基于反射的 Json 序列化
-&lt;/h2>&lt;blockquote>
-&lt;p>代码实现方案参考：https://github.com/qicosmos/iguana&lt;/p>&lt;/blockquote>
+>&lt;/p></description></item><item><title>现代反射实现（三）：Json序列化</title><link>https://SSmallOrange.github.io/p/reflection3/</link><pubDate>Sat, 15 Nov 2025 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/reflection3/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/reflection3/reflection_json.thumb.1000_0.jpg" alt="Featured image of post 现代反射实现（三）：Json序列化" />&lt;h2 id="第三章基于反射的-json-序列化">第三章：基于反射的 Json 序列化
+&lt;/h2>
+&lt;blockquote>
+&lt;p>代码实现方案参考：https://github.com/qicosmos/iguana&lt;/p>
+&lt;/blockquote>
 &lt;hr>
 &lt;p>通过前面的努力，我们目前已经有了以下能力：&lt;/p>
 &lt;ul>
@@ -4968,7 +4997,8 @@ data-flex-basis="518px"
 &lt;p>做编译期类型区分，模板显然是再适合不过了。&lt;/p>
 &lt;p>前两章已经把“怎么拿到成员”这件事解决掉了：我们能拿到 &lt;code>members_count_v&amp;lt;T&amp;gt;&lt;/code>，能拿到成员名数组，也能遍历到每个成员的引用。序列化阶段真正要解决的问题，其实只有一个：&lt;/p>
 &lt;blockquote>
-&lt;p>对于任意一个 &lt;code>member_reference&lt;/code>，它到底应该被当成什么类型写进 Json。&lt;/p>&lt;/blockquote>
+&lt;p>对于任意一个 &lt;code>member_reference&lt;/code>，它到底应该被当成什么类型写进 Json。&lt;/p>
+&lt;/blockquote>
 &lt;p>典型几种情况：&lt;/p>
 &lt;ul>
 &lt;li>内置算术类型，按数字写&lt;/li>
@@ -6026,8 +6056,10 @@ data-flex-basis="518px"
 &lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">auto&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">ra&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">rn&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">p&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 按引用绑定
 &lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;blockquote>
-&lt;p>在编译期反射中，结构化绑定是获取&lt;strong>成员引用 tuple&lt;/strong>的核心手段之一。&lt;/p>&lt;/blockquote>
+&lt;/div>
+&lt;blockquote>
+&lt;p>在编译期反射中，结构化绑定是获取&lt;strong>成员引用 tuple&lt;/strong>的核心手段之一。&lt;/p>
+&lt;/blockquote>
 &lt;p>&lt;code>std::tuple&lt;/code> 是 C++ 标准库里的一种&lt;strong>固定长度、多类型的集合容器&lt;/strong>，从定义看就非常适合作为结构体元信息的存储单位。&lt;/p>
 &lt;p>&lt;code>tuple&lt;/code>构造方式如下：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
@@ -6131,7 +6163,8 @@ data-flex-basis="518px"
 &lt;li>&lt;strong>可变参数模板与参数包展开&lt;/strong>让我们能在编译期遍历所有成员类型，并生成序列化/反序列化代码。&lt;/li>
 &lt;/ul>
 &lt;blockquote>
-&lt;p>下一章，我们会在这些语法基础上，开始构建&lt;strong>编译期静态反射的核心机制&lt;/strong>，看看如何一步步获取结构体的成员数量、成员引用 tuple、成员名称。&lt;/p>&lt;/blockquote></description></item><item><title>技术碎片（持续更新）</title><link>https://SSmallOrange.github.io/p/technological-fragments/</link><pubDate>Sun, 20 Jul 2025 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/technological-fragments/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/technological-fragments/background.png" alt="Featured image of post 技术碎片（持续更新）" />&lt;h1 id="modern-c">Modern C++
+&lt;p>下一章，我们会在这些语法基础上，开始构建&lt;strong>编译期静态反射的核心机制&lt;/strong>，看看如何一步步获取结构体的成员数量、成员引用 tuple、成员名称。&lt;/p>
+&lt;/blockquote></description></item><item><title>技术碎片（持续更新）</title><link>https://SSmallOrange.github.io/p/technological-fragments/</link><pubDate>Sun, 20 Jul 2025 20:00:31 +0800</pubDate><guid>https://SSmallOrange.github.io/p/technological-fragments/</guid><description>&lt;img src="https://SSmallOrange.github.io/p/technological-fragments/background.png" alt="Featured image of post 技术碎片（持续更新）" />&lt;h1 id="modern-c">Modern C++
 &lt;/h1>&lt;h2 id="grammar">Grammar
 &lt;/h2>&lt;h3 id="stdranges">std::ranges
 &lt;/h3>&lt;p>std::ranges 库的核心思想是让算法直接操作容器（而非迭代器对），并支持管道式（pipeline）链式调用。&lt;/p>
@@ -6268,7 +6301,59 @@ data-flex-basis="518px"
 &lt;hr>
 &lt;h3 id="stdfilesystem">std::filesystem
 &lt;/h3>&lt;h3 id="容器小tips">容器小tips
-&lt;/h3>&lt;hr>
+&lt;/h3>&lt;h4 id="大小根堆">大小根堆
+&lt;/h4>&lt;p>&lt;code>std::priority_queue&lt;/code>为标准库自带的大根堆，默认为：&lt;code>std::priority_queue&amp;lt;T, std::vector&amp;lt;T&amp;gt;, std::less&amp;lt;&amp;gt;&amp;gt;&lt;/code>，自定义排序版的堆为：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="k">auto&lt;/span> &lt;span class="n">cmp&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[](&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">T&lt;/span> &lt;span class="n">left&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">T&lt;/span> &lt;span class="n">right&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">left&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">right&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 小根堆，与排序相反，比较返回true时默认left节点下沉
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">priority_queue&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">decltype&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">cmp&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">heap&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>std::priority_queue&lt;/code>本身为对&lt;code>&amp;lt;algorithm&amp;gt;&lt;/code>中&lt;code>make_heap&lt;/code>、&lt;code>push_heap&lt;/code>、&lt;code>pop_heap&lt;/code>、&lt;code>is_heap&lt;/code>等方法的封装，所以第二个模板参数需要提供支持随机访问的容器：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="n">vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">vec&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 构建大根堆
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">make_heap&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">vec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">begin&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="n">vec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">end&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 插入新元素
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">vec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">push_back&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">6&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">push_heap&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">vec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">begin&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="n">vec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">end&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 弹出堆顶
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">pop_heap&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">vec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">begin&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="n">vec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">end&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">vec&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">pop_back&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>基于vector手动实现堆排序：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// TODO
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
 &lt;h3 id="containertool-class">Container/Tool Class
 &lt;/h3>&lt;h4 id="stdstring">std::string
 &lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
@@ -6863,7 +6948,8 @@ data-flex-basis="518px"
 &lt;/div>
 &lt;/div>&lt;p>这种定义方式会使得函数在全局命名空间不可见，只有当参数中包含&lt;code>Object&lt;/code>类时，才会在&lt;code>Object&lt;/code>的命名空间中查找该函数。对于&lt;code>Object(2) == 2&lt;/code> 和 &lt;code>2 == Object(2)&lt;/code>，如果没有&lt;code>friend&lt;/code>，后者会编译失败（在C++20之前）。&lt;/p>
 &lt;blockquote>
-&lt;p>C++20之后引入了新的 &lt;code>==&lt;/code> 运算符规则，允许编译器翻转运算符两边的内容）。&lt;/p>&lt;/blockquote>
+&lt;p>C++20之后引入了新的 &lt;code>==&lt;/code> 运算符规则，允许编译器翻转运算符两边的内容）。&lt;/p>
+&lt;/blockquote>
 &lt;p>普通友元函数：&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -7036,7 +7122,8 @@ data-flex-basis="518px"
 &lt;p>对于理想待排序数组，即每次都能正好平均分原始数组时，树的递归深度&lt;code>（即“循环次数”）&lt;/code>为：将数组长度N除以2直到长度为1或0的次数，即：&lt;code>N/2^x = 1&lt;/code>，&lt;code>x = log2N&lt;/code>。对于每一层树的处理，所有节点长度总是N，所以最终复杂度为：&lt;code>O(NlogN)&lt;/code>。&lt;/p>
 &lt;blockquote>
 &lt;p>对于最坏情况，即每次拆分数组都只能将原始数组分成&lt;code>0&lt;/code>和&lt;code>n - 1&lt;/code>的两个子数组，此时循环次数会退化回N，时间复杂度也来到最差情况：&lt;code>O(N^2)&lt;/code>&lt;/p>
-&lt;p>对于std::sort，内部在选基准点时会选取前、中、后三个基准点，并取居中的数作为基准以避免极端情况，当递归次数过多时也会退化为“堆排序”。&lt;/p>&lt;/blockquote>
+&lt;p>对于std::sort，内部在选基准点时会选取前、中、后三个基准点，并取居中的数作为基准以避免极端情况，当递归次数过多时也会退化为“堆排序”。&lt;/p>
+&lt;/blockquote>
 &lt;p>快速排序的优势在于：每次处理子数组都是顺序处理，CPU友好，并且空间复杂度为递归深度&lt;code>O(logN)&lt;/code>，且没有资源拷贝开销。&lt;/p>
 &lt;p>&lt;strong>Partition&lt;/strong>&lt;/p>
 &lt;p>上面的快排的Partition实现采用了&lt;strong>快慢指针法&lt;/strong>，代码实现精简，但是可以注意到，对于近乎有序的数组，比如：&lt;/p>
@@ -7246,9 +7333,237 @@ data-flex-basis="518px"
 &lt;/div>&lt;h3 id="并查集">并查集
 &lt;/h3>&lt;h3 id="trie-树">Trie 树
 &lt;/h3>&lt;h3 id="lru">LRU
-&lt;/h3>&lt;h3 id="二叉平衡树">二叉平衡树
-&lt;/h3>&lt;h1 id="qt">Qt
-&lt;/h1>&lt;h1 id="场景问题">场景问题
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// LRU
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">LRUCache&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">using&lt;/span> &lt;span class="n">ListNode&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">pair&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">LRUCache&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">capacity&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">:&lt;/span>&lt;span class="n">cap&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">capacity&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="nf">get&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">key&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">value&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">map&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">find&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">map&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">end&lt;/span>&lt;span class="p">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">value&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">second&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lists&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">splice&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">lists&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">begin&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="n">lists&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">lists&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">begin&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">value&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">put&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">value&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">map&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">find&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">map&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">end&lt;/span>&lt;span class="p">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">second&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">value&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lists&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">splice&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">lists&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">begin&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="n">lists&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="p">]);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">lists&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">begin&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lists&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">push_front&lt;/span>&lt;span class="p">({&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">value&lt;/span>&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">lists&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">cap&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">auto&lt;/span> &lt;span class="n">it&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">lists&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">back&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">map&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">erase&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">it&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">first&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lists&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">pop_back&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">lists&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">begin&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">cap&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">list&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">ListNode&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">lists&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">unordered_map&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">list&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">ListNode&lt;/span>&lt;span class="o">&amp;gt;::&lt;/span>&lt;span class="n">iterator&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">map&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// TODO LRU-K
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="二叉平衡树">二叉平衡树
+&lt;/h3>&lt;hr>
+&lt;h1 id="qt">Qt
+&lt;/h1>&lt;h1 id="opengl">OpenGL
+&lt;/h1>&lt;h2 id="杂项记录">杂项记录
+&lt;/h2>&lt;h3 id="glbufferdata">glBufferData
+&lt;/h3>&lt;p>&lt;code>glBufferData&lt;/code>是用来向GPU申请缓存的函数：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="nf">glBufferData&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">GLenum&lt;/span> &lt;span class="n">target&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">GLsizeiptr&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">const&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">GLenum&lt;/span> &lt;span class="n">usage&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其中target不同，用处不同：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>target&lt;/th>
+&lt;th>含义&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>GL_ARRAY_BUFFER&lt;/code>&lt;/td>
+&lt;td>顶点数据&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>GL_ELEMENT_ARRAY_BUFFER&lt;/code>&lt;/td>
+&lt;td>索引数据&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>GL_UNIFORM_BUFFER&lt;/code>&lt;/td>
+&lt;td>uniform 数据&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>GL_SHADER_STORAGE_BUFFER&lt;/code>&lt;/td>
+&lt;td>计算数据&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>GL_PIXEL_UNPACK_BUFFER&lt;/code>&lt;/td>
+&lt;td>纹理上传&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>针对&lt;code>data&lt;/code>参数，传入非空时会将数据从CPU copy到 GPU，传NULL时会等待&lt;code>glBufferSubData&lt;/code>或&lt;code>glMapBuffer&lt;/code>写数据（与&lt;code>usage&lt;/code>参数无关）。&lt;/p>
+&lt;p>最后一个&lt;code>usage&lt;/code>参数不会改变 API 行为，其作用是调整OpenGL驱动对GPU缓存的优化策略：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>usage&lt;/th>
+&lt;th>含义&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>GL_STATIC_DRAW&lt;/code>&lt;/td>
+&lt;td>数据几乎不变&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>GL_DYNAMIC_DRAW&lt;/code>&lt;/td>
+&lt;td>会偶尔修改&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>GL_STREAM_DRAW&lt;/code>&lt;/td>
+&lt;td>每帧更新&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>所以，对于GL_STATIC_DRAW，也可以在申请缓存时将data字段传NULL，但是会导致每次调用&lt;code>glBufferSubData&lt;/code>时消耗增加。&lt;/p>
+&lt;h3 id="glbuffersubdata-与-glmapbuffer">glBufferSubData 与 glMapBuffer
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>&lt;code>glBufferSubData&lt;/code>&lt;/p>
+&lt;p>当&lt;code>glBufferData&lt;/code> 的数据部分传空时需要使用&lt;code>glBufferSubData&lt;/code>进一步动态更新数据：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c++" data-lang="c++">&lt;span class="line">&lt;span class="cl">&lt;span class="n">glBindBuffer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_ARRAY_BUFFER&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">vbo&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">glBufferSubData&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_ARRAY_BUFFER&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">data&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这里会存在一个&lt;code>pipeline stall&lt;/code>(或&lt;code>CPU stall&lt;/code>)，即GPU流水线上堆积了任务，正在使用该缓存，但是此时CPU又要进行写入，这就会造成CPU的等待，可以通过&lt;code>buffer orphaning(缓存孤立)&lt;/code>来缓解这种停顿现象：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-C++" data-lang="C++">&lt;span class="line">&lt;span class="cl">&lt;span class="n">glBindBuffer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_ARRAY_BUFFER&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">vbo&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">glBufferData&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_ARRAY_BUFFER&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nb">NULL&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GL_DYNAMIC_DRAW&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">glBufferSubData&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_ARRAY_BUFFER&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">data&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>&lt;code>glMapBuffer&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-C++" data-lang="C++">&lt;span class="line">&lt;span class="cl">&lt;span class="n">glBindBuffer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_ARRAY_BUFFER&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">vbo&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">ptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">glMapBuffer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_ARRAY_BUFFER&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">GL_WRITE_ONLY&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// use ptr to copy data
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">glUnmapBuffer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GL_ARRAY_BUFFER&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>可以直接将数据从文件拷贝到共享buffer，减少拷贝？（是否可以类比于Linux下的mmap？）&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;a class="link" href="https://www.stevestreeting.com/2007/03/17/glmapbuffer-vs-glbuffersubdata-the-return/" target="_blank" rel="noopener"
+>glMapBuffer 与 glBufferSubData，返回 ·SteveStreeting.com&lt;/a> 有博客提到在大数据量的情况下glMapBuffer性能高于glBufferSubData，并且存在一个阈值。&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="glenablevertexattribarray-和-glvertexattribpointer">glEnableVertexAttribArray 和 glVertexAttribPointer
+&lt;/h3>&lt;h3 id="gldrawelements-和-gldrawarrays">glDrawElements 和 glDrawArrays
+&lt;/h3>&lt;hr>
+&lt;h1 id="场景问题">场景问题
 &lt;/h1></description></item><item><title>Archives</title><link>https://SSmallOrange.github.io/archives/</link><pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate><guid>https://SSmallOrange.github.io/archives/</guid><description/></item><item><title>Links</title><link>https://SSmallOrange.github.io/links/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://SSmallOrange.github.io/links/</guid><description>&lt;p>To use this feature, add &lt;code>links&lt;/code> section to frontmatter.&lt;/p>
 &lt;p>This page&amp;rsquo;s frontmatter:&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
