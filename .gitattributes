@@ -1,0 +1,3 @@
+# 阻止 Git 在 Windows 上自动转换静态资源文件（如 CSS/JS）的换行符
+# 避免因换行符改变导致 Hugo 算出的 SRI (Subresource Integrity) 哈希校验失败，进而导致网页无样式
+* -text
