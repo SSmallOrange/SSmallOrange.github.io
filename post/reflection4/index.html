@@ -1,0 +1,410 @@
+<!doctype html><html lang=en dir=auto data-theme=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>现代反射实现（四）：Json反序列化 | SSmallOrange Site</title><meta name=keywords content="c++"><meta name=description content="利用编译期反射实现 Json 反序列化"><meta name=author content="SSmallOrange"><link rel=canonical href=https://SSmallOrange.github.io/post/reflection4/><link crossorigin=anonymous href=/assets/css/stylesheet.da7ae075412b02c64a59d8e7d45b366b81cee6f853e91a5ae945824f0cca970d.css integrity="sha256-2nrgdUErAsZKWdjn1Fs2a4HO5vhT6Rpa6UWCTwzKlw0=" rel="preload stylesheet" as=style><link rel=icon href=https://SSmallOrange.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://SSmallOrange.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://SSmallOrange.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://SSmallOrange.github.io/apple-touch-icon.png><link rel=mask-icon href=https://SSmallOrange.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://SSmallOrange.github.io/post/reflection4/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51);color-scheme:dark}.list{background:var(--theme)}.toc{background:var(--entry)}}@media(prefers-color-scheme:light){.list::-webkit-scrollbar-thumb{border-color:var(--code-bg)}}</style></noscript><script>localStorage.getItem("pref-theme")==="dark"?document.querySelector("html").dataset.theme="dark":localStorage.getItem("pref-theme")==="light"?document.querySelector("html").dataset.theme="light":window.matchMedia("(prefers-color-scheme: dark)").matches?document.querySelector("html").dataset.theme="dark":document.querySelector("html").dataset.theme="light"</script><meta property="og:url" content="https://SSmallOrange.github.io/post/reflection4/"><meta property="og:site_name" content="SSmallOrange Site"><meta property="og:title" content="现代反射实现（四）：Json反序列化"><meta property="og:description" content="利用编译期反射实现 Json 反序列化"><meta property="og:locale" content="zh_cn"><meta property="og:type" content="article"><meta property="article:section" content="post"><meta property="article:published_time" content="2025-11-15T21:58:31+08:00"><meta property="article:modified_time" content="2025-11-15T21:58:31+08:00"><meta property="article:tag" content="C++"><meta name=twitter:card content="summary"><meta name=twitter:title content="现代反射实现（四）：Json反序列化"><meta name=twitter:description content="利用编译期反射实现 Json 反序列化"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://SSmallOrange.github.io/post/"},{"@type":"ListItem","position":2,"name":"现代反射实现（四）：Json反序列化","item":"https://SSmallOrange.github.io/post/reflection4/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"现代反射实现（四）：Json反序列化","name":"现代反射实现（四）：Json反序列化","description":"利用编译期反射实现 Json 反序列化","keywords":["c++"],"articleBody":"第四章：基于反射的 Json 反序列化 前一章我们已经用编译期反射实现了 Json 序列化，把一个聚合类型一次性吐成一段 Json 字符串，不需要手写拼接。\n这章做反方向的事情：\n给定一段 Json 文本，把它自动填充进一个结构体对象里，支持嵌套结构体、顺序容器、关联容器等常见组合。\n最终对外只保留一个接口：\n1 2 3 4 5 6 7 8 tinyrefl::Complex obj{}; const char* json = R\"({ \"id\": 42, \"name\": \"tinyrefl\", \"values\": [1, 2, 3] })\"; auto st = tinyrefl::reflection_from_json(obj, json); 这里我采用不构建 DOM，直接基于RapidJSON的流式 SAX 接口，把事件派发到对应的结构体成员。 主要思路：\n由于RapidJson的SAX接口只提供回调，所以对于递归反序列化，还需要我们自己维护一个解析栈来处理嵌套情况 同时，RapidJson对于数组类型和普通类型的回调方式不同，所以这里需要分别进行处理 剩下的就是使用RapidJson的接口了，RapidJson相关文档：https://rapidjson.org/zh-cn/\n结构体成员KV化 到反序列化这里，前面的铺垫已经很充分了：\nmembers_count_v 能在编译期算出成员个数 struct_members_to_array() 能拿到成员名数组 struct_members_to_tuple() 能拿到成员引用 tuple（在有对象实例的前提下） 序列化的时候，我们只需要在“有对象”的场景下遍历一遍成员，把 (member_name, member_reference)这一对在运行时交给 to_json_value 就行，所以直接用 tuple + 泛型 lambda 遍历就够了。 反序列化就不一样了，真正要解决的是下面这个问题：\n当 RapidJSON 回调告诉我「现在读到了 key = ‘id’」，如何在 O(1) 时间里找到这个成员在结构体里的“位置”和“类型”，然后把后续的值事件填到正确的成员上？\n也就是说，我们需要把“结构体的成员元信息”预先组织成某种 Key → Value 的形式：\n1 2 3 4 member_name → 成员的元信息（类型 + 在对象里的位置） \"id\" → { type = int, offset = 0 } \"name\" → { type = std::string, offset = 8 } \"values\" → { type = std::vector, offset = 40 } 这里 member_name 很好办，前面我们已经能够构建出 std::array。真正难的是「成员引用」这一侧。\n为什么不能直接存「成员引用」 直觉上的想法可能是：能不能搞一个类似这样的东西？\n1 2 3 4 5 6 7 struct MemberRefBase { virtual ~MemberRefBase() = default; }; template \u003ctypename T\u003e struct MemberRef : MemberRefBase { using type = T; T* ptr; }; 然后弄一个 std::unordered_map","wordCount":"1072","inLanguage":"en","datePublished":"2025-11-15T21:58:31+08:00","dateModified":"2025-11-15T21:58:31+08:00","author":{"@type":"Person","name":"SSmallOrange"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://SSmallOrange.github.io/post/reflection4/"},"publisher":{"@type":"Organization","name":"SSmallOrange Site","logo":{"@type":"ImageObject","url":"https://SSmallOrange.github.io/favicon.ico"}}}</script></head><body id=top><header class=header><nav class=nav><div class=logo><a href=https://SSmallOrange.github.io/ accesskey=h title="SSmallOrange Site (Alt + H)">SSmallOrange Site</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
+<svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+<svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://SSmallOrange.github.io/ title=主页><span>主页</span></a></li><li><a href=https://SSmallOrange.github.io/post/ title=文章><span>文章</span></a></li><li><a href=https://SSmallOrange.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://SSmallOrange.github.io/tags/ title=标签><span>标签</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://SSmallOrange.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://SSmallOrange.github.io/post/>Posts</a></div><h1 class="post-title entry-hint-parent">现代反射实现（四）：Json反序列化</h1><div class=post-description>利用编译期反射实现 Json 反序列化</div><div class=post-meta><span title='2025-11-15 21:58:31 +0800 CST'>November 15, 2025</span>&nbsp;·&nbsp;<span>6 min</span>&nbsp;·&nbsp;<span>SSmallOrange</span></div></header><figure class=entry-cover><a href=https://SSmallOrange.github.io/post/reflection4/reflection-4.jpg target=_blank rel="noopener noreferrer"><img loading=eager srcset='https://SSmallOrange.github.io/post/reflection4/reflection-4_hu_48dfb3d20863b5e2.jpg 360w,https://SSmallOrange.github.io/post/reflection4/reflection-4_hu_247598fc5b67bffc.jpg 480w,https://SSmallOrange.github.io/post/reflection4/reflection-4_hu_65a4dee1987bdb64.jpg 720w,https://SSmallOrange.github.io/post/reflection4/reflection-4_hu_1e23a9059a66bdae.jpg 1080w,https://SSmallOrange.github.io/post/reflection4/reflection-4_hu_82afa20aca92d1a0.jpg 1500w,https://SSmallOrange.github.io/post/reflection4/reflection-4.jpg 7500w' src=https://SSmallOrange.github.io/post/reflection4/reflection-4.jpg sizes="(min-width: 768px) 720px, 100vw" width=7500 height=5000 alt></a></figure><div class=toc><details><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><ul><li><a href=#%e7%ac%ac%e5%9b%9b%e7%ab%a0%e5%9f%ba%e4%ba%8e%e5%8f%8d%e5%b0%84%e7%9a%84-json-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96 aria-label="第四章：基于反射的 Json 反序列化">第四章：基于反射的 Json 反序列化</a><ul><li><a href=#%e7%bb%93%e6%9e%84%e4%bd%93%e6%88%90%e5%91%98kv%e5%8c%96 aria-label=结构体成员KV化>结构体成员KV化</a><ul><li><a href=#%e4%b8%ba%e4%bb%80%e4%b9%88%e4%b8%8d%e8%83%bd%e7%9b%b4%e6%8e%a5%e5%ad%98%e6%88%90%e5%91%98%e5%bc%95%e7%94%a8 aria-label=为什么不能直接存「成员引用」>为什么不能直接存「成员引用」</a></li></ul></li><li><a href=#%e5%ae%9e%e7%8e%b0%e6%96%b9%e6%a1%88 aria-label=实现方案>实现方案</a><ul><li><a href=#rapidjson%e8%a7%a3%e6%9e%90 aria-label=RapidJson解析>RapidJson解析</a></li><li><a href=#dispatchhandler%e4%ba%8b%e4%bb%b6%e5%88%86%e5%8f%91 aria-label=DispatchHandler：事件分发>DispatchHandler：事件分发</a></li><li><a href=#readerhandlerimpt-is%e7%bb%93%e6%9e%84%e4%bd%93%e5%af%b9%e8%b1%a1%e8%a7%a3%e6%9e%90 aria-label="ReaderHandlerImp<T, Is&mldr;>：结构体对象解析">ReaderHandlerImp&lt;T, Is&mldr;>：结构体对象解析</a></li><li><a href=#sequencereaderhandleimp%e9%a1%ba%e5%ba%8f%e5%ae%b9%e5%99%a8%e8%a7%a3%e6%9e%90 aria-label=SequenceReaderHandleImp：顺序容器解析>SequenceReaderHandleImp：顺序容器解析</a></li><li><a href=#%e5%a4%96%e5%b1%82%e6%8e%a5%e5%8f%a3 aria-label=外层接口>外层接口</a></li></ul></li></ul></li><li><a href=#%e6%9c%ac%e7%ab%a0%e6%80%bb%e7%bb%93 aria-label=本章总结>本章总结</a></li></ul></div></details></div><div class=post-content><h2 id=第四章基于反射的-json-反序列化>第四章：基于反射的 Json 反序列化<a hidden class=anchor aria-hidden=true href=#第四章基于反射的-json-反序列化>#</a></h2><p>前一章我们已经用编译期反射实现了 Json 序列化，把一个聚合类型一次性吐成一段 Json 字符串，不需要手写拼接。</p><p>这章做反方向的事情：</p><blockquote><p>给定一段 Json 文本，把它自动填充进一个结构体对象里，支持嵌套结构体、顺序容器、关联容器等常见组合。</p></blockquote><p>最终对外只保留一个接口：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=n>tinyrefl</span><span class=o>::</span><span class=n>Complex</span> <span class=n>obj</span><span class=p>{};</span>
+</span></span><span class=line><span class=cl><span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>json</span> <span class=o>=</span> <span class=n>R</span><span class=s>&#34;({</span>
+</span></span><span class=line><span class=cl>    <span class=s>&#34;id&#34;</span><span class=o>:</span> <span class=mi>42</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s>&#34;name&#34;</span><span class=o>:</span> <span class=s>&#34;tinyrefl&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s>&#34;values&#34;</span><span class=o>:</span> <span class=p>[</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=p>})</span><span class=s>&#34;;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>auto</span> <span class=n>st</span> <span class=o>=</span> <span class=n>tinyrefl</span><span class=o>::</span><span class=n>reflection_from_json</span><span class=p>(</span><span class=n>obj</span><span class=p>,</span> <span class=n>json</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>这里我采用不构建 DOM，直接基于<code>RapidJSON</code>的流式 SAX 接口，把事件派发到对应的结构体成员。
+主要思路：</p><ul><li>由于<code>RapidJson</code>的SAX接口只提供回调，所以对于递归反序列化，还需要我们自己维护一个解析栈来处理嵌套情况</li><li>同时，<code>RapidJson</code>对于数组类型和普通类型的回调方式不同，所以这里需要分别进行处理</li></ul><p>剩下的就是使用<code>RapidJson</code>的接口了，<code>RapidJson</code>相关文档：https://rapidjson.org/zh-cn/</p><h3 id=结构体成员kv化>结构体成员KV化<a hidden class=anchor aria-hidden=true href=#结构体成员kv化>#</a></h3><p>到反序列化这里，前面的铺垫已经很充分了：</p><ul><li><code>members_count_v&lt;T></code> 能在编译期算出成员个数</li><li><code>struct_members_to_array&lt;T>()</code> 能拿到成员名数组</li><li><code>struct_members_to_tuple&lt;T>()</code> 能拿到成员引用 tuple（在有对象实例的前提下）</li></ul><p>序列化的时候，我们只需要在“有对象”的场景下遍历一遍成员，把 <code>(member_name, member_reference)</code>这一对在运行时交给 <code>to_json_value</code> 就行，所以直接用 <strong>tuple + 泛型 lambda</strong> 遍历就够了。
+反序列化就不一样了，真正要解决的是下面这个问题：</p><blockquote><p>当 RapidJSON 回调告诉我「现在读到了 key = &lsquo;id&rsquo;」，如何在 O(1) 时间里找到这个成员在结构体里的“位置”和“类型”，然后把后续的值事件填到正确的成员上？</p></blockquote><p>也就是说，我们需要把“结构体的成员元信息”预先组织成某种 Key → Value 的形式：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>member_name       → 成员的元信息（类型 + 在对象里的位置）
+</span></span><span class=line><span class=cl>&#34;id&#34;              → { type = int,  offset = 0 }
+</span></span><span class=line><span class=cl>&#34;name&#34;            → { type = std::string, offset = 8 }
+</span></span><span class=line><span class=cl>&#34;values&#34;          → { type = std::vector&lt;int&gt;, offset = 40 }
+</span></span></code></pre></td></tr></table></div></div><p>这里 <code>member_name</code> 很好办，前面我们已经能够构建出 <code>std::array&lt;string_view, N></code>。真正难的是「成员引用」这一侧。</p><h4 id=为什么不能直接存成员引用>为什么不能直接存「成员引用」<a hidden class=anchor aria-hidden=true href=#为什么不能直接存成员引用>#</a></h4><p>直觉上的想法可能是：能不能搞一个类似这样的东西？</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>struct</span> <span class=nc>MemberRefBase</span> <span class=p>{</span> <span class=k>virtual</span> <span class=o>~</span><span class=n>MemberRefBase</span><span class=p>()</span> <span class=o>=</span> <span class=k>default</span><span class=p>;</span> <span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>template</span> <span class=o>&lt;</span><span class=k>typename</span> <span class=n>T</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=nc>MemberRef</span> <span class=o>:</span> <span class=n>MemberRefBase</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>using</span> <span class=n>type</span> <span class=o>=</span> <span class=n>T</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>T</span><span class=o>*</span> <span class=n>ptr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>然后弄一个 <code>std::unordered_map&lt;string, std::unique_ptr&lt;MemberRefBase>></code>，把每个成员都塞进去，反序列化时查到 key 就取出对应指针，强转回真实类型再赋值。</p><p>想法很美好，但是这个思路有一个关键问题：<strong>不同成员类型没法丢进同一个“简单容器”</strong>，因为成员类型是异构的：<code>int、std::string、std::vector&lt;double>...</code>，我们没法把他放在同一个<code>map</code>里。</p><p>聪明的同学可能会举一反三，那我们使用类型擦除，把他们全都擦成<code>void*</code>，然后自己维护一套类型。</p><p>是的，实现方案是这样的，但是光有类型还不够，我们仍然没有成员对象的引用，这里可以考虑用<strong>成员偏移量</strong>来实现。</p><p>那么思路清晰了，我们需要构建一个这样的结构体：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>template</span> <span class=o>&lt;</span><span class=k>typename</span> <span class=n>T</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=k>struct</span> <span class=nc>MemberMeta</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>using</span> <span class=n>type</span> <span class=o>=</span> <span class=n>T</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=n>size_t</span> <span class=n>offset</span><span class=p>;</span>   <span class=c1>// 成员在对象内的偏移量
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>并且将其存在一个<code>std::variant</code>中：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>using</span> <span class=n>ValueType</span> <span class=o>=</span> <span class=n>std</span><span class=o>::</span><span class=n>variant</span><span class=o>&lt;</span>
+</span></span><span class=line><span class=cl>    <span class=n>MemberMeta</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>MemberMeta</span><span class=o>&lt;</span><span class=n>std</span><span class=o>::</span><span class=n>string</span><span class=o>&gt;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>MemberMeta</span><span class=o>&lt;</span><span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;&gt;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>...</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><p>最后将这些整理存在一个<code>map</code>里：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>using</span> <span class=n>MapType</span> <span class=o>=</span> <span class=o>::</span><span class=n>frozen</span><span class=o>::</span><span class=n>unordered_map</span><span class=o>&lt;</span>
+</span></span><span class=line><span class=cl>    <span class=o>::</span><span class=n>frozen</span><span class=o>::</span><span class=n>string</span><span class=p>,</span>  <span class=c1>// 成员名
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>ValueType</span><span class=p>,</span>         <span class=c1>// 成员元信息（类型 + 偏移）
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>members_count_v</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>std::variant</code> 配合 <code>std::visit</code>使用可以高效的解决当前成员的类型问题，就不用自己维护脆弱的<code>void* + type_id</code>了。</p><h3 id=实现方案>实现方案<a hidden class=anchor aria-hidden=true href=#实现方案>#</a></h3><p>这里看下整体的实现方案：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>template</span> <span class=o>&lt;</span><span class=k>typename</span> <span class=n>T</span><span class=p>,</span> <span class=n>size_t</span><span class=p>...</span> <span class=n>Is</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=kr>inline</span> <span class=k>auto</span> <span class=n>get_variant_map</span><span class=p>(</span><span class=o>::</span><span class=n>std</span><span class=o>::</span><span class=n>index_sequence</span><span class=o>&lt;</span><span class=n>Is</span><span class=p>...</span><span class=o>&gt;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>using</span> <span class=n>U</span> <span class=o>=</span> <span class=n>remove_cvref_t</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>constexpr</span> <span class=k>auto</span> <span class=n>member_name_arr</span> <span class=o>=</span> <span class=n>struct_members_to_array</span><span class=o>&lt;</span><span class=n>U</span><span class=o>&gt;</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>auto</span><span class=o>&amp;</span> <span class=n>member_offset_arr</span> <span class=o>=</span> <span class=n>struct_member_offset_array</span><span class=o>&lt;</span><span class=n>U</span><span class=o>&gt;</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>using</span> <span class=n>Tuple</span> <span class=o>=</span> <span class=k>decltype</span><span class=p>(</span><span class=n>struct_members_to_tuple</span><span class=o>&lt;</span><span class=n>U</span><span class=o>&gt;</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// using Remove_Tuple_CV_Type = decltype(remove_cvref_t&lt;::std::tuple_element_t&lt;Is, Tuple&gt;&gt;);
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>using</span> <span class=n>ValueType</span> <span class=o>=</span> <span class=k>decltype</span><span class=p>(</span><span class=n>get_variant_type</span><span class=o>&lt;</span><span class=n>U</span><span class=p>,</span> <span class=n>Tuple</span><span class=p>,</span> <span class=n>Is</span><span class=p>...</span><span class=o>&gt;</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// runtime plan
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// ::std::unordered_map&lt;::std::string_view, ValueType&gt; map;
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// (map.emplace(member_name_arr[Is],
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//     ValueType{::std::in_place_index&lt;Is&gt;, 
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//         offset_of_member&lt;decltype(remove_tuple_cv_type&lt;Is, Tuple&gt;())&gt;{member_offset_arr[Is]}}),
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// ...);
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// return map;
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>return</span> <span class=n>frozen</span><span class=o>::</span><span class=n>unordered_map</span><span class=o>&lt;</span><span class=n>frozen</span><span class=o>::</span><span class=n>string</span><span class=p>,</span> <span class=n>ValueType</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>...(</span><span class=n>Is</span><span class=p>)</span><span class=o>&gt;</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span><span class=n>member_name_arr</span><span class=p>[</span><span class=n>Is</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>            <span class=n>ValueType</span><span class=p>{</span><span class=o>::</span><span class=n>std</span><span class=o>::</span><span class=n>in_place_index</span><span class=o>&lt;</span><span class=n>Is</span><span class=o>&gt;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                <span class=n>offset_of_member</span><span class=o>&lt;</span><span class=k>decltype</span><span class=p>(</span><span class=n>remove_tuple_cv_type</span><span class=o>&lt;</span><span class=n>Is</span><span class=p>,</span> <span class=n>Tuple</span><span class=o>&gt;</span><span class=p>())</span><span class=o>&gt;</span><span class=p>{</span><span class=n>member_offset_arr</span><span class=p>[</span><span class=n>Is</span><span class=p>]}}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}...</span>
+</span></span><span class=line><span class=cl>    <span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>这里的具体实现方式就不展开了，和之前的模板实现过程大差不差，就是多了<code>std::variant</code>，感兴趣的读者可以自行阅读：https://github.com/SSmallOrange/TinyReflection/blob/master/tinyrefl/utils/reflection_get_tuple.hpp</p><h4 id=rapidjson解析>RapidJson解析<a hidden class=anchor aria-hidden=true href=#rapidjson解析>#</a></h4><p>要使用SAX风格的解析接口，我们需要继承<code>BaseReaderHandler&lt;UTF8&lt;>, MyHandler></code>，这是一种叫<code>CRTP(Curiously Recurring Template Pattern（奇异递归模板模式）)</code>的静态多态方式，相比传统多态省去了虚函数表的调用开销，原理是在其内部进行静态类型转换并调用函数，类似于：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>static_cast</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&amp;&gt;</span><span class=p>(</span><span class=o>*</span><span class=k>this</span><span class=p>).</span><span class=n>Func</span><span class=p>();</span>
+</span></span></code></pre></td></tr></table></div></div><p>继承后需要实现如下接口：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl>    <span class=k>struct</span> <span class=nc>IHandler</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>bool</span> <span class=nf>Null</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>bool</span> <span class=nf>Bool</span><span class=p>(</span><span class=kt>bool</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>bool</span> <span class=nf>Int</span><span class=p>(</span><span class=kt>int</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>bool</span> <span class=nf>Uint</span><span class=p>(</span><span class=kt>unsigned</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>bool</span> <span class=nf>Int64</span><span class=p>(</span><span class=kt>int64_t</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>bool</span> <span class=nf>Uint64</span><span class=p>(</span><span class=kt>uint64_t</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>bool</span> <span class=nf>Double</span><span class=p>(</span><span class=kt>double</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>bool</span> <span class=nf>RawNumber</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>str</span><span class=p>,</span> <span class=o>::</span><span class=n>rapidjson</span><span class=o>::</span><span class=n>SizeType</span> <span class=n>length</span><span class=p>,</span> <span class=kt>bool</span> <span class=n>copy</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>bool</span> <span class=nf>String</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=p>,</span> <span class=o>::</span><span class=n>rapidjson</span><span class=o>::</span><span class=n>SizeType</span><span class=p>,</span> <span class=kt>bool</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>bool</span> <span class=nf>StartObject</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>bool</span> <span class=nf>Key</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=p>,</span> <span class=o>::</span><span class=n>rapidjson</span><span class=o>::</span><span class=n>SizeType</span><span class=p>,</span> <span class=kt>bool</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>bool</span> <span class=nf>EndObject</span><span class=p>(</span><span class=o>::</span><span class=n>rapidjson</span><span class=o>::</span><span class=n>SizeType</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>bool</span> <span class=nf>StartArray</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>bool</span> <span class=nf>EndArray</span><span class=p>(</span><span class=o>::</span><span class=n>rapidjson</span><span class=o>::</span><span class=n>SizeType</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=kt>void</span> <span class=nf>set_dispatcher</span><span class=p>(</span><span class=n>DispatchHandler</span> <span class=o>*</span><span class=n>dispatcher</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>virtual</span> <span class=o>~</span><span class=n>IHandler</span><span class=p>()</span> <span class=o>=</span> <span class=k>default</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>这里我们自己抽象出一个<code>Handler</code>，整体实现分为三层：</p><ul><li><code>DispatchHandler</code>
+继承自 rapidjson::BaseReaderHandler，是唯一交给 RapidJSON 的 handler
+内部维护一个 std::vector&lt;IHandler*> 栈，负责把回调转发给栈顶 handler</li><li><code>ReaderHandlerImp&lt;T, Is...></code>
+面向自定义聚合类型，负责解析一个 Json 对象 { &mldr; } 并写进结构体 T</li><li><code>SequenceReaderHandleImp&lt;T></code>
+面向顺序容器，负责解析一个 Json 数组 [ &mldr; ] 并往容器里 emplace_back</li></ul><h4 id=dispatchhandler事件分发>DispatchHandler：事件分发<a hidden class=anchor aria-hidden=true href=#dispatchhandler事件分发>#</a></h4><p><code>DispatchHandler</code>的职责很简单：</p><ul><li>构建初始的 handler 栈</li><li>把 RapidJSON 的所有回调，转发给栈顶的 IHandler</li><li>在遇到新的对象或数组时，按需要压栈或出栈</li></ul><p>构造函数里会根据根类型是 struct 还是容器，压入第一个 handler：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>template</span> <span class=o>&lt;</span><span class=n>AggregateType</span> <span class=n>T</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=n>DispatchHandler</span><span class=p>(</span><span class=n>T</span><span class=o>&amp;</span> <span class=n>value</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>static</span> <span class=k>auto</span> <span class=n>member_offset_map</span> <span class=o>=</span> <span class=n>struct_member_offset_map</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=o>-&gt;</span><span class=n>push_handler</span><span class=p>(</span><span class=n>member_offset_map</span><span class=p>,</span> <span class=n>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>入栈的实现方式如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>template</span> <span class=o>&lt;</span><span class=k>typename</span> <span class=n>T</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=k>requires</span> <span class=n>is_custom_type_v</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>push_handler</span><span class=p>(</span><span class=k>const</span> <span class=k>typename</span> <span class=n>ReaderHandler</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;::</span><span class=n>MapType</span><span class=o>&amp;</span> <span class=n>map</span><span class=p>,</span> <span class=n>T</span><span class=o>&amp;</span> <span class=n>value</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>auto</span><span class=o>*</span> <span class=n>h</span> <span class=o>=</span> <span class=k>new</span> <span class=n>ReaderHandler</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span><span class=p>(</span><span class=n>map</span><span class=p>,</span> <span class=n>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>h</span><span class=o>-&gt;</span><span class=n>set_dispatcher</span><span class=p>(</span><span class=k>this</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>_stack</span><span class=p>.</span><span class=n>emplace_back</span><span class=p>(</span><span class=n>h</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>template</span> <span class=o>&lt;</span><span class=k>typename</span> <span class=n>T</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=k>requires</span> <span class=n>is_sequence_container_v</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>push_handler</span><span class=p>(</span><span class=n>T</span><span class=o>&amp;</span> <span class=n>value</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>auto</span><span class=o>*</span> <span class=n>h</span> <span class=o>=</span> <span class=k>new</span> <span class=n>SequenceReaderHandler</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span><span class=p>(</span><span class=n>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>h</span><span class=o>-&gt;</span><span class=n>set_dispatcher</span><span class=p>(</span><span class=k>this</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>_stack</span><span class=p>.</span><span class=n>emplace_back</span><span class=p>(</span><span class=n>h</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>pop_handler</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>delete</span> <span class=n>_stack</span><span class=p>.</span><span class=n>back</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=n>_stack</span><span class=p>.</span><span class=n>pop_back</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>在入栈时，需要区分首次入栈和解析时入栈，两种情况的处理方式不同：</p><ul><li>第一次 <code>StartObject()</code> 是根对象，不转发，只是把 _is_first_member 标记成 false</li><li>后续 <code>StartObject()</code> 全部转发给当前 handler，由它决定是否要继续创建子 handler 并压栈</li><li><code>EndObject()</code> 如果栈空，就说明反序列化结束，直接返回 true；否则转发给栈顶并 pop_handler</li></ul><p>所有 RapidJSON 回调函数都由分发器转发给栈顶 <code>Handler</code> ：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=kt>bool</span> <span class=nf>Bool</span><span class=p>(</span><span class=kt>bool</span> <span class=n>b</span><span class=p>)</span>                 <span class=p>{</span> <span class=k>return</span> <span class=n>top</span><span class=p>()</span><span class=o>-&gt;</span><span class=n>Bool</span><span class=p>(</span><span class=n>b</span><span class=p>);</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>bool</span> <span class=nf>Int</span><span class=p>(</span><span class=kt>int</span> <span class=n>i</span><span class=p>)</span>                   <span class=p>{</span> <span class=k>return</span> <span class=n>top</span><span class=p>()</span><span class=o>-&gt;</span><span class=n>Int</span><span class=p>(</span><span class=n>i</span><span class=p>);</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>bool</span> <span class=nf>String</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>s</span><span class=p>,</span> <span class=o>::</span><span class=n>rapidjson</span><span class=o>::</span><span class=n>SizeType</span> <span class=n>len</span><span class=p>,</span> <span class=kt>bool</span> <span class=n>copy</span><span class=p>)</span> <span class=p>{</span> <span class=k>return</span> <span class=n>top</span><span class=p>()</span><span class=o>-&gt;</span><span class=n>String</span><span class=p>(</span><span class=n>s</span><span class=p>,</span> <span class=n>len</span><span class=p>,</span> <span class=n>copy</span><span class=p>);</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>bool</span> <span class=nf>StartArray</span><span class=p>()</span>                 <span class=p>{</span> <span class=k>return</span> <span class=n>top</span><span class=p>()</span><span class=o>-&gt;</span><span class=n>StartArray</span><span class=p>();</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>bool</span> <span class=nf>EndArray</span><span class=p>(</span><span class=o>::</span><span class=n>rapidjson</span><span class=o>::</span><span class=n>SizeType</span> <span class=n>n</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>bool</span> <span class=n>result</span> <span class=o>=</span> <span class=n>top</span><span class=p>()</span><span class=o>-&gt;</span><span class=n>EndArray</span><span class=p>(</span><span class=n>n</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>pop_handler</span><span class=p>();</span>  <span class=c1>// 解析结束时出栈
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>return</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>...</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=readerhandlerimpt-is结构体对象解析>ReaderHandlerImp&lt;T, Is&mldr;>：结构体对象解析<a hidden class=anchor aria-hidden=true href=#readerhandlerimpt-is结构体对象解析>#</a></h4><p>对于自定义聚合类型，Json 里对应的是一个对象 { &mldr; }。反序列化时需要完成两件事：</p><ul><li>找到当前 Key 对应的是哪个成员</li><li>把后续的值事件写入这个成员里，或者把子对象 / 子数组继续交给新的 handler 解析</li></ul><p>当我们在 <code>Key</code>回调拿到成员名时，就可以：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=kt>bool</span> <span class=nf>Key</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>str</span><span class=p>,</span> <span class=o>::</span><span class=n>rapidjson</span><span class=o>::</span><span class=n>SizeType</span> <span class=n>length</span><span class=p>,</span> <span class=kt>bool</span><span class=p>)</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>_iterator</span> <span class=o>=</span> <span class=n>_struct_member_offset_map</span><span class=p>.</span><span class=n>find</span><span class=p>(</span><span class=o>::</span><span class=n>frozen</span><span class=o>::</span><span class=n>string</span><span class=p>(</span><span class=n>str</span><span class=p>,</span> <span class=n>length</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nb>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>后面的所有操作都会围绕这个迭代器展开。
+针对每一种类型的 Json 回调，<code>ReaderHandlerImp</code>都会将其分发给 <code>assign_if_match</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=kt>bool</span> <span class=nf>Bool</span><span class=p>(</span><span class=kt>bool</span> <span class=n>b</span><span class=p>)</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>assign_if_match</span><span class=o>&lt;</span><span class=kt>bool</span><span class=o>&gt;</span><span class=p>([</span><span class=o>&amp;</span><span class=p>](</span><span class=k>auto</span><span class=o>&amp;</span> <span class=n>member</span><span class=p>)</span> <span class=p>{</span> <span class=n>member</span> <span class=o>=</span> <span class=n>b</span><span class=p>;</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>bool</span> <span class=nf>Int</span><span class=p>(</span><span class=kt>int</span> <span class=n>i</span><span class=p>)</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>assign_if_match</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span><span class=p>([</span><span class=o>&amp;</span><span class=p>](</span><span class=k>auto</span><span class=o>&amp;</span> <span class=n>member</span><span class=p>)</span> <span class=p>{</span> <span class=n>member</span> <span class=o>=</span> <span class=n>i</span><span class=p>;</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>bool</span> <span class=nf>String</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>s</span><span class=p>,</span> <span class=o>::</span><span class=n>rapidjson</span><span class=o>::</span><span class=n>SizeType</span> <span class=n>len</span><span class=p>,</span> <span class=kt>bool</span> <span class=n>copy</span><span class=p>)</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>assign_if_match</span><span class=o>&lt;</span><span class=k>const</span> <span class=kt>char</span><span class=o>*&gt;</span><span class=p>([</span><span class=o>&amp;</span><span class=p>](</span><span class=k>auto</span><span class=o>&amp;</span> <span class=n>member</span><span class=p>)</span> <span class=p>{</span> <span class=n>member</span> <span class=o>=</span> <span class=n>s</span><span class=p>;</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>...</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>assign_if_match</code> 实现如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>template</span> <span class=o>&lt;</span><span class=k>typename</span> <span class=n>TargetType</span><span class=p>,</span> <span class=k>typename</span> <span class=n>F</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=kt>bool</span> <span class=n>assign_if_match</span><span class=p>(</span><span class=n>F</span><span class=o>&amp;&amp;</span> <span class=n>assign_func</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>_iterator</span> <span class=o>!=</span> <span class=n>_struct_member_offset_map</span><span class=p>.</span><span class=n>end</span><span class=p>())</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>auto</span> <span class=n>offset</span> <span class=o>=</span> <span class=n>_iterator</span><span class=o>-&gt;</span><span class=n>second</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>visit</span><span class=p>([</span><span class=o>&amp;</span><span class=p>](</span><span class=k>auto</span> <span class=n>arg</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>using</span> <span class=n>Value_Type</span> <span class=o>=</span> <span class=k>typename</span> <span class=k>decltype</span><span class=p>(</span><span class=n>arg</span><span class=p>)</span><span class=o>::</span><span class=n>type</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=nf>constexpr</span> <span class=p>(</span><span class=n>is_json_compatible_v</span><span class=o>&lt;</span><span class=n>remove_cvref_t</span><span class=o>&lt;</span><span class=n>Value_Type</span><span class=o>&gt;</span><span class=p>,</span> <span class=n>TargetType</span><span class=o>&gt;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>auto</span><span class=o>*</span> <span class=n>member_ptr</span> <span class=o>=</span> <span class=p>(</span><span class=n>Value_Type</span><span class=o>*</span><span class=p>)(</span>
+</span></span><span class=line><span class=cl>                    <span class=p>(</span><span class=kt>char</span><span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>_value</span> <span class=o>+</span> <span class=n>arg</span><span class=p>.</span><span class=n>value</span>
+</span></span><span class=line><span class=cl>                <span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=n>assign_func</span><span class=p>(</span><span class=o>*</span><span class=n>member_ptr</span><span class=p>);</span>  <span class=c1>// 调用回调进行赋值
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span> <span class=n>offset</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nb>true</span><span class=p>;</span>  <span class=c1>// 检查不到Key时忽略该字段
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>其中 <code>is_json_compatible_v</code>是通过：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>template</span> <span class=o>&lt;</span><span class=k>typename</span> <span class=n>Target</span><span class=p>,</span> <span class=k>typename</span> <span class=n>From</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=k>constexpr</span> <span class=kt>bool</span> <span class=n>is_json_compatible_v</span> <span class=o>=</span> <span class=o>::</span><span class=n>std</span><span class=o>::</span><span class=n>is_assignable_v</span><span class=o>&lt;</span><span class=n>Target</span> <span class=o>&amp;</span><span class=p>,</span> <span class=n>From</span><span class=o>&gt;</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><p>实现的，<code>std::is_assignable_v</code>能够检查<code>Target</code>能不能被<code>From</code>赋值。</p><p>当一个对象开始时，RapidJson 会从<code>StartObject()</code> 开始：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=kt>bool</span> <span class=nf>StartObject</span><span class=p>()</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>_iterator</span> <span class=o>!=</span> <span class=n>_struct_member_offset_map</span><span class=p>.</span><span class=n>end</span><span class=p>())</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>auto</span> <span class=n>offset</span> <span class=o>=</span> <span class=n>_iterator</span><span class=o>-&gt;</span><span class=n>second</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>visit</span><span class=p>([</span><span class=o>&amp;</span><span class=p>](</span><span class=k>auto</span> <span class=n>arg</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>using</span> <span class=n>Value_Type</span> <span class=o>=</span> <span class=k>typename</span> <span class=k>decltype</span><span class=p>(</span><span class=n>arg</span><span class=p>)</span><span class=o>::</span><span class=n>type</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=k>constexpr</span> <span class=p>(</span><span class=n>is_custom_type_v</span><span class=o>&lt;</span><span class=n>Value_Type</span><span class=o>&gt;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>static</span> <span class=k>auto</span> <span class=n>member_offset_map</span> <span class=o>=</span> <span class=n>struct_member_offset_map</span><span class=o>&lt;</span><span class=n>Value_Type</span><span class=o>&gt;</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>                <span class=k>auto</span><span class=o>*</span> <span class=n>member_value</span> <span class=o>=</span> <span class=k>reinterpret_cast</span><span class=o>&lt;</span><span class=n>Value_Type</span><span class=o>*&gt;</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=k>reinterpret_cast</span><span class=o>&lt;</span><span class=kt>char</span><span class=o>*&gt;</span><span class=p>(</span><span class=o>&amp;</span><span class=n>_value</span><span class=p>)</span> <span class=o>+</span> <span class=n>arg</span><span class=p>.</span><span class=n>value</span>
+</span></span><span class=line><span class=cl>                <span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=n>_dispatch_handler</span><span class=o>-&gt;</span><span class=n>push_handler</span><span class=o>&lt;</span><span class=n>Value_Type</span><span class=o>&gt;</span><span class=p>(</span><span class=n>member_offset_map</span><span class=p>,</span> <span class=o>*</span><span class=n>member_value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span> <span class=n>offset</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nb>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>先通过前面提到的 <code>iterator</code>拿到对应的成员类型信息，通过<code>std::visit</code>匹配当前<code>std::variant</code>存储的类型，并通过偏移量拿到当前成员的引用。随后将其入栈，嵌套处理。</p><h4 id=sequencereaderhandleimp顺序容器解析>SequenceReaderHandleImp<t>：顺序容器解析<a hidden class=anchor aria-hidden=true href=#sequencereaderhandleimp顺序容器解析>#</a></h4><p>顺序容器对应 Json 里的数组：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&#34;values&#34;</span><span class=p>:</span> <span class=p>[</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>对于容器本身，直接视为一串“连续的值事件”。这里通过一个模板别名拿到元素类型：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>using</span> <span class=n>ElementType</span> <span class=o>=</span> <span class=n>sequence_element_type_t</span><span class=o>&lt;</span><span class=n>remove_cvref_t</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;&gt;</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><p>核心思路：</p><ul><li>对于标量元素类型：每次数值事件来一发，就 emplace_back 一个元素，然后写入</li><li>对于元素是 struct：在 StartObject() 时为每个元素创建一个新的 ReaderHandler</li><li>对于元素还是容器：在 StartArray() 时继续压入下一层 SequenceReaderHandler</li></ul><p>对于第一种情况，直接处理：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>template</span> <span class=o>&lt;</span><span class=k>typename</span> <span class=n>TargetType</span><span class=p>,</span> <span class=k>typename</span> <span class=n>F</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=kt>bool</span> <span class=n>assign_if_match</span><span class=p>(</span><span class=n>F</span><span class=o>&amp;&amp;</span> <span class=n>assign_func</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nf>constexpr</span> <span class=p>(</span><span class=n>is_json_compatible_v</span><span class=o>&lt;</span><span class=n>remove_cvref_t</span><span class=o>&lt;</span><span class=n>ElementType</span><span class=o>&gt;</span><span class=p>,</span> <span class=n>TargetType</span><span class=o>&gt;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>assign_func</span><span class=p>(</span><span class=n>_value</span><span class=p>.</span><span class=n>emplace_back</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nb>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>第二种情况，元素是自定义 struct：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=kt>bool</span> <span class=nf>StartObject</span><span class=p>()</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=k>constexpr</span> <span class=p>(</span><span class=n>is_custom_type_v</span><span class=o>&lt;</span><span class=n>ElementType</span><span class=o>&gt;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>static</span> <span class=k>auto</span> <span class=n>member_offset_map</span> <span class=o>=</span> <span class=n>struct_member_offset_map</span><span class=o>&lt;</span><span class=n>ElementType</span><span class=o>&gt;</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>_dispatch_handler</span><span class=o>-&gt;</span><span class=n>push_handler</span><span class=o>&lt;</span><span class=n>ElementType</span><span class=o>&gt;</span><span class=p>(</span>  <span class=c1>// 因为这里传引用，所以需要静态变量，对不同类型都只会生成一次
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=n>member_offset_map</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>_value</span><span class=p>.</span><span class=n>emplace_back</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nb>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>第三种情况，元素本身是容器：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=kt>bool</span> <span class=nf>StartArray</span><span class=p>()</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=k>constexpr</span> <span class=p>(</span><span class=n>is_sequence_container_v</span><span class=o>&lt;</span><span class=n>ElementType</span><span class=o>&gt;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>_dispatch_handler</span><span class=o>-&gt;</span><span class=n>push_handler</span><span class=o>&lt;</span><span class=n>ElementType</span><span class=o>&gt;</span><span class=p>(</span><span class=n>_value</span><span class=p>.</span><span class=n>emplace_back</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nb>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>小知识：序列化容器的<code>emplace_back</code>函数会返回插入元素的引用。</p><h4 id=外层接口>外层接口<a hidden class=anchor aria-hidden=true href=#外层接口>#</a></h4><p>至此，Json的反序列工作就做完了，整理接口后得到：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c++ data-lang=c++><span class=line><span class=cl><span class=k>template</span> <span class=o>&lt;</span><span class=n>detail</span><span class=o>::</span><span class=n>AggregateType</span> <span class=n>T</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=kr>inline</span> <span class=kt>bool</span> <span class=n>reflection_from_json</span><span class=p>(</span><span class=n>T</span> <span class=o>&amp;&amp;</span><span class=n>object</span><span class=p>,</span> <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>str</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>detail</span><span class=o>::</span><span class=n>DispatchHandler</span> <span class=n>handler</span><span class=p>(</span><span class=n>object</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>::</span><span class=n>rapidjson</span><span class=o>::</span><span class=n>StringStream</span> <span class=n>ss</span><span class=p>(</span><span class=n>str</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>::</span><span class=n>rapidjson</span><span class=o>::</span><span class=n>Reader</span> <span class=n>reader</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>auto</span> <span class=n>result</span> <span class=o>=</span> <span class=n>reader</span><span class=p>.</span><span class=n>Parse</span><span class=o>&lt;::</span><span class=n>rapidjson</span><span class=o>::</span><span class=n>kParseDefaultFlags</span><span class=o>&gt;</span><span class=p>(</span><span class=n>ss</span><span class=p>,</span> <span class=n>handler</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=o>!</span><span class=n>result</span><span class=p>.</span><span class=n>IsError</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=本章总结>本章总结<a hidden class=anchor aria-hidden=true href=#本章总结>#</a></h2><p>本章的代码见：
+<a href=https://github.com/SSmallOrange/TinyReflection/blob/master/tinyrefl/reflectiopn_from_json.hpp>https://github.com/SSmallOrange/TinyReflection/blob/master/tinyrefl/reflectiopn_from_json.hpp</a></p><p>本章相关测试代码：
+<a href=https://github.com/SSmallOrange/TinyReflection/blob/master/test/test_reflection_from_json.cpp>https://github.com/SSmallOrange/TinyReflection/blob/master/test/test_reflection_from_json.cpp</a></p><p>目前c++26已经更新了反射能力，后面考虑与时俱进。</p></div><footer class=post-footer><ul class=post-tags><li><a href=https://SSmallOrange.github.io/tags/c++/>C++</a></li></ul><nav class=paginav><a class=next href=https://SSmallOrange.github.io/post/sol2-call-luascriptoncppcode/><span class=title>Next »</span><br><span>Sol2：在C++中调用Lua脚本</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2026 <a href=https://SSmallOrange.github.io/>SSmallOrange Site</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+<a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentColor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");if(menu){const e=localStorage.getItem("menu-scroll-position");e&&(menu.scrollLeft=parseInt(e,10)),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}}document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{const e=document.querySelector("html");e.dataset.theme==="dark"?(e.dataset.theme="light",localStorage.setItem("pref-theme","light")):(e.dataset.theme="dark",localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="copy";function s(){t.innerHTML="copied!",setTimeout(()=>{t.innerHTML="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
