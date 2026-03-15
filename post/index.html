@@ -72,12 +72,11 @@ ECS ECS是游戏中常用的架构，他之所以流行，是因为：他把对�
 std::transform 过滤：
 std::filter 排序：
 std::sort 查找：
-std::find
-遍历：
+std::find 遍历：
 for_each
-1 2 3 // 将数组内所有元素置0 std::vector&lt;int> matrix{0, 1, 0, 2, 3}; std::ranges::for_each(matrix, [](auto& value) { value = 0; }); 判断是否存在满足条件的元素：
-contains 1 2 3 // 检查是否包含0元素 std::vector&lt;int> matrix{0, 1, 0, 2, 3}; bool hasZero = std::ranges::contains(matrix, 0); any_of 1 2 3 4 5 // 检查是否包含0元素 std::vector&lt;int> matrix{0, 1, 0, 2, 3}; bool hasZero = std::ranges::any_of(matrix, [](auto& value) -> bool { return value == 0 }); 其他：
-...</p></div><footer class=entry-footer><span title='2025-07-20 20:00:31 +0800 CST'>July 20, 2025</span>&nbsp;·&nbsp;<span>11 min</span>&nbsp;·&nbsp;<span>SSmallOrange</span></footer><a class=entry-link aria-label="post link to 技术碎片（持续更新）" href=https://SSmallOrange.github.io/post/technological-fragments/></a></article></main><footer class=footer><span>&copy; 2026 <a href=https://SSmallOrange.github.io/>SSmallOrange Site</a></span> ·
+1 2 3 // 将数组内所有元素置0 std::vector&lt;int> matrix{0, 1, 0, 2, 3}; std::ranges::for_each(matrix, [](auto& value) { value = 0; }); 按顺序为容器赋值
+1 2 3 4 #include &lt;numeric> std::vector&lt;int> v(5); std::iota(v.begin(), v.end(), 10); // 输出 10， 11， 12， 13， 14 判断是否存在满足条件的元素：
+...</p></div><footer class=entry-footer><span title='2025-07-20 20:00:31 +0800 CST'>July 20, 2025</span>&nbsp;·&nbsp;<span>20 min</span>&nbsp;·&nbsp;<span>SSmallOrange</span></footer><a class=entry-link aria-label="post link to 技术碎片（持续更新）" href=https://SSmallOrange.github.io/post/technological-fragments/></a></article></main><footer class=footer><span>&copy; 2026 <a href=https://SSmallOrange.github.io/>SSmallOrange Site</a></span> ·
 <span>Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
 <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentColor"><path d="M12 6H0l6-6z"/></svg>
